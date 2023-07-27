@@ -10,7 +10,7 @@ require(["esri/config", "esri/Map", "esri/views/MapView"], function(esriConfig, 
       map: map,
       center: [-111.8910, 40.7608], // Longitude, latitude
       zoom: 13, // Zoom level
-      container: "viewDiv" // Div element
+      container: "mainContent" // Div element
     });
     
     const segIds = ["SegId1", "SegId2", "SegId3", "SegId4", "SegId5"]; // your list of SegIDs
@@ -23,4 +23,5 @@ require(["esri/config", "esri/Map", "esri/views/MapView"], function(esriConfig, 
       option.textContent = segId;
       dropdown.appendChild(option);
     });
+    
 });

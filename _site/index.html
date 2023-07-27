@@ -14,37 +14,29 @@
         <script src="scripts.js"></script>
     </head>
     <body>
+        <header>
+            <h1>Traffic Volume and Transit Ridership Forecasts</h1>
+        </header>
+
         <div class="parent">
-            <div class="child header">
-                <h1>Traffic Volumes and Transit Ridership Forecasts</h1>
-            </div>
-            <div class="main">
-                <div class="child sidebar">
-                    <div class="section1">
-                        <div id="selectMode" class="container">
-                            <calcite-segmented-control scale="l" width="full">
-                                <calcite-segmented-control-item icon-start="car" value="Traffic" checked>
-                                    Traffic
-                                </calcite-segmented-control-item>
-                                <calcite-segmented-control-item icon-start="tour" value="Transit">
-                                    Transit
-                                </calcite-segmented-control-item>
-                            </calcite-segmented-control>
-                        </div>
-                        <div class="container">
-                            <calcite-select id="segIdSelect"></calcite-select>
-                        </div>
-                    </div>
-                    <div class="section2">
-                        <h1>data & charts</h1>
-                        <a target="_blank" href="https://developers.arcgis.com/javascript/latest/sample-code/sandbox/?sample=arcade-execute-chart">3rd party chart-sample</a>
-                    </div>
+            <div id="sidebar">
+                <div id="selectMode" class="container">
+                    <calcite-segmented-control scale="l" width="full">
+                        <calcite-segmented-control-item icon-start="car" value="Traffic" checked>
+                            Traffic
+                        </calcite-segmented-control-item>
+                        <calcite-segmented-control-item icon-start="tour" value="Transit">
+                            Transit
+                        </calcite-segmented-control-item>
+                    </calcite-segmented-control>
                 </div>
-                <div class="child content">
-                    <div id="viewDiv"></div>
+                <div class="container">
+                    <calcite-select id="segIdSelect"></calcite-select>
                 </div>
+                <h1>data & charts</h1>
+                <a target="_blank" href="https://developers.arcgis.com/javascript/latest/sample-code/sandbox/?sample=arcade-execute-chart">3rd party chart-sample</a>
             </div>
-            <div class="child footer"><span><i>based on the Wasatch Front Regional Council 2023 RTP</i></span></div>
+            <div id="mainContent"></div>
         </div>
     </body>
 </html>

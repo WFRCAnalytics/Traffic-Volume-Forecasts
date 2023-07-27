@@ -5,28 +5,28 @@ var myChart;
 
 // Initial chart configuration
 var chartConfig = {
-    type: 'bar',
+    type: 'line',
     data: {
-        labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+        labels: ['2019', '2023', '2032', '2042', '2050'],
         datasets: [{
-            label: '# of Votes',
-            data: [12, 19, 3, 5, 2, 3],
-            backgroundColor: [
-                'rgba(255, 99, 132, 0.2)',
-                'rgba(54, 162, 235, 0.2)',
-                'rgba(255, 206, 86, 0.2)',
-                'rgba(75, 192, 192, 0.2)',
-                'rgba(153, 102, 255, 0.2)',
-                'rgba(255, 159, 64, 0.2)'
-            ],
-            borderColor: [
-                'rgba(255, 99, 132, 1)',
-                'rgba(54, 162, 235, 1)',
-                'rgba(255, 206, 86, 1)',
-                'rgba(75, 192, 192, 1)',
-                'rgba(153, 102, 255, 1)',
-                'rgba(255, 159, 64, 1)'
-            ],
+            label: 'Forecast',
+            data: [19000,19500,20000,20500,20500],
+//            backgroundColor: [
+//                'rgba(255, 99, 132, 0.2)',
+//                'rgba(54, 162, 235, 0.2)',
+//                'rgba(255, 206, 86, 0.2)',
+//                'rgba(75, 192, 192, 0.2)',
+//                'rgba(153, 102, 255, 0.2)',
+//                'rgba(255, 159, 64, 0.2)'
+//            ],
+//            borderColor: [
+//                'rgba(255, 99, 132, 1)',
+//                'rgba(54, 162, 235, 1)',
+//                'rgba(255, 206, 86, 1)',
+//                'rgba(75, 192, 192, 1)',
+//                'rgba(153, 102, 255, 1)',
+//                'rgba(255, 159, 64, 1)'
+//            ],
             borderWidth: 1
         }]
     },
@@ -194,11 +194,11 @@ L.control.scale().addTo(map);
 
 
 // Fetch the JSON file
-fetch('data.json')
+fetch('segids.json')
     .then(response => response.json())
     .then(data => {
     // Get the dropdown element
-    const dropdown = document.getElementById('myDropdown');
+    const dropdown = document.getElementById('selectSegID');
 
     // Clear existing options
     dropdown.innerHTML = '';
@@ -206,11 +206,17 @@ fetch('data.json')
     // Loop through the data and create options
     data.forEach(item => {
         const option = document.createElement('option');
-        option.value = item.value;
-        option.text = item.text;
+        option.value = item.SEGID;
+        option.text = item.SEGID;
         dropdown.appendChild(option);
     });
     })
     .catch(error => {
     console.error('Error:', error);
     });
+
+const selectElement = document.getElementById('selectSegID');
+const result = document.getElementById('result');
+
+selectElement.addEventListener("change", (event) => {
+    result.textContent = `The selected SegID is ${event.target.value}`;});

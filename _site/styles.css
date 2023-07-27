@@ -1,70 +1,57 @@
 html,
-body,
-#viewDiv {
-    padding: 0;
-    margin: 0;
-    height: 100%;
-    width: 100%;
+body {
+  padding: 0;
+  margin: 0;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    font-family: Roboto;
+    font-weight: 600;
+}
+
+header {
+    background: #030840;
+    color: white;
+    padding: 0px;
+    margin-bottom: 0px;
+    text-align: left;
+}
+
+header h1 {
+    margin-block-start: .4em;
+    margin-block-end: .4em;
+    margin-inline-start: 10px;
+    margin-inline-end: 0px;
 }
 
 .parent {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     height: 100vh;
 }
 
-.main {
+
+#container {
     display: flex;
+    flex-direction: row;
+    align-items: stretch;
+}
+
+#sidebar {
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 84px);
+    background: #ddd;
+    width: 400px;
+    padding: 10px;
+}
+
+#mainContent {
     flex-grow: 1;
-}
-
-.content {
-    flex-grow: 1;
-    padding: 0px;
-    margin: 0px;
-}
-
-.header {
-    display: flex;
-}
-
-.footer {
-    display: flex;
-}
-
-.sidebar {  
-    width: 500px;
-    vertical-align: top; /* here */
-}
-
-.section1,
-.section2 {
-    /* Set the width of each section to 100% of the sidebar width */
-    width: 100%;
-    /* Optional: Add some spacing between the sections */
-    margin-bottom: 20px;
-}
-
-.child {
-    /*display: flex;*/
-    justify-content: center;
-    margin: 1px;
-    padding: 5px;
-    font-size: 20px;
-    line-height: 20px;
-    color: #326b37;
-    background-color: #c3d3d8;
-    /*border-radius: 8px;*/
-    /*border: 1px solid #19058d;*/
-}
-
-.container {
-    display: block;
-    margin-bottom: 10px; /* Optional: Add some spacing between the divs */
-}
-
-body {
-    background-color: #630909;
-    font-family: Roboto;
-    font-weight: 600;
+    /*padding: 10px;*/
 }
