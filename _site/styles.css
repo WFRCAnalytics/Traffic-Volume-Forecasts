@@ -3,7 +3,7 @@ body,
 #viewDiv {
     padding: 0;
     margin: 0;
-    height: 80%;
+    height: 100%;
     width: 100%;
 }
 
@@ -20,24 +20,43 @@ body,
 
 .content {
     flex-grow: 1;
+    padding: 0px;
+    margin: 0px;
+}
+
+.header {
+    display: flex;
+}
+
+.footer {
+    display: flex;
+}
+
+.sidebar {
+    width: 300px;
+    vertical-align: top; /* here */
 }
 
 .child {
-    display: flex;
-    align-items: center;
+    /*display: flex;*/
     justify-content: center;
-    margin: 1%;
-    padding: 20px;
+    margin: 2px;
+    padding: 5px;
     font-size: 20px;
     line-height: 20px;
-    color: #ffe8c3;
-    background-color: #eab768;
-    border-radius: 10px;
-    border: 10px solid #f5cc8b;
+    color: #326b37;
+    background-color: #c3d3d8;
+    border-radius: 8px;
+    border: 1px solid #19058d;
+}
+
+.container {
+    display: block;
+    margin-bottom: 10px; /* Optional: Add some spacing between the divs */
 }
 
 body {
-    background-color: #282c35;
-    font-family: Verdana;
+    background-color: #630909;
+    font-family: Roboto;
     font-weight: 600;
 }

@@ -12,5 +12,15 @@ require(["esri/config", "esri/Map", "esri/views/MapView"], function(esriConfig, 
       zoom: 13, // Zoom level
       container: "viewDiv" // Div element
     });
+    
+    const segIds = ["SegId1", "SegId2", "SegId3", "SegId4", "SegId5"]; // your list of SegIDs
 
+    const dropdown = document.querySelector("#segIdSelect");
+
+    segIds.forEach(segId => {
+      const option = document.createElement("calcite-option");
+      option.value = segId;
+      option.textContent = segId;
+      dropdown.appendChild(option);
+    });
 });

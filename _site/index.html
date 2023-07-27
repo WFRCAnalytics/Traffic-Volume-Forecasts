@@ -2,11 +2,12 @@
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no" />
-        <title>ArcGIS Maps SDK for JavaScript Tutorials: Display a map</title>
+        <title>Traffic Volume and Transit Ridership Forecasts</title>
 
         <link rel="stylesheet" href="https://js.arcgis.com/4.27/esri/themes/light/main.css">
         <link rel="stylesheet" type="text/css" href="https://js.arcgis.com/calcite-components/1.4.3/calcite.css" />
         <link rel="stylesheet" href="styles.css">
+        <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet'>
 
         <script src="https://js.arcgis.com/4.27/"></script>
         <script type="module" src="https://js.arcgis.com/calcite-components/1.4.3/calcite.esm.js"></script>
@@ -14,57 +15,30 @@
     </head>
     <body>
         <div class="parent">
-            <div class="child">
-                <h1>TDM Dashboard</h1>
+            <div class="child header">
+                <h1>Traffic Volumes and Transit Ridership Forecasts</h1>
             </div>
             <div class="main">
-                <div class="child">
-                    Sidebar
+                <div class="child sidebar">
+                    <div id="selectMode" class="container">
+                        <calcite-segmented-control scale="l" width="full">
+                            <calcite-segmented-control-item icon-start="car" value="Traffic" checked>
+                                Traffic
+                            </calcite-segmented-control-item>
+                            <calcite-segmented-control-item icon-start="tour" value="Transit">
+                                Transit
+                            </calcite-segmented-control-item>
+                        </calcite-segmented-control>
+                    </div>
+                    <div class="container">
+                        <calcite-select id="segIdSelect"></calcite-select>
+                    </div>
                 </div>
                 <div class="child content">
-                    <div id="tabs">
-                        <calcite-tabs>
-                            <calcite-tab-nav slot="title-group">
-                                <calcite-tab-title selected>Input Processing</calcite-tab-title>
-                                <calcite-tab-title>Trip Generation</calcite-tab-title>
-                                <calcite-tab-title>Trip Distribution</calcite-tab-title>
-                                <calcite-tab-title>Mode Choice</calcite-tab-title>
-                                <calcite-tab-title>Final Assignment</calcite-tab-title>
-                            </calcite-tab-nav>
-                            <calcite-tab selected>
-                                <calcite-notice icon="embark" open>
-                                    <div slot="message">Input processing content...</div>    
-                                </calcite-notice>
-                                
-                            </calcite-tab>
-                            <calcite-tab>
-                                <calcite-notice icon="car" open>
-                                    <div slot="message">Trip Generation content...</div>
-                                </calcite-notice>
-                            </calcite-tab>
-                            <calcite-tab>
-                                <calcite-notice icon="plane" open>
-                                    <div slot="message">Trip Distribution content...</div>
-                                </calcite-notice>
-                            </calcite-tab>
-                            <calcite-tab>
-                                <calcite-notice open>
-                                    <div slot="message">Trip Mode Choice content...</div>
-                                </calcite-notice>
-                            </calcite-tab>
-                            <calcite-tab>
-                                <calcite-notice open>
-                                    <div slot="message">Final Assignment content...</div>
-                                </calcite-notice>
-                            </calcite-tab>
-                        </calcite-tabs>
                     <div id="viewDiv"></div>
-                    </div>
-                    <br/>
-                    
-                </div>  
+                </div>
             </div>
-            <div class="child">Footer</div>
+            <div class="child footer"><span><i>based on the Wasatch Front Regional Council 2023 RTP</i></span></div>
         </div>
     </body>
 </html>
