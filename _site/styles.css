@@ -32,22 +32,30 @@ body,
     display: flex;
 }
 
-.sidebar {
-    width: 300px;
+.sidebar {  
+    width: 500px;
     vertical-align: top; /* here */
+}
+
+.section1,
+.section2 {
+    /* Set the width of each section to 100% of the sidebar width */
+    width: 100%;
+    /* Optional: Add some spacing between the sections */
+    margin-bottom: 20px;
 }
 
 .child {
     /*display: flex;*/
     justify-content: center;
-    margin: 2px;
+    margin: 1px;
     padding: 5px;
     font-size: 20px;
     line-height: 20px;
     color: #326b37;
     background-color: #c3d3d8;
-    border-radius: 8px;
-    border: 1px solid #19058d;
+    /*border-radius: 8px;*/
+    /*border: 1px solid #19058d;*/
 }
 
 .container {
