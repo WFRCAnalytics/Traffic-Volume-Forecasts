@@ -29,20 +29,17 @@ header h1 {
     margin-inline-end: 0px;
 }
 
+.container, #sidebar h1, #sidebar a {
+    margin-bottom: 10px; /* add space after divs in container */
+}
+
 .parent {
     display: flex;
     flex-direction: row;
     height: 100vh;
 }
 
-
-#container {
-    display: flex;
-    flex-direction: row;
-    align-items: stretch;
-}
-
-#sidebar {
+#sidebar { /* #sidebar is id not class!! */
     display: flex;
     flex-direction: column;
     height: calc(100vh - 84px);
