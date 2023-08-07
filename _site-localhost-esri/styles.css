@@ -1,0 +1,54 @@
+html,
+body {
+  padding: 0;
+  margin: 0;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    font-family: Roboto;
+    font-weight: 600;
+}
+
+header {
+    background: #030840;
+    color: white;
+    padding: 0px;
+    margin-bottom: 0px;
+    text-align: left;
+}
+
+header h1 {
+    margin-block-start: .4em;
+    margin-block-end: .4em;
+    margin-inline-start: 10px;
+    margin-inline-end: 0px;
+}
+
+.container, #sidebar h1, #sidebar a {
+    margin-bottom: 10px; /* add space after divs in container */
+}
+
+.parent {
+    display: flex;
+    flex-direction: row;
+    height: 100vh;
+}
+
+#sidebar { /* #sidebar is id not class!! */
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 84px);
+    background: #ddd;
+    width: 400px;
+    padding: 10px;
+}
+
+#mainContent {
+    flex-grow: 1;
+    /*padding: 10px;*/
+}
