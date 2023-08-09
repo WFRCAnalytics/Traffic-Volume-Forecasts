@@ -1,0 +1,69 @@
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no" />
+        <title>Art of Forecasting - Adjust & Review Tool for Traffic Volume and Transit Ridership Forecasts</title>
+
+        <link rel="stylesheet" href="https://js.arcgis.com/4.27/esri/themes/light/main.css">
+        <link rel="stylesheet" type="text/css" href="https://js.arcgis.com/calcite-components/1.4.3/calcite.css" />
+        <link rel="stylesheet" href="styles.css">
+        <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet'>
+
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+        <script src="https://js.arcgis.com/4.27/"></script>
+        <script type="module" src="https://js.arcgis.com/calcite-components/1.4.3/calcite.esm.js"></script>
+        <script src="scripts.js"></script>
+    </head>
+    <body>
+        <header>
+            <h1>Art of Forecasting - Adjust & Review Tool for Traffic Volume and Transit Ridership Forecasts</span>
+        </header>
+
+        <div class="parent">
+            <div id="sidebar">
+                <div id="selectMode" class="container">
+                    <calcite-segmented-control scale="l" width="full">
+                        <calcite-segmented-control-item icon-start="car" value="Traffic" checked>
+                            Traffic
+                        </calcite-segmented-control-item>
+                        <calcite-segmented-control-item icon-start="tour" value="Transit">
+                            Transit
+                        </calcite-segmented-control-item>
+                    </calcite-segmented-control>
+                </div>
+                <br/>
+
+                <table>
+                    <tr>
+                        <td valign="top">
+                            <form id="displayVolumeSelectionBase"></form>
+                        </td>
+                        <td valign="top">
+                            <form id="displayVolumeSelectionCompare"></form>
+                        </td>
+                    </tr>
+                </table>
+
+            </div>
+            <div id="mainContent">
+                <div id="mainContentChart">
+                    <div class="chart-container">
+                        <div class="select-container">
+                            <label for="segIdSelect"><b>Segment ID:</b></label>
+                            <calcite-select id="segIdSelect"></calcite-select>
+                        </div>
+                        <br/>
+                        <div class="select-container">
+                            <label for="sourceSelect"><b>Source:</b></label>
+                            <calcite-select id="sourceSelect"></calcite-select>
+                        </div>
+                        <br/>
+                        <canvas id="chartType"></canvas>
+                    </div>
+                </div>
+                <div id="mainContentMap"></div>
+            </div>
+        </div>
+    </body>
+</html>
