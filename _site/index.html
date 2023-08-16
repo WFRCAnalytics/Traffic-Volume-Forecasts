@@ -62,6 +62,111 @@
                 <div class="chart-container">
                     <canvas id="chartType"></canvas>
                 </div>
+                <div>
+                    <table width="100%">
+                        <tr>
+                            <td width="60%">
+                                &nbsp;
+                            </td>
+                            <td width="8%" align="center">
+                                2023
+                            </td>
+                            <td width="8%" align="center">
+                                2028
+                            </td>
+                            <td width="8%" align="center">
+                                2032
+                            </td>
+                            <td width="8%" align="center">
+                                2042
+                            </td>
+                            <td width="8%" align="center">
+                                2050
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="right">
+                                Model Forecast:
+                            </td>
+                            <td>
+                                <div id="mf2023Value" class="tableText tableModel" align="right"></div>
+                            </td>
+                            <td>
+                                <div id="mf2028Value" class="tableText tableModel" align="right"></div>
+                            </td>
+                            <td>
+                                <div id="mf2032Value" class="tableText tableModel" align="right"></div>
+                            </td>
+                            <td>
+                                <div id="mf2042Value" class="tableText tableModel" align="right"></div>
+                            </td>
+                            <td>
+                                <div id="mf2050Value" class="tableText tableModel" align="right"></div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="right">
+                                <button onclick="updateFeature()">Apply adjustments:</button>
+                            </td>
+                            <td>
+                                <input type="text" id="adj2023Value" class="right-align-input" placeholder="">
+                            </td>
+                            <td>
+                                <input type="text" id="adj2028Value" class="right-align-input" placeholder="">
+                            </td>
+                            <td>
+                                <input type="text" id="adj2032Value" class="right-align-input" placeholder="">
+                            </td>
+                            <td>
+                                <input type="text" id="adj2042Value" class="right-align-input" placeholder="">
+                            </td>
+                            <td>
+                                <input type="text" id="adj2050Value" class="right-align-input" placeholder="">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="right">
+                                Final Forecast:
+                            </td>
+                            <td>
+                                <div id="f2023Value" class="tableText tableFinal" align="right"></div>
+                            </td>
+                            <td>
+                                <div id="f2028Value" class="tableText tableFinal" align="right"></div>
+                            </td>
+                            <td>
+                                <div id="f2032Value" class="tableText tableFinal" align="right"></div>
+                            </td>
+                            <td>
+                                <div id="f2042Value" class="tableText tableFinal" align="right"></div>
+                            </td>
+                            <td>
+                                <div id="f2050Value" class="tableText tableFinal" align="right"></div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="right">
+                                Difference:
+                            </td>
+                            <td>
+                                <div id="diff2023Value" class="tableText" align="right"></div>
+                            </td>
+                            <td>
+                                <div id="diff2028Value" class="tableText" align="right"></div>
+                            </td>
+                            <td>
+                                <div id="diff2032Value" class="tableText" align="right"></div>
+                            </td>
+                            <td>
+                                <div id="diff2042Value" class="tableText" align="right"></div>
+                            </td>
+                            <td>
+                                <div id="diff2050Value" class="tableText" align="right"></div>
+                            </td>
+                        </tr>
+                    </table>
+                    
+                </div>
             </div>
             <div id="mainContentMap">
                 <div id="sidebar">

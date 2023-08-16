@@ -9,6 +9,11 @@ let defaultPlanArea = 'WFRC';
 let defaultSource = 'AADTHistory.xlsx';
 let myChart; // Keep track of the current chart
 let view;
+let adjustments;
+let colors;    
+let hidden;
+let borderDash;
+let borderWidth;
 
 require(["esri/config",
          "esri/Map",
@@ -28,13 +33,51 @@ require(["esri/config",
          "esri/renderers/ClassBreaksRenderer",
          "esri/widgets/Legend",
          "esri/PopupTemplate",
-         "esri/symbols/TextSymbol"
+         "esri/symbols/TextSymbol",
+         "esri/rest/support/Query"
         ],
-function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, Search, TileLayer, Graphic, Point, Polygon, Polyline, FeatureLayer, LayerList, ClassBreaksRenderer, Legend, PopupTemplate, TextSymbol) {
+function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, Search, TileLayer, Graphic, Point, Polygon, Polyline, FeatureLayer, LayerList, ClassBreaksRenderer, Legend, PopupTemplate, TextSymbol, Query) {
 
   esriConfig.apiKey = "AAPK5f27bfeca6bb49728b7e12a3bfb8f423zlKckukFK95EWyRa-ie_X31rRIrqzGNoqBH3t3Chvz2aUbTKiDvCPyhvMJumf7Wk";
 
+  // Function to update the adjustments
+  updateFeature = function() {
 
+    // Query to get the specific feature with SEGID=_curSegId
+    var query = new Query();
+    query.where = "SEGID='" + selectSegId.value + "'"; // Assuming SEGID is numeric
+    query.returnGeometry = false;
+    query.outFields = ['*']; // Get all fields
+  
+    layerSegments.queryFeatures(query).then(function(results) {
+      if (results.features.length > 0) {
+        var featureToUpdate = results.features[0]; // Get the first feature that matches the query
+  
+        // Update the attributes
+        featureToUpdate.attributes.ADJ2023 = document.getElementById('adj2023Value').value;
+        featureToUpdate.attributes.ADJ2028 = document.getElementById('adj2028Value').value;
+        featureToUpdate.attributes.ADJ2032 = document.getElementById('adj2032Value').value;
+        featureToUpdate.attributes.ADJ2042 = document.getElementById('adj2042Value').value;
+        featureToUpdate.attributes.ADJ2050 = document.getElementById('adj2050Value').value;
+  
+        // Apply the edits
+        layerSegments.applyEdits({
+          updateFeatures: [featureToUpdate]
+        }).then(function(results) {
+          if (results.updateFeatureResults.length > 0) {
+            console.log('Updated Successfully');
+            updateChart();
+          }
+        }).catch(function(error) {
+          console.error('Error updating feature: ', error);
+        });
+      } else {
+        console.log('No features found with SEGID=' + _curSegId);
+      }
+    }).catch(function(error) {
+      console.error('Error querying features: ', error);
+    });
+  };
 
   function updateMap() {
     console.log('updateMap');
@@ -57,12 +100,12 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
     if (curCompare=='None') {
       rendererSegmentsVolume.field = curBase; // Set the new field
       layerSegments.renderer = rendererSegmentsVolume;
-      labelClass.labelExpressionInfo.expression = "$feature." + curBase; // Update the label expression
+      labelClass.labelExpressionInfo.expression = "Text($feature." + curBase + ", '#,###')"; // Update the label expression
     } else {
       rendererSegmentsVolumeCompare.valueExpression = '$feature.' + curBase + ' - $feature.' + curCompare;
       rendererSegmentsVolumeCompare.valueExpressionTitle =  curBase + ' minus ' + curCompare;
       layerSegments.renderer = rendererSegmentsVolumeCompare;
-      labelClass.labelExpressionInfo.expression = '$feature.' + curBase + ' - $feature.' + curCompare;
+      labelClass.labelExpressionInfo.expression = "Text($feature." + curBase + " - $feature." + curCompare + ", '#,###')";
     }
 
     layerSegments.labelingInfo = [labelClass];
@@ -229,7 +272,7 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
     layerSegments = new FeatureLayer({
       url: layerSegmentsUrl,
       renderer: rendererSegmentsVolume,
-      popupTemplate: segmentPopupTemplate
+      //popupTemplate: segmentPopupTemplate
     });
     
     map.add(layerSegments);
@@ -479,79 +522,133 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
 
       // Filter the data based on SEGID and SOURCE
       const filteredAadt = dataAadt.filter(item => item.SEGID === _curSegId && item.SOURCE === defaultSource);
-      const filteredModVolAdj = dataModVolAdj.filter(item => item.SEGID === _curSegId);
+      const filteredModForecasts = dataModVolAdj.filter(item => item.SEGID === _curSegId);
       const filteredLinForecasts = dataLinForecasts.filter(item =>
         item.SEGID === _curSegId &&
         item.SOURCE === defaultSource
       );
-
-      // Extract the X and Y values
-      const chartDataAadt = filteredAadt.map(item => ({ x: item.YEAR, y: item.AADT }));
-      const chartDataModVolAdj = filteredModVolAdj.map(item => ({ x: item.YEAR, y: item.modForecast }));
-
-      // Group the filteredLinForecasts by PROJGRP
-      const groupedLinForecasts = filteredLinForecasts.reduce((groups, item) => {
-        (groups[item.PROJGRP] = groups[item.PROJGRP] || []).push(item);
-        return groups;
-      }, {});
-
+      
       const responseProjectionGroups = await fetch('data/projection-groups.json');
       const dataProjectionGroups = await responseProjectionGroups.json();
       
-      const colors      = dataProjectionGroups.map(item => item.pgColor                 );
-      //const hidden      = dataProjectionGroups.map(item => item.pgHidden                );
-      const borderDash  = dataProjectionGroups.map(item => JSON.parse(item.pgBorderDash));
-      const borderWidth = dataProjectionGroups.map(item => item.pgBorderWidth           );
-  
-      // Create datasets for each PROJGRP
-      const linForecastDatasets = Object.entries(groupedLinForecasts).map(([key, group], index) => ({
-        label: key, //'Linear Forecasts - ' + key,
-        data: group.map(item => ({ x: item.YEAR, y: item.linForecast })),
-        borderColor: colors[index % colors.length], // You can define an array of colors or use a function to generate them
-        backgroundColor: colors[index % colors.length],
-        pointRadius: 0,
-        showLine: true,
-        //hidden: hiddenStates[index % hiddenStates.length],
-        borderDash: borderDash[index % borderDash.length],
-        borderWidth: borderWidth[index % borderWidth.length]
-      }));
+      colors      = dataProjectionGroups.map(item => item.pgColor                 );
+    //hidden      = dataProjectionGroups.map(item => item.pgHidden                );
+      borderDash  = dataProjectionGroups.map(item => JSON.parse(item.pgBorderDash));
+      borderWidth = dataProjectionGroups.map(item => item.pgBorderWidth           );
 
-      // Create the chart
-      myChart.data.datasets = [
-        {
-          label: 'Model Forecast AADT',
-          data: chartDataModVolAdj,
-          borderColor: 'orange',
-          backgroundColor: 'orange',
-          pointRadius: 5
-        },
-        {
-          label: 'Observed AADT',
-          data: chartDataAadt,
-          borderColor: 'lightgray',
-          backgroundColor: 'lightgray',
-          pointRadius: 4
-        },
-        ...linForecastDatasets // Spread linForecastDatasets here
-      ];
-
-      // Refresh the chart
-      myChart.update();
-
-
+      
       // Query the feature layer to find the feature with the matching SEGID
       const query = layerSegments.createQuery();
       query.where = "SEGID = '" + _curSegId + "'"; // Replace with your field name and SEGID value
+      query.outFields = ["SEGID", "ADJ2023", "ADJ2028", "ADJ2032", "ADJ2042", "ADJ2050"];
       const result = await layerSegments.queryFeatures(query);
 
       // If a matching feature was found, zoom in to it
       if (result.features.length > 0) {
         const feature = result.features[0];
+      
+        // Extract the values of the fields and put them into a single list
+        adjustments = [
+          feature.attributes.ADJ2023,
+          feature.attributes.ADJ2028,
+          feature.attributes.ADJ2032,
+          feature.attributes.ADJ2042,
+          feature.attributes.ADJ2050
+        ];
+
+        // Extract the X and Y values
+        const chartDataAadt = filteredAadt.map(item => ({ x: item.YEAR, y: item.AADT }));
+        const chartDataModForecasts = filteredModForecasts.map(item => ({ x: item.YEAR, y: item.modForecast }));
+
+        const chartDataForecasts = filteredModForecasts.map((item, index) => {
+          // Add the corresponding adjustment value
+          return { x: item.YEAR, y: item.modForecast + (adjustments[index] || 0) };
+        });
+
+        // Group the filteredLinForecasts by PROJGRP
+        const groupedLinForecasts = filteredLinForecasts.reduce((groups, item) => {
+          (groups[item.PROJGRP] = groups[item.PROJGRP] || []).push(item);
+          return groups;
+        }, {});
+
+    
+        // Create datasets for each PROJGRP
+        const linForecastDatasets = Object.entries(groupedLinForecasts).map(([key, group], index) => ({
+          label: key, //'Linear Forecasts - ' + key,
+          data: group.map(item => ({ x: item.YEAR, y: item.linForecast })),
+          borderColor: colors[index % colors.length], // You can define an array of colors or use a function to generate them
+          backgroundColor: colors[index % colors.length],
+          pointRadius: 0,
+          showLine: true,
+        //hidden: hiddenStates[index % hiddenStates.length],
+          borderDash: borderDash[index % borderDash.length],
+          borderWidth: borderWidth[index % borderWidth.length]
+        }));
+
+        // Create the chart
+        myChart.data.datasets = [
+
+          {
+            label: 'Model Forecast AADT with Adjustments',
+            data: chartDataForecasts,
+            borderColor: 'orange',
+            backgroundColor: 'orange',
+            pointRadius: 5
+          },
+          {
+            label: 'Model Forecast AADT',
+            data: chartDataModForecasts,
+            borderColor: 'purple',
+            backgroundColor: 'purple',
+            pointRadius: 8
+          },
+          {
+            label: 'Observed AADT',
+            data: chartDataAadt,
+            borderColor: 'lightgray',
+            backgroundColor: 'lightgray',
+            pointRadius: 4
+          },
+          ...linForecastDatasets // Spread linForecastDatasets here
+        ];
+
+        // Refresh the chart
+        myChart.update();
+
         view.goTo({
           target: feature.geometry,
           zoom: 12 // Adjust the zoom level as needed
         });
         onSelectFeature(feature);
+
+        // update values in manual adjustment boxes
+        document.getElementById("adj2023Value").value = feature.attributes.ADJ2023;
+        document.getElementById("adj2028Value").value = feature.attributes.ADJ2028;
+        document.getElementById("adj2032Value").value = feature.attributes.ADJ2032;
+        document.getElementById("adj2042Value").value = feature.attributes.ADJ2042;
+        document.getElementById("adj2050Value").value = feature.attributes.ADJ2050;
+
+        // update values in final forecast
+        document.getElementById("f2023Value").innerHTML = chartDataForecasts[0].y.toLocaleString('en-US');
+        document.getElementById("f2028Value").innerHTML = chartDataForecasts[1].y.toLocaleString('en-US');
+        document.getElementById("f2032Value").innerHTML = chartDataForecasts[2].y.toLocaleString('en-US');
+        document.getElementById("f2042Value").innerHTML = chartDataForecasts[3].y.toLocaleString('en-US');
+        document.getElementById("f2050Value").innerHTML = chartDataForecasts[4].y.toLocaleString('en-US');
+
+        // update values in model forecast
+        document.getElementById("mf2023Value").innerHTML = chartDataModForecasts[0].y.toLocaleString('en-US');
+        document.getElementById("mf2028Value").innerHTML = chartDataModForecasts[1].y.toLocaleString('en-US');
+        document.getElementById("mf2032Value").innerHTML = chartDataModForecasts[2].y.toLocaleString('en-US');
+        document.getElementById("mf2042Value").innerHTML = chartDataModForecasts[3].y.toLocaleString('en-US');
+        document.getElementById("mf2050Value").innerHTML = chartDataModForecasts[4].y.toLocaleString('en-US');
+
+        // update values in model forecast
+        document.getElementById("diff2023Value").innerHTML = '';
+        document.getElementById("diff2028Value").innerHTML = (chartDataForecasts[1].y - chartDataForecasts[0].y).toLocaleString('en-US');
+        document.getElementById("diff2032Value").innerHTML = (chartDataForecasts[2].y - chartDataForecasts[1].y).toLocaleString('en-US');
+        document.getElementById("diff2042Value").innerHTML = (chartDataForecasts[3].y - chartDataForecasts[2].y).toLocaleString('en-US');
+        document.getElementById("diff2050Value").innerHTML = (chartDataForecasts[4].y - chartDataForecasts[3].y).toLocaleString('en-US');
+
       }
     } //updateChart()
   

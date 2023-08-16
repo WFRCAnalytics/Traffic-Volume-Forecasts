@@ -26,6 +26,19 @@ body {
     font-weight: 600;
 }
 
+.tableText {
+    font-size: 14px;
+}
+
+.tableFinal {
+    background-color: rgba(255, 166, 0, 0.493);
+}
+
+.tableModel {
+    color: white;
+    background-color: purple;
+}
+
 header {
     background: #030840;
     color: white;
@@ -39,6 +52,14 @@ header h1 {
     margin-block-end: .4em;
     margin-inline-start: 10px;
     margin-inline-end: 0px;
+}
+
+input[type="text"] {
+    width: 50px; /* or set a fixed width like 100px */
+}
+
+.right-align-input {
+    text-align: right;
 }
 
 .container, #sidebar h1, #sidebar a {
