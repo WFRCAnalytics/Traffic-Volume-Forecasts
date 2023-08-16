@@ -268,7 +268,8 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
     
     populateSidebar(layerSegments);
 
-  } // createMapView
+
+  } //createMapView()
 
   // Fetch the JSON file
   fetch('config.json')
@@ -387,7 +388,7 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
         option.value = id;
         option.textContent = id;
         selectCoName.appendChild(option);
-        if (index === 0) {
+        if (option.textContent === 'BOX ELDER') {
           selectCoName.value = option.textContent;
         }
       });
@@ -405,7 +406,7 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
 
     function updateSegments() {
       const filteredSegments = dataSegments.filter(item => item.CO_NAME === document.getElementById('selectCoName').value && item.PLANAREA === document.getElementById('selectPlanArea').value);
-      const segIds = [...new Set(filteredSegments.map(item => item.SEGID))];
+      const segIds = [...new Set(filteredSegments.map(item => item.SEGID))].sort();
 
       // Remove all existing child elements
       if (selectSegId.firstChild) {
@@ -565,6 +566,37 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
     selectPlanArea.addEventListener('calciteSegmentedControlChange', updateCoNames);
     selectSegId.addEventListener('calciteSelectChange', updateChart);
     selectCoName.addEventListener('calciteSelectChange', updateSegments);
+
+    
+    function querySEGIDByFID(FID) {
+      return new Promise(function(resolve, reject) {
+        var query = layerSegments.createQuery();
+        query.where = "FID = " + FID;
+        query.outFields = ["SEGID"];
+    
+        layerSegments.queryFeatures(query).then(function(results) {
+          var SEGID = results.features[0].attributes.SEGID;
+          resolve(SEGID);
+        }).catch(reject);
+      });
+    }
+
+    view.on("click", function(event) {
+      view.hitTest(event).then(function(response) {
+        var result = response.results.find(function(result) {
+          return result.graphic.layer === layerSegments;
+        });
+    
+        if (result) {
+          var featureFID = result.graphic.attributes.FID;
+    
+          querySEGIDByFID(featureFID).then(function(SEGID) {
+            selectSegId.value = SEGID;
+            updateChart();
+          });
+        }
+      });
+    });
 
     //selectSource.addEventListener('calciteSelectChange', updateChart);
   }
