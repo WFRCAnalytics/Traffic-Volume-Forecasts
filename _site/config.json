@@ -2,7 +2,7 @@
   {
     "layerSegmentsUrl": "https://services1.arcgis.com/taguadKoI1XFwivx/arcgis/rest/services/ForecastSegments/FeatureServer/0",
     "rendererSegmentsVolume": {
-      "field": "m2050_adj",
+      "field": "MF2050",
       "classBreakInfos": [
         { "minValue":      0, "maxValue":     6000, "symbol": { "type": "simple-line", "color": [ 49, 57,138], "width": 0.2 }, "label":"0 to 6,000"        },
         { "minValue":   6001, "maxValue":    18000, "symbol": { "type": "simple-line", "color": [ 27,169,230], "width": 1.2 }, "label":"6,000 to 18,000"   },

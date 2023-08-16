@@ -2,7 +2,7 @@
     <head>
         <meta charset="utf-8" />
         <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no" />
-        <title>Art of Forecasting - Adjust & Review Tool for Traffic Volume and Transit Ridership Forecasts</title>
+        <title>The ART of Forecasting - Adjust & Review Tool for Traffic Volume and Transit Ridership Forecasts</title>
 
         <link rel="stylesheet" href="https://js.arcgis.com/4.27/esri/themes/light/main.css">
         <link rel="stylesheet" type="text/css" href="https://js.arcgis.com/calcite-components/1.4.3/calcite.css" />
@@ -17,12 +17,15 @@
     </head>
     <body>
         <header>
-            <h1>Art of Forecasting - Adjust & Review Tool for Traffic Volume and Transit Ridership Forecasts</span>
+            <h1>The ART of Forecasting - <u>A</u>djust & <u>R</u>eview <u>T</u>ool for Traffic Volume and Transit Ridership Forecasts</span>
         </header>
-
-        <div class="parent">
-            <div id="sidebar">
-                <div id="selectMode" class="container">
+        <div id="mainContent">
+            <div id="mainContentChart">
+                <div class="container">
+                    <calcite-segmented-control id="selectPlanArea" scale="l" width="full">
+                    </calcite-segmented-control>
+                </div>
+                <div id="selectMode" class="container"  style="display: none;">
                     <calcite-segmented-control scale="l" width="full">
                         <calcite-segmented-control-item icon-start="car" value="Traffic" checked>
                             Traffic
@@ -32,37 +35,48 @@
                         </calcite-segmented-control-item>
                     </calcite-segmented-control>
                 </div>
-                <br/>
-
-                <table>
+                <table width="100%">
                     <tr>
-                        <td valign="top">
-                            <form id="displayVolumeSelectionBase"></form>
+                        <td width="35%">
+                            <div class="select-container">
+                                <label for="selectCoName"><b>County:</b></label>
+                                <calcite-select id="selectCoName"></calcite-select>
+                            </div>
+                            <br/>
+                            <div class="select-container">
+                                <label for="selectSegId"><b>Segment ID:</b></label>
+                                <calcite-select id="selectSegId"></calcite-select>
+                            </div>
+                            <br/>
+                            <div class="select-container" style="display: none;">
+                                <label for="selectSource"><b>Observed Data Source:</b></label>
+                                <calcite-select id="selectSource"></calcite-select>
+                            </div>            
                         </td>
-                        <td valign="top">
-                            <form id="displayVolumeSelectionCompare"></form>
+                        <td hidden>
+                            <calcite-combobox id="comboboxProjGroups" multiple></calcite-combobox>
                         </td>
                     </tr>
                 </table>
-
-            </div>
-            <div id="mainContent">
-                <div id="mainContentChart">
-                    <div class="chart-container">
-                        <div class="select-container">
-                            <label for="segIdSelect"><b>Segment ID:</b></label>
-                            <calcite-select id="segIdSelect"></calcite-select>
-                        </div>
-                        <br/>
-                        <div class="select-container">
-                            <label for="sourceSelect"><b>Source:</b></label>
-                            <calcite-select id="sourceSelect"></calcite-select>
-                        </div>
-                        <br/>
-                        <canvas id="chartType"></canvas>
-                    </div>
+                <br/>
+                <div class="chart-container">
+                    <canvas id="chartType"></canvas>
                 </div>
-                <div id="mainContentMap"></div>
+            </div>
+            <div id="mainContentMap">
+                <div id="sidebar">
+                    <table>
+                        <tr>
+                            <td valign="top">
+                                <form id="displayVolumeSelectionBase"></form>
+                            </td>
+                            <td valign="top">
+                                <form id="displayVolumeSelectionCompare"></form>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div id="mapView"></div>
             </div>
         </div>
     </body>

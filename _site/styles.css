@@ -67,15 +67,20 @@ header h1 {
 }
 
 #mainContentChart {
-    width: 600px; /* or any other value */
+    width: 700px; /* or any other value */
     padding: 15px;
 }
 
 #mainContentMap {
+    display: flex; /* Enables flexbox layout */
     flex-grow: 1; /* Allows the children to take up equal space */
     /* Add additional styles as needed, such as padding or borders */
 }
 
+#mapView {
+    flex-grow: 1;
+    height: 100%;
+}
 .select-container {
     display: flex;
     align-items: center; /* Centers the items vertically */

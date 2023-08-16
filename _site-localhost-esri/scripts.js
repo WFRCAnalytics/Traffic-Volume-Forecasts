@@ -123,7 +123,7 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
 
     const segIds = ["SegId1", "SegId2", "SegId3", "SegId4", "SegId5"]; // your list of SegIDs
 
-    const dropdown = document.querySelector("#segIdSelect");
+    const dropdown = document.querySelector("#selectSegId");
 
     segIds.forEach(segId => {
       const option = document.createElement("calcite-option");
