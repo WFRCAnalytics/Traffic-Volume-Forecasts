@@ -1,5 +1,9 @@
 let layerSegments; // Global variable
+let layerProjectsLines;
+let layerProjectsPoints;
 let layerSegmentsUrl;
+let layerProjectsLinesUrl;
+let layerProjectsPointsUrl;
 let rendererSegmentsVolume;
 let rendererSegmentsVolumeCompare;
 let curBase;
@@ -59,7 +63,8 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
         featureToUpdate.attributes.ADJ2032 = document.getElementById('adj2032Value').value;
         featureToUpdate.attributes.ADJ2042 = document.getElementById('adj2042Value').value;
         featureToUpdate.attributes.ADJ2050 = document.getElementById('adj2050Value').value;
-  
+        featureToUpdate.attributes.Notes   = document.getElementById('notes').value;
+
         // Apply the edits
         layerSegments.applyEdits({
           updateFeatures: [featureToUpdate]
@@ -274,11 +279,55 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
       renderer: rendererSegmentsVolume,
       //popupTemplate: segmentPopupTemplate
     });
-    
+
+    layerProjectsLines = new FeatureLayer({
+      url: layerProjectsLinesUrl
+    });
+
+    layerProjectsPoints = new FeatureLayer({
+      url: layerProjectsPointsUrl
+    });
+
     map.add(layerSegments);
+    map.add(layerProjectsLines);
+    map.add(layerProjectsPoints);
     //map.add(geojsonCities);
     //map.add(geojsonCitiesWhite);
     
+      
+    // Get the checkbox
+    var checkboxSegments = document.getElementById("layerToggleSegments");
+
+    // Listen for changes to the checkbox
+    checkboxSegments.addEventListener("change", function() {
+      // Set the layer visibility based on the checkbox
+      layerSegments.visible = checkboxSegments.checked;
+    });
+
+    layerSegments.visible = checkboxSegments.checked;
+      
+    // Get the checkbox
+    var checkboxProjectsLines = document.getElementById("layerToggleProjectsLines");
+
+    // Listen for changes to the checkbox
+    checkboxProjectsLines.addEventListener("change", function() {
+      // Set the layer visibility based on the checkbox
+      layerProjectsLines.visible = checkboxProjectsLines.checked;
+    });
+
+    layerProjectsLines.visible = checkboxProjectsLines.checked;
+
+    // Get the checkbox
+    var checkboxProjectsPoints = document.getElementById("layerToggleProjectsPoints");
+
+    // Listen for changes to the checkbox
+    checkboxProjectsPoints.addEventListener("change", function() {
+      // Set the layer visibility based on the checkbox
+      layerProjectsPoints.visible = checkboxProjectsPoints.checked;
+    });
+    
+    layerProjectsPoints.visible = checkboxProjectsPoints.checked;
+
     // add homebutton
     var homeButton = new Home({
       view: view
@@ -321,6 +370,8 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
 
       // Extract the layerSegments value
       layerSegmentsUrl = config[0].layerSegmentsUrl;
+      layerProjectsLinesUrl  = config[0].layerProjectsLinesUrl;
+      layerProjectsPointsUrl = config[0].layerProjectsPointsUrl;
 
       // Create a new ClassBreaksRenderer using the fetched configuration     
       rendererSegmentsVolume        = new ClassBreaksRenderer(config[0].rendererSegmentsVolume       );
@@ -380,6 +431,10 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
     const responseSegments = await fetch('data/segments.json');
     const dataSegments = await responseSegments.json();
 
+    // Fetching the fifth JSON file
+    const responseFlags = await fetch('data/flags.json');
+    const dataFlags = await responseFlags.json();
+
     // Get the calcite-segmented-control element
     const selectPlanArea = document.getElementById('selectPlanArea');
     const selectCoName = document.getElementById('selectCoName');
@@ -402,7 +457,11 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
     uniquePlanAreas.forEach(planArea => {
       const item = document.createElement('calcite-segmented-control-item');
       item.value = planArea;
-      item.textContent = planArea;
+      if (planArea==" " || planArea=="") {
+        item.textContent = "{Blank}";
+      } else {
+        item.textContent = planArea;
+      }
       selectPlanArea.appendChild(item);
     });
 
@@ -429,7 +488,11 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
       uniqueCoNames.forEach((id,index) => {
         const option = document.createElement('calcite-option');
         option.value = id;
-        option.textContent = id;
+        if (id==" " || id=="") {
+          option.textContent = "{Blank}";
+        } else {
+          option.textContent = id;
+        }
         selectCoName.appendChild(option);
         if (option.textContent === 'BOX ELDER') {
           selectCoName.value = option.textContent;
@@ -442,6 +505,50 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
     }
     // run first time
     updateCoNames();
+
+    // FLAGS
+
+    document.addEventListener('calciteComboboxChange', handleSelection);
+
+    const flags = [
+      {"flagName":"<Previous","flagDescription":"Less than previous forecast year"},
+      {"flagName":">2xPrevious","flagDescription":"More than twice previous forecast year"},
+      {"flagName":"Zero","flagDescription":"No forecast"}
+    ];
+    
+    const selectedFlags = [];
+    
+    function populateComboboxFlags() {
+      const combobox = document.getElementById('comboboxFlags');
+      flags.forEach(flag => {
+        const item = document.createElement('calcite-combobox-item');
+        item.text = flag.flagName;
+        item.textLabel = flag.flagDescription; // Store the entire flag object as a string
+        combobox.appendChild(item);
+      });
+    }
+    
+    function handleSelection(event) {
+      selectedFlags.length = 0; // Clear the previous selection
+      event.target.selectedItems.forEach(item => {
+        selectedFlags.push({
+          flagName: item.text,
+          flagDescription: item.textLabel
+        });
+      });
+
+
+      // Code for filtering segments by flags
+
+
+      console.log(selectedFlags); // Logs the selected flags
+    }
+    
+    populateComboboxFlags();    
+
+    // To disable the combobox
+    document.getElementById('comboboxFlags').disabled = true;
+
 
     // SEGMENTS
 
@@ -540,7 +647,7 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
       // Query the feature layer to find the feature with the matching SEGID
       const query = layerSegments.createQuery();
       query.where = "SEGID = '" + _curSegId + "'"; // Replace with your field name and SEGID value
-      query.outFields = ["SEGID", "ADJ2023", "ADJ2028", "ADJ2032", "ADJ2042", "ADJ2050"];
+      query.outFields = ["SEGID", "ADJ2023", "ADJ2028", "ADJ2032", "ADJ2042", "ADJ2050", "Notes"];
       const result = await layerSegments.queryFeatures(query);
 
       // If a matching feature was found, zoom in to it
@@ -589,7 +696,7 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
         myChart.data.datasets = [
 
           {
-            label: 'Model Forecast AADT with Adjustments',
+            label: 'Final Forecasts (Mod+Adj)',
             data: chartDataForecasts,
             borderColor: 'orange',
             backgroundColor: 'orange',
@@ -627,6 +734,7 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
         document.getElementById("adj2032Value").value = feature.attributes.ADJ2032;
         document.getElementById("adj2042Value").value = feature.attributes.ADJ2042;
         document.getElementById("adj2050Value").value = feature.attributes.ADJ2050;
+        document.getElementById("notes"       ).value = feature.attributes.Notes  ;
 
         // update values in final forecast
         document.getElementById("f2023Value").innerHTML = chartDataForecasts[0].y.toLocaleString('en-US');
@@ -652,7 +760,7 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
       }
     } //updateChart()
   
-    //populateComboBoxProjGroups().then(() => {
+    //populateComboboxFlagsProjGroups().then(() => {
     //  console.log('Calling updateChart');
     //  updateChart();
     //});
