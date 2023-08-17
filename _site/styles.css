@@ -54,7 +54,7 @@ header h1 {
     margin-inline-end: 0px;
 }
 
-input[type="text"] {
+input[type="text"].manualAdj {
     width: 50px; /* or set a fixed width like 100px */
 }
 
