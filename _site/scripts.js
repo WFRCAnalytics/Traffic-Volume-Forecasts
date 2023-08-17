@@ -494,8 +494,8 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
           option.textContent = id;
         }
         selectCoName.appendChild(option);
-        if (option.textContent === 'BOX ELDER') {
-          selectCoName.value = option.textContent;
+        if (index==0) {
+          selectCoName.value = id;
         }
       });
       
@@ -571,7 +571,7 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
         option.textContent = id;
         selectSegId.appendChild(option);
         if (index === 0) {
-          selectSegId.value = option.textContent;
+          selectSegId.value = id;
         }
       });
       updateChart();
