@@ -588,6 +588,8 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
           aspectRatio: 1.5,
           scales: {
             x: {
+              min: 1980,
+              max: 2050,
               ticks: {
                 // Define a callback function to format the tick labels
                 callback: function(value, index, values) {
