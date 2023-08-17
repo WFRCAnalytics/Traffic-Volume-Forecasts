@@ -623,6 +623,37 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
       if (!myChart) {
         createChart();
       }
+
+      // initialize table
+      // update values in manual adjustment boxes
+      document.getElementById("adj2023Value").value = '';
+      document.getElementById("adj2028Value").value = '';
+      document.getElementById("adj2032Value").value = '';
+      document.getElementById("adj2042Value").value = '';
+      document.getElementById("adj2050Value").value = '';
+      document.getElementById("notes"       ).value = '';
+
+      // update values in final forecast
+      document.getElementById("f2023Value").innerHTML = '';
+      document.getElementById("f2028Value").innerHTML = '';
+      document.getElementById("f2032Value").innerHTML = '';
+      document.getElementById("f2042Value").innerHTML = '';
+      document.getElementById("f2050Value").innerHTML = '';
+
+      // update values in model forecast
+      document.getElementById("mf2023Value").innerHTML = '';
+      document.getElementById("mf2028Value").innerHTML = '';
+      document.getElementById("mf2032Value").innerHTML = '';
+      document.getElementById("mf2042Value").innerHTML = '';
+      document.getElementById("mf2050Value").innerHTML = '';
+
+      // update values in model forecast
+      document.getElementById("diff2023Value").innerHTML = '';
+      document.getElementById("diff2028Value").innerHTML = '';
+      document.getElementById("diff2032Value").innerHTML = '';
+      document.getElementById("diff2042Value").innerHTML = '';
+      document.getElementById("diff2050Value").innerHTML = '';
+      
     
       const selectSegId = document.getElementById('selectSegId');
       const _curSegId = selectSegId.value;
