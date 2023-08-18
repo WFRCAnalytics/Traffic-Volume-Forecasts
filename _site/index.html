@@ -171,7 +171,7 @@
                             </td>
                         </tr>
                     </table>
-                    <h3>Flag Overrides</h3>
+                    <h3>Flag Overrides (Coming Soon!)</h3>
                 </div>
             </div>
             <div id="mainContentMap">
@@ -191,13 +191,58 @@
                             <td colspan="2">
                                 <br/>
                                 <h3>Forecasts</h3>
+                                <calcite-radio-button-group name="rbgForecasts" id="rbgForecasts" layout="vertical">
+                                    <calcite-label layout="inline">
+                                        <calcite-radio-button name="rbgForecasts" value="final-forecast" checked></calcite-radio-button>
+                                        Final Forecast
+                                    </calcite-label>
+                                    <calcite-label layout="inline">
+                                        <calcite-radio-button name="rbgForecasts" value="final-forecast-change"></calcite-radio-button>
+                                        Final Forecast Change
+                                    </calcite-label>
+                                    <calcite-label layout="inline">
+                                        <calcite-radio-button name="rbgForecasts" value="manual-adjustments"></calcite-radio-button>
+                                        Manual Adjustments
+                                    </calcite-label>
+                                    <calcite-label layout="inline">
+                                        <calcite-radio-button name="rbgForecasts" value="model-forecast"></calcite-radio-button>
+                                        Model Forecast
+                                    </calcite-label>
+                                    <calcite-label layout="inline">
+                                        <calcite-radio-button name="rbgForecasts" value="model-raw"></calcite-radio-button>
+                                        Model Raw
+                                    </calcite-label>
+                                </calcite-radio-button-group>
+                                <h3>Years</h3>
+                                <calcite-radio-button-group name="rbgYears" id="rbgYears" layout="vertical">
+                                    <calcite-label layout="inline">
+                                        <calcite-radio-button name="rbgYears" value="2050" checked></calcite-radio-button>
+                                        2050
+                                    </calcite-label>
+                                    <calcite-label layout="inline">
+                                        <calcite-radio-button name="rbgYears" value="2042"></calcite-radio-button>
+                                        2042
+                                    </calcite-label>
+                                    <calcite-label layout="inline">
+                                        <calcite-radio-button name="rbgYears" value="2032"></calcite-radio-button>
+                                        2032
+                                    </calcite-label>
+                                    <calcite-label layout="inline">
+                                        <calcite-radio-button name="rbgYears" value="2028"></calcite-radio-button>
+                                        2028
+                                    </calcite-label>
+                                    <calcite-label layout="inline">
+                                        <calcite-radio-button name="rbgYears" value="2023"></calcite-radio-button>
+                                        2023
+                                    </calcite-label>
+                                </calcite-radio-button-group>                      
                             </td>
                         </tr>
                         <tr>
-                            <td valign="top">
+                            <td valign="top" hidden>
                                 <form id="displayVolumeSelectionBase"></form>
                             </td>
-                            <td valign="top">
+                            <td valign="top" hidden>
                                 <form id="displayVolumeSelectionCompare"></form>
                             </td>
                         </tr>

@@ -6,10 +6,14 @@ let layerProjectsLinesUrl;
 let layerProjectsPointsUrl;
 let rendererSegmentsVolume;
 let rendererSegmentsVolumeCompare;
+let rendererSegmentsVolumeAdjust;
 let curBase;
 let curCompare = 'None';
+let curDisplayForecast = 'final-forecast';
+let curDisplayYear = '2050';
 let defBase = 'MF2050';
 let defaultPlanArea = 'WFRC';
+let defaultCounty   = 'BOX ELDER';
 let defaultSource = 'AADTHistory.xlsx';
 let myChart; // Keep track of the current chart
 let view;
@@ -101,20 +105,69 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
       }
     };
 
+    var _expression = "";
 
-    if (curCompare=='None') {
-      rendererSegmentsVolume.field = curBase; // Set the new field
-      layerSegments.renderer = rendererSegmentsVolume;
-      labelClass.labelExpressionInfo.expression = "Text($feature." + curBase + ", '#,###')"; // Update the label expression
-    } else {
-      rendererSegmentsVolumeCompare.valueExpression = '$feature.' + curBase + ' - $feature.' + curCompare;
-      rendererSegmentsVolumeCompare.valueExpressionTitle =  curBase + ' minus ' + curCompare;
-      layerSegments.renderer = rendererSegmentsVolumeCompare;
-      labelClass.labelExpressionInfo.expression = "Text($feature." + curBase + " - $feature." + curCompare + ", '#,###')";
+    var _prevDisplayYear = "";
+
+    if (curDisplayYear=="2050") {
+      _prevDisplayYear = 2042;
+    } else if (curDisplayYear=="2042") {
+      _prevDisplayYear = 2032;
+    } else if (curDisplayYear=="2032") {
+      _prevDisplayYear = 2028;
+    } else if (curDisplayYear=="2028") {
+      _prevDisplayYear = 2023;
+    } else if (curDisplayYear=="2023") {
+      _prevDisplayYear = 2019; // CHANGE TO 2021 WHEN SEG FILE HAS 2021 AADT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     }
 
+    switch (curDisplayForecast) {
+      case 'final-forecast':
+        _expression = "$feature.MF" + curDisplayYear + " + $feature.ADJ" + curDisplayYear;
+        rendererSegmentsVolume.valueExpression = _expression;
+        rendererSegmentsVolume.valueExpressionTitle =  'custom-expression';
+        layerSegments.renderer = rendererSegmentsVolume;
+        break;
+      case 'final-forecast-change':
+        if (curDisplayYear==2023) {
+          _expression = "$feature.MF" + curDisplayYear + " + $feature.ADJ" + curDisplayYear + " - $feature.AADT" + _prevDisplayYear;
+        } else {
+          _expression = "$feature.MF" + curDisplayYear + " + $feature.ADJ" + curDisplayYear + " - $feature.MF" + _prevDisplayYear + " - $feature.ADJ" + _prevDisplayYear;
+        }
+        rendererSegmentsVolumeCompare.valueExpression = _expression;
+        rendererSegmentsVolumeCompare.valueExpressionTitle =  'custom-expression';
+        layerSegments.renderer = rendererSegmentsVolumeCompare;
+        break;
+      case 'manual-adjustments':
+        _expression = "$feature.ADJ" + curDisplayYear;
+        rendererSegmentsVolumeAdjust.valueExpression = _expression;
+        rendererSegmentsVolumeAdjust.valueExpressionTitle =  'custom-expression';
+        layerSegments.renderer = rendererSegmentsVolumeAdjust;
+        break;
+      case 'model-forecast':
+        _expression = "$feature.MF" + curDisplayYear;
+        rendererSegmentsVolume.valueExpression = _expression;
+        rendererSegmentsVolume.valueExpressionTitle =  'custom-expression';
+        layerSegments.renderer = rendererSegmentsVolume;
+        break;
+      case 'model-raw':
+        _expression = "$feature.M" + curDisplayYear;
+        rendererSegmentsVolume.valueExpression = _expression;
+        rendererSegmentsVolume.valueExpressionTitle =  'custom-expression';
+        layerSegments.renderer = rendererSegmentsVolume;
+        break;
+    }
+    labelClass.labelExpressionInfo.expression = "Text(" + _expression + ", '#,###')";
     layerSegments.labelingInfo = [labelClass];
-
     layerSegments.refresh();
   };
 
@@ -122,89 +175,27 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
 
     // Once the layerSegments is loaded, populate the radio buttons with the fields
     layerSegments.load().then(function () {
-      var excludedFields = ['FID','Id','segid', 'Shape__Length', 'GlobalID'];
 
-      var displayVolumeSelectionBase = document.getElementById("displayVolumeSelectionBase");
-      var displayVolumeSelectionCompare = document.getElementById("displayVolumeSelectionCompare");
+      const radioButtons = document.querySelectorAll('calcite-radio-button');
 
-      displayVolumeSelectionBase.appendChild(document.createTextNode("Display"));
-      displayVolumeSelectionCompare.appendChild(document.createTextNode("Compare To"));
-      
-      // ADD NONE TO COMPARE
-      // create radio buttons for compare
-      var radioButtonGroup = document.createElement("label");
-      var radioButton = document.createElement("calcite-radio-button");
-      radioButton.name = "compare";
-      radioButton.value = curCompare;
-
-      // Optionally, select the first radio button by default
-      radioButton.checked = true;
-
-      // Listen for changes to the radio buttons
-      radioButton.addEventListener("change", function (e) {
-        // to make sure the radio button is the is the actual element
-        const radioButton = e.currentTarget; // or e.target.closest('input[type="radio"]')
-        // keep track of curCompare
-        curCompare = radioButton.value
-        updateMap();
-      });    
-
-      radioButtonGroup.appendChild(radioButton);
-      radioButtonGroup.appendChild(document.createTextNode("None" || "None"));
-      displayVolumeSelectionCompare.appendChild(radioButtonGroup);
-
-
-      layerSegments.fields.forEach(function (field, index) {
-        // Skip the field if it's in the excluded list
-        if (excludedFields.includes(field.name)) return;
-
-        // ABSOLUTE
-        // create radio buttons for absolute
-        var radioButtonGroup = document.createElement("label");
-        var radioButton = document.createElement("calcite-radio-button");
-        radioButton.name = "absolute";
-        radioButton.value = field.name;
-
-        // Optionally, select the first radio button by default
-        if (defBase === field.name) {
-          radioButton.checked = true;
-          curBase = defBase;
+      radioButtons.forEach(item => {
+        if (item.name=='rbgForecasts') {
+          item.addEventListener('calciteRadioButtonChange', (event) => {
+            if (event.target.checked) {
+              console.log('Selected option:', event.target.value);
+              curDisplayForecast = event.target.value;
+              updateMap();
+            }
+          });  
+        } else if (item.name=='rbgYears') {
+          item.addEventListener('calciteRadioButtonChange', (event) => {
+            if (event.target.checked) {
+              console.log('Selected option:', event.target.value);
+              curDisplayYear = event.target.value;
+              updateMap();
+            }
+          });  
         }
-
-        // Listen for changes to the radio buttons
-        radioButton.addEventListener("change", function (e) {
-          // to make sure the radio button is the is the actual element
-          const radioButton = e.currentTarget; // or e.target.closest('input[type="radio"]')
-          // update renderer with value of radio button
-          curBase = radioButton.value;
-          updateMap();
-        });    
-
-        radioButtonGroup.appendChild(radioButton);
-        radioButtonGroup.appendChild(document.createTextNode(field.alias || field.name));
-        displayVolumeSelectionBase.appendChild(radioButtonGroup);
-
-        
-        // COMPARE
-        // create radio buttons for compare
-        var radioButtonGroup = document.createElement("label");
-        var radioButton = document.createElement("calcite-radio-button");
-        radioButton.name = "compare";
-        radioButton.value = field.name;
-
-        // Listen for changes to the radio buttons
-        radioButton.addEventListener("change", function (e) {
-          // to make sure the radio button is the is the actual element
-          const radioButton = e.currentTarget; // or e.target.closest('input[type="radio"]')
-          // update renderer with value of radio button
-          curCompare = radioButton.value;
-          updateMap();
-        });    
-
-        radioButtonGroup.appendChild(radioButton);
-        radioButtonGroup.appendChild(document.createTextNode(field.alias || field.name));
-        displayVolumeSelectionCompare.appendChild(radioButtonGroup);
-
       });
 
       updateMap();
@@ -376,6 +367,7 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
       // Create a new ClassBreaksRenderer using the fetched configuration     
       rendererSegmentsVolume        = new ClassBreaksRenderer(config[0].rendererSegmentsVolume       );
       rendererSegmentsVolumeCompare = new ClassBreaksRenderer(config[0].rendererSegmentsVolumeCompare);
+      rendererSegmentsVolumeAdjust  = new ClassBreaksRenderer(config[0].rendererSegmentsVolumeAdjust );
 
       // create map
       createMapView();
@@ -505,6 +497,9 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
     }
     // run first time
     updateCoNames();
+
+    selectCoName.value = defaultCounty;
+
 
     // FLAGS
 
