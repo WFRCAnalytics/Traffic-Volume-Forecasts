@@ -7,6 +7,8 @@ let layerProjectsPointsUrl;
 let rendererSegmentsVolume;
 let rendererSegmentsVolumeCompare;
 let rendererSegmentsVolumeAdjust;
+let rendererPointsByPhase;
+let rendererLinesByPhase;
 let curBase;
 let curCompare = 'None';
 let curDisplayForecast = 'final-forecast';
@@ -22,6 +24,8 @@ let colors;
 let hidden;
 let borderDash;
 let borderWidth;
+let curBaseLayer='forecasts';
+let rtpLayers;
 
 require(["esri/config",
          "esri/Map",
@@ -39,12 +43,14 @@ require(["esri/config",
          "esri/layers/FeatureLayer",
          "esri/widgets/LayerList",
          "esri/renderers/ClassBreaksRenderer",
+         "esri/renderers/UniqueValueRenderer",
          "esri/widgets/Legend",
          "esri/PopupTemplate",
          "esri/symbols/TextSymbol",
-         "esri/rest/support/Query"
+         "esri/rest/support/Query",
+         "esri/WebMap"
         ],
-function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, Search, TileLayer, Graphic, Point, Polygon, Polyline, FeatureLayer, LayerList, ClassBreaksRenderer, Legend, PopupTemplate, TextSymbol, Query) {
+function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, Search, TileLayer, Graphic, Point, Polygon, Polyline, FeatureLayer, LayerList, ClassBreaksRenderer, UniqueValueRenderer, Legend, PopupTemplate, TextSymbol, Query, WebMap) {
 
   esriConfig.apiKey = "AAPK5f27bfeca6bb49728b7e12a3bfb8f423zlKckukFK95EWyRa-ie_X31rRIrqzGNoqBH3t3Chvz2aUbTKiDvCPyhvMJumf7Wk";
 
@@ -130,45 +136,79 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
       //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     }
 
-    switch (curDisplayForecast) {
-      case 'final-forecast':
-        _expression = "$feature.MF" + curDisplayYear + " + $feature.ADJ" + curDisplayYear;
-        rendererSegmentsVolume.valueExpression = _expression;
-        rendererSegmentsVolume.valueExpressionTitle =  'custom-expression';
-        layerSegments.renderer = rendererSegmentsVolume;
-        break;
-      case 'final-forecast-change':
-        if (curDisplayYear==2023) {
-          _expression = "$feature.MF" + curDisplayYear + " + $feature.ADJ" + curDisplayYear + " - $feature.AADT" + _prevDisplayYear;
-        } else {
-          _expression = "$feature.MF" + curDisplayYear + " + $feature.ADJ" + curDisplayYear + " - $feature.MF" + _prevDisplayYear + " - $feature.ADJ" + _prevDisplayYear;
+
+    switch (curBaseLayer) {
+      case 'forecasts': 
+      
+        layerProjectsLines.visible = false;
+        layerProjectsPoints.visible = false;
+        layerSegments.visible = true;
+
+        switch (curDisplayForecast) {
+          case 'final-forecast':
+            _expression = "$feature.MF" + curDisplayYear + " + $feature.ADJ" + curDisplayYear;
+            rendererSegmentsVolume.valueExpression = _expression;
+            rendererSegmentsVolume.valueExpressionTitle =  'custom-expression';
+            layerSegments.renderer = rendererSegmentsVolume;
+            break;
+          case 'final-forecast-change':
+            if (curDisplayYear==2023) {
+              _expression = "$feature.MF" + curDisplayYear + " + $feature.ADJ" + curDisplayYear + " - $feature.AADT" + _prevDisplayYear;
+            } else {
+              _expression = "$feature.MF" + curDisplayYear + " + $feature.ADJ" + curDisplayYear + " - $feature.MF" + _prevDisplayYear + " - $feature.ADJ" + _prevDisplayYear;
+            }
+            rendererSegmentsVolumeCompare.valueExpression = _expression;
+            rendererSegmentsVolumeCompare.valueExpressionTitle =  'custom-expression';
+            layerSegments.renderer = rendererSegmentsVolumeCompare;
+            break;
+          case 'manual-adjustments':
+            _expression = "$feature.ADJ" + curDisplayYear;
+            rendererSegmentsVolumeAdjust.valueExpression = _expression;
+            rendererSegmentsVolumeAdjust.valueExpressionTitle =  'custom-expression';
+            layerSegments.renderer = rendererSegmentsVolumeAdjust;
+            break;
+          case 'model-forecast':
+            _expression = "$feature.MF" + curDisplayYear;
+            rendererSegmentsVolume.valueExpression = _expression;
+            rendererSegmentsVolume.valueExpressionTitle =  'custom-expression';
+            layerSegments.renderer = rendererSegmentsVolume;
+            break;
+          case 'model-nobaseyearadj':
+            _expression = "$feature.M" + curDisplayYear;
+            rendererSegmentsVolume.valueExpression = _expression;
+            rendererSegmentsVolume.valueExpressionTitle =  'custom-expression';
+            layerSegments.renderer = rendererSegmentsVolume;
+            break;
         }
-        rendererSegmentsVolumeCompare.valueExpression = _expression;
-        rendererSegmentsVolumeCompare.valueExpressionTitle =  'custom-expression';
-        layerSegments.renderer = rendererSegmentsVolumeCompare;
+        
+        labelClass.labelExpressionInfo.expression = "Text(" + _expression + ", '#,###')";
+        layerSegments.labelingInfo = [labelClass];
+        layerSegments.refresh();
         break;
-      case 'manual-adjustments':
-        _expression = "$feature.ADJ" + curDisplayYear;
-        rendererSegmentsVolumeAdjust.valueExpression = _expression;
-        rendererSegmentsVolumeAdjust.valueExpressionTitle =  'custom-expression';
-        layerSegments.renderer = rendererSegmentsVolumeAdjust;
+
+      case 'roadway-projects':
+
+        layerProjectsLines.definitionExpression = "mode = 'Highway' AND phase IN ('1','2','3')";  
+        layerProjectsPoints.definitionExpression = "mode = 'Highway' AND phase IN ('1','2','3')"; 
+
+        layerProjectsLines.visible = true;
+        layerProjectsPoints.visible = true;
+        layerSegments.visible = false;
+
         break;
-      case 'model-forecast':
-        _expression = "$feature.MF" + curDisplayYear;
-        rendererSegmentsVolume.valueExpression = _expression;
-        rendererSegmentsVolume.valueExpressionTitle =  'custom-expression';
-        layerSegments.renderer = rendererSegmentsVolume;
-        break;
-      case 'model-raw':
-        _expression = "$feature.M" + curDisplayYear;
-        rendererSegmentsVolume.valueExpression = _expression;
-        rendererSegmentsVolume.valueExpressionTitle =  'custom-expression';
-        layerSegments.renderer = rendererSegmentsVolume;
+
+      case 'transit-projects':
+
+        layerProjectsLines.definitionExpression = "mode = 'Transit' AND phase IN ('1','2','3')";
+        layerProjectsPoints.definitionExpression = "mode = 'Transit' AND phase IN ('1','2','3')";
+        
+        layerProjectsLines.visible = true;
+        layerProjectsPoints.visible = true;
+        layerSegments.visible = false;
+
         break;
     }
-    labelClass.labelExpressionInfo.expression = "Text(" + _expression + ", '#,###')";
-    layerSegments.labelingInfo = [labelClass];
-    layerSegments.refresh();
+
   };
 
   function populateSidebar() {
@@ -195,16 +235,24 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
               updateMap();
             }
           });  
+        } else if (item.name=='rbgBaseLayers') {
+          item.addEventListener('calciteRadioButtonChange', (event) => {
+            if (event.target.checked) {
+              console.log('Selected option:', event.target.value);
+              curBaseLayer = event.target.value;
+              updateMap();
+            }
+          });  
         }
       });
 
       updateMap();
 
     });
-  };
+  }
 
   function createMapView() {
-
+    
     const map = new Map({
       basemap: "gray-vector" // Basemap layerSegments service
     });
@@ -272,52 +320,24 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
     });
 
     layerProjectsLines = new FeatureLayer({
-      url: layerProjectsLinesUrl
+      url: layerProjectsLinesUrl,
+      renderer: rendererLinesByPhase,
+      visible: false
+      //popupTemplate: segmentPopupTemplate
     });
 
     layerProjectsPoints = new FeatureLayer({
-      url: layerProjectsPointsUrl
+      url: layerProjectsPointsUrl,
+      renderer: rendererPointsByPhase,
+      visible: false
+      //popupTemplate: segmentPopupTemplate
     });
 
     map.add(layerSegments);
-    map.add(layerProjectsLines);
     map.add(layerProjectsPoints);
+    map.add(layerProjectsLines);
     //map.add(geojsonCities);
     //map.add(geojsonCitiesWhite);
-    
-      
-    // Get the checkbox
-    var checkboxSegments = document.getElementById("layerToggleSegments");
-
-    // Listen for changes to the checkbox
-    checkboxSegments.addEventListener("change", function() {
-      // Set the layer visibility based on the checkbox
-      layerSegments.visible = checkboxSegments.checked;
-    });
-
-    layerSegments.visible = checkboxSegments.checked;
-      
-    // Get the checkbox
-    var checkboxProjectsLines = document.getElementById("layerToggleProjectsLines");
-
-    // Listen for changes to the checkbox
-    checkboxProjectsLines.addEventListener("change", function() {
-      // Set the layer visibility based on the checkbox
-      layerProjectsLines.visible = checkboxProjectsLines.checked;
-    });
-
-    layerProjectsLines.visible = checkboxProjectsLines.checked;
-
-    // Get the checkbox
-    var checkboxProjectsPoints = document.getElementById("layerToggleProjectsPoints");
-
-    // Listen for changes to the checkbox
-    checkboxProjectsPoints.addEventListener("change", function() {
-      // Set the layer visibility based on the checkbox
-      layerProjectsPoints.visible = checkboxProjectsPoints.checked;
-    });
-    
-    layerProjectsPoints.visible = checkboxProjectsPoints.checked;
 
     // add homebutton
     var homeButton = new Home({
@@ -349,8 +369,7 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
     });
     view.ui.add(legend, "top-right");
     
-    populateSidebar(layerSegments);
-
+    populateSidebar();
 
   } //createMapView()
 
@@ -360,21 +379,22 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
     .then(config => {
 
       // Extract the layerSegments value
-      layerSegmentsUrl = config[0].layerSegmentsUrl;
+      layerSegmentsUrl       = config[0].layerSegmentsUrl;
       layerProjectsLinesUrl  = config[0].layerProjectsLinesUrl;
-      layerProjectsPointsUrl = config[0].layerProjectsPointsUrl;
+      layerProjectsPointsUrl = config[0].layerPointsUrl;
 
       // Create a new ClassBreaksRenderer using the fetched configuration     
       rendererSegmentsVolume        = new ClassBreaksRenderer(config[0].rendererSegmentsVolume       );
       rendererSegmentsVolumeCompare = new ClassBreaksRenderer(config[0].rendererSegmentsVolumeCompare);
       rendererSegmentsVolumeAdjust  = new ClassBreaksRenderer(config[0].rendererSegmentsVolumeAdjust );
+      rendererPointsByPhase         = new UniqueValueRenderer(config[0].rendererPointsByPhase        );
+      rendererLinesByPhase          = new UniqueValueRenderer(config[0].rendererLinesByPhase         );
 
       // create map
       createMapView();
 
       // Use or log the layerSegments value
       console.log('layerSegments:', layerSegmentsUrl);
-      
     })
     .catch(error => {
       console.error('Error fetching the file:', error);
@@ -414,7 +434,7 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
     // Fetching the second JSON file
     const responseModVolAdj = await fetch('data/model-forecasts.json');
     const dataModVolAdj = await responseModVolAdj.json();
-    
+
     // Fetching the third JSON file
     const responseLinForecasts = await fetch('data/linear-forecasts.json');
     const dataLinForecasts = await responseLinForecasts.json();
@@ -505,17 +525,11 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
 
     document.addEventListener('calciteComboboxChange', handleSelection);
 
-    const flags = [
-      {"flagName":"<Previous","flagDescription":"Less than previous forecast year"},
-      {"flagName":">2xPrevious","flagDescription":"More than twice previous forecast year"},
-      {"flagName":"Zero","flagDescription":"No forecast"}
-    ];
-    
     const selectedFlags = [];
     
     function populateComboboxFlags() {
       const combobox = document.getElementById('comboboxFlags');
-      flags.forEach(flag => {
+      dataFlags.forEach(flag => {
         const item = document.createElement('calcite-combobox-item');
         item.text = flag.flagName;
         item.textLabel = flag.flagDescription; // Store the entire flag object as a string
@@ -542,7 +556,7 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
     populateComboboxFlags();    
 
     // To disable the combobox
-    document.getElementById('comboboxFlags').disabled = true;
+    //document.getElementById('comboboxFlags').disabled = true;
 
 
     // SEGMENTS
@@ -644,6 +658,13 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
       document.getElementById("mf2042Value").innerHTML = '';
       document.getElementById("mf2050Value").innerHTML = '';
 
+      // update values in model raw
+      document.getElementById("m2023Value").innerHTML = '';
+      document.getElementById("m2028Value").innerHTML = '';
+      document.getElementById("m2032Value").innerHTML = '';
+      document.getElementById("m2042Value").innerHTML = '';
+      document.getElementById("m2050Value").innerHTML = '';
+
       // update values in model forecast
       document.getElementById("diff2023Value").innerHTML = '';
       document.getElementById("diff2028Value").innerHTML = '';
@@ -692,10 +713,10 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
         ];
 
         // Extract the X and Y values
-        const chartDataAadt = filteredAadt.map(item => ({ x: item.YEAR, y: item.AADT }));
+        const chartDataAadt         = filteredAadt        .map(item => ({ x: item.YEAR, y: item.AADT }));
         const chartDataModForecasts = filteredModForecasts.map(item => ({ x: item.YEAR, y: item.modForecast }));
-
-        const chartDataForecasts = filteredModForecasts.map((item, index) => {
+        const chartDataModAadt      = filteredModForecasts.map(item => ({ x: item.YEAR, y: item.modAADT }));
+        const chartDataForecasts    = filteredModForecasts.map((item, index) => {
           // Add the corresponding adjustment value
           return { x: item.YEAR, y: item.modForecast + (adjustments[index] || 0) };
         });
@@ -724,7 +745,7 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
         myChart.data.datasets = [
 
           {
-            label: 'Final Forecasts (Mod+Adj)',
+            label: 'Final Forecasts',
             data: chartDataForecasts,
             borderColor: 'orange',
             backgroundColor: 'orange',
@@ -778,7 +799,14 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
         document.getElementById("mf2042Value").innerHTML = chartDataModForecasts[3].y.toLocaleString('en-US');
         document.getElementById("mf2050Value").innerHTML = chartDataModForecasts[4].y.toLocaleString('en-US');
 
-        // update values in model forecast
+        // update values in model no base year adjustment
+        document.getElementById("m2023Value").innerHTML = chartDataModAadt[0].y.toLocaleString('en-US');
+        document.getElementById("m2028Value").innerHTML = chartDataModAadt[1].y.toLocaleString('en-US');
+        document.getElementById("m2032Value").innerHTML = chartDataModAadt[2].y.toLocaleString('en-US');
+        document.getElementById("m2042Value").innerHTML = chartDataModAadt[3].y.toLocaleString('en-US');
+        document.getElementById("m2050Value").innerHTML = chartDataModAadt[4].y.toLocaleString('en-US');
+
+        // update values in model forecast change
         document.getElementById("diff2023Value").innerHTML = '';
         document.getElementById("diff2028Value").innerHTML = (chartDataForecasts[1].y - chartDataForecasts[0].y).toLocaleString('en-US');
         document.getElementById("diff2032Value").innerHTML = (chartDataForecasts[2].y - chartDataForecasts[1].y).toLocaleString('en-US');
