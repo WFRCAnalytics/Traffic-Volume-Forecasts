@@ -73,7 +73,7 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
         featureToUpdate.attributes.ADJ2032 = document.getElementById('adj2032Value').value;
         featureToUpdate.attributes.ADJ2042 = document.getElementById('adj2042Value').value;
         featureToUpdate.attributes.ADJ2050 = document.getElementById('adj2050Value').value;
-        featureToUpdate.attributes.Notes   = document.getElementById('notes').value;
+        featureToUpdate.attributes.NOTES   = document.getElementById('notes').value;
 
         // Apply the edits
         layerSegments.applyEdits({
@@ -612,23 +612,29 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
         selectSegId.selectedOption = select.selectedOption.nextElementSibling;
         updateChart();
       } else {
-        alert('No more items to select.'); // Alert if there's no next option or if select is not found
+        //alert('No more items to select.'); // Alert if there's no next option or if select is not found
       }
     });
+    document.getElementById('selectNextButton').appendChild(button);
   
-    // Get the div with ID 'selectNextButton'
-    const div = document.getElementById('selectNextButton');
-  
-    if (div) {
-      // Append the button to the div
-      div.appendChild(button);
-    } else {
-      console.warn('Div with id "selectNextButton" not found.');
-    }
-    
+    // Create a new Calcite button
+    const buttonPrev = document.createElement('calcite-button');
+    buttonPrev.innerHTML = '<'; // Set the buttonPrev text
 
-    // Append the button to the div
-    div.appendChild(button);
+    // Add an event listener to the buttonPrev for the 'click' event
+    buttonPrev.addEventListener('click', function() {
+      // Get the select element with ID 'selectSegId'
+      const select = document.getElementById('selectSegId');
+  
+      if (select && select.children && select.selectedOption.previousElementSibling) {
+        // Increment the selectedIndex to select the next option
+        selectSegId.selectedOption = select.selectedOption.previousElementSibling;
+        updateChart();
+      } else {
+        //alert('No more items to select.'); // Alert if there's no next option or if select is not found
+      }
+    });
+    document.getElementById('selectPrevButton').appendChild(buttonPrev);
 
     // create chart first time... no data, update will populate datasets
     async function createChart() {
@@ -738,7 +744,7 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
       // Query the feature layer to find the feature with the matching SEGID
       const query = layerSegments.createQuery();
       query.where = "SEGID = '" + _curSegId + "'"; // Replace with your field name and SEGID value
-      query.outFields = ["SEGID", "ADJ2023", "ADJ2028", "ADJ2032", "ADJ2042", "ADJ2050", "Notes"];
+      query.outFields = ["SEGID", "ADJ2019", "ADJ2023", "ADJ2028", "ADJ2032", "ADJ2042", "ADJ2050", "NOTES"];
       const result = await layerSegments.queryFeatures(query);
 
       // If a matching feature was found, zoom in to it
@@ -747,6 +753,7 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
       
         // Extract the values of the fields and put them into a single list
         adjustments = [
+          feature.attributes.ADJ2019,
           feature.attributes.ADJ2023,
           feature.attributes.ADJ2028,
           feature.attributes.ADJ2032,
@@ -755,13 +762,13 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
         ];
 
         // Extract the X and Y values
-        const chartDataAadt         = filteredAadt        .map(item => ({ x: item.YEAR, y: item.AADT }));
-        const chartDataModForecasts = filteredModForecasts.map(item => ({ x: item.YEAR, y: item.modForecast }));
-        const chartDataModAadt      = filteredModForecasts.map(item => ({ x: item.YEAR, y: item.modAADT }));
-        const chartDataForecasts    = filteredModForecasts.map((item, index) => {
+        const chartDataAadt         = filteredAadt        .map(item => ({ x: item.YEAR, y: item.AADT        })).sort((a, b) => a.x - b.x);
+        const chartDataModForecasts = filteredModForecasts.map(item => ({ x: item.YEAR, y: item.modForecast })).sort((a, b) => a.x - b.x);
+        const chartDataModAadt      = filteredModForecasts.map(item => ({ x: item.YEAR, y: item.modAadt     })).sort((a, b) => a.x - b.x);        
+        const chartDataForecasts    = chartDataModForecasts.map((item, index) => {
           // Add the corresponding adjustment value
-          return { x: item.YEAR, y: item.modForecast + (adjustments[index] || 0) };
-        });
+          return { x: item.x, y: item.y + (adjustments[index] || 0) };
+        }).sort((a, b) => a.x - b.x);
 
         // Group the filteredLinForecasts by PROJGRP
         const groupedLinForecasts = filteredLinForecasts.reduce((groups, item) => {
@@ -785,7 +792,13 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
 
         // Create the chart
         myChart.data.datasets = [
-
+          {
+            label: 'Observed AADT',
+            data: chartDataAadt,
+            borderColor: 'lightgray',
+            backgroundColor: 'lightgray',
+            pointRadius: 4
+          },
           {
             label: 'Final Forecasts',
             data: chartDataForecasts,
@@ -800,13 +813,6 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
             backgroundColor: 'purple',
             pointRadius: 8
           },
-          {
-            label: 'Observed AADT',
-            data: chartDataAadt,
-            borderColor: 'lightgray',
-            backgroundColor: 'lightgray',
-            pointRadius: 4
-          },
           ...linForecastDatasets // Spread linForecastDatasets here
         ];
 
@@ -815,7 +821,10 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
 
         view.goTo({
           target: feature.geometry,
-          zoom: 12 // Adjust the zoom level as needed
+          zoom: 12             // Adjust the zoom level as needed
+        }, {
+          duration: 2000,        // Duration of animation in milliseconds, adjust as needed
+          easing: "in-out-cubic" // Easing function for smooth animation
         });
         onSelectFeature(feature);
 
@@ -825,35 +834,35 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
         document.getElementById("adj2032Value").value = feature.attributes.ADJ2032;
         document.getElementById("adj2042Value").value = feature.attributes.ADJ2042;
         document.getElementById("adj2050Value").value = feature.attributes.ADJ2050;
-        document.getElementById("notes"       ).value = feature.attributes.Notes  ;
+        document.getElementById("notes"       ).value = feature.attributes.NOTES  ;
 
         // update values in final forecast
-        document.getElementById("f2023Value").innerHTML = chartDataForecasts[0].y.toLocaleString('en-US');
-        document.getElementById("f2028Value").innerHTML = chartDataForecasts[1].y.toLocaleString('en-US');
-        document.getElementById("f2032Value").innerHTML = chartDataForecasts[2].y.toLocaleString('en-US');
-        document.getElementById("f2042Value").innerHTML = chartDataForecasts[3].y.toLocaleString('en-US');
-        document.getElementById("f2050Value").innerHTML = chartDataForecasts[4].y.toLocaleString('en-US');
+        document.getElementById("f2023Value").innerHTML = chartDataForecasts[1].y.toLocaleString('en-US');
+        document.getElementById("f2028Value").innerHTML = chartDataForecasts[2].y.toLocaleString('en-US');
+        document.getElementById("f2032Value").innerHTML = chartDataForecasts[3].y.toLocaleString('en-US');
+        document.getElementById("f2042Value").innerHTML = chartDataForecasts[4].y.toLocaleString('en-US');
+        document.getElementById("f2050Value").innerHTML = chartDataForecasts[5].y.toLocaleString('en-US');
 
         // update values in model forecast
-        document.getElementById("mf2023Value").innerHTML = chartDataModForecasts[0].y.toLocaleString('en-US');
-        document.getElementById("mf2028Value").innerHTML = chartDataModForecasts[1].y.toLocaleString('en-US');
-        document.getElementById("mf2032Value").innerHTML = chartDataModForecasts[2].y.toLocaleString('en-US');
-        document.getElementById("mf2042Value").innerHTML = chartDataModForecasts[3].y.toLocaleString('en-US');
-        document.getElementById("mf2050Value").innerHTML = chartDataModForecasts[4].y.toLocaleString('en-US');
+        document.getElementById("mf2023Value").innerHTML = chartDataModForecasts[1].y.toLocaleString('en-US');
+        document.getElementById("mf2028Value").innerHTML = chartDataModForecasts[2].y.toLocaleString('en-US');
+        document.getElementById("mf2032Value").innerHTML = chartDataModForecasts[3].y.toLocaleString('en-US');
+        document.getElementById("mf2042Value").innerHTML = chartDataModForecasts[4].y.toLocaleString('en-US');
+        document.getElementById("mf2050Value").innerHTML = chartDataModForecasts[5].y.toLocaleString('en-US');
 
         // update values in model no base year adjustment
-        document.getElementById("m2023Value").innerHTML = chartDataModAadt[0].y.toLocaleString('en-US');
-        document.getElementById("m2028Value").innerHTML = chartDataModAadt[1].y.toLocaleString('en-US');
-        document.getElementById("m2032Value").innerHTML = chartDataModAadt[2].y.toLocaleString('en-US');
-        document.getElementById("m2042Value").innerHTML = chartDataModAadt[3].y.toLocaleString('en-US');
-        document.getElementById("m2050Value").innerHTML = chartDataModAadt[4].y.toLocaleString('en-US');
+        document.getElementById("m2023Value").innerHTML = chartDataModAadt[1].y.toLocaleString('en-US');
+        document.getElementById("m2028Value").innerHTML = chartDataModAadt[2].y.toLocaleString('en-US');
+        document.getElementById("m2032Value").innerHTML = chartDataModAadt[3].y.toLocaleString('en-US');
+        document.getElementById("m2042Value").innerHTML = chartDataModAadt[4].y.toLocaleString('en-US');
+        document.getElementById("m2050Value").innerHTML = chartDataModAadt[5].y.toLocaleString('en-US');
 
         // update values in model forecast change
-        document.getElementById("diff2023Value").innerHTML = '';
-        document.getElementById("diff2028Value").innerHTML = (chartDataForecasts[1].y - chartDataForecasts[0].y).toLocaleString('en-US');
-        document.getElementById("diff2032Value").innerHTML = (chartDataForecasts[2].y - chartDataForecasts[1].y).toLocaleString('en-US');
-        document.getElementById("diff2042Value").innerHTML = (chartDataForecasts[3].y - chartDataForecasts[2].y).toLocaleString('en-US');
-        document.getElementById("diff2050Value").innerHTML = (chartDataForecasts[4].y - chartDataForecasts[3].y).toLocaleString('en-US');
+        document.getElementById("diff2023Value").innerHTML = (chartDataForecasts[1].y - chartDataForecasts[0].y).toLocaleString('en-US');
+        document.getElementById("diff2028Value").innerHTML = (chartDataForecasts[2].y - chartDataForecasts[1].y).toLocaleString('en-US');
+        document.getElementById("diff2032Value").innerHTML = (chartDataForecasts[3].y - chartDataForecasts[2].y).toLocaleString('en-US');
+        document.getElementById("diff2042Value").innerHTML = (chartDataForecasts[4].y - chartDataForecasts[3].y).toLocaleString('en-US');
+        document.getElementById("diff2050Value").innerHTML = (chartDataForecasts[5].y - chartDataForecasts[4].y).toLocaleString('en-US');
 
       }
     } //updateChart()

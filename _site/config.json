@@ -48,17 +48,17 @@
     "rendererPointsByPhase": {
       "field": "phase",
       "uniqueValueInfos": [
-        {"value": "1","label": "Phase 1 (2023-2030)","symbol": {"type": "simple-marker","color": [215, 48, 39,255],"size": 13,"style": "circle","outline": {"type": "simple-line","color": [  0,  0,  0,  0],"width": 2.75,"style": "solid" } } },
-        {"value": "2","label": "Phase 2 (2031-2040)","symbol": {"type": "simple-marker","color": [  0,147,191,255],"size": 13,"style": "circle","outline": {"type": "simple-line","color": [153,153,153, 64],"width": 2.75,"style": "solid" } } },
-        {"value": "3","label": "Phase 3 (2041-2050)","symbol": {"type": "simple-marker","color": [ 77, 51,167,255],"size": 13,"style": "circle","outline": {"type": "simple-line","color": [153,153,153, 64],"width": 2.75,"style": "solid" } } }
+        {"value": "1","label": "Phase 1 (2023-2032)","symbol": {"type": "simple-marker","color": [215, 48, 39,255],"size": 13,"style": "circle","outline": {"type": "simple-line","color": [  0,  0,  0,  0],"width": 2.75,"style": "solid" } } },
+        {"value": "2","label": "Phase 2 (2033-2042)","symbol": {"type": "simple-marker","color": [  0,147,191,255],"size": 13,"style": "circle","outline": {"type": "simple-line","color": [153,153,153, 64],"width": 2.75,"style": "solid" } } },
+        {"value": "3","label": "Phase 3 (2043-2050)","symbol": {"type": "simple-marker","color": [ 77, 51,167,255],"size": 13,"style": "circle","outline": {"type": "simple-line","color": [153,153,153, 64],"width": 2.75,"style": "solid" } } }
       ]
     },
     "rendererLinesByPhase": {
       "field": "phase",
       "uniqueValueInfos": [
-        {"value": "1","label": "Phase 1 (2023-2030)","symbol": {"type": "simple-line","color": [215, 48, 39,255],"width": 2.5}},
-        {"value": "2","label": "Phase 2 (2031-2040)","symbol": {"type": "simple-line","color": [  0,147,191,255],"width": 2.5}},
-        {"value": "3","label": "Phase 3 (2041-2050)","symbol": {"type": "simple-line","color": [ 77, 51,167,255],"width": 2.5}}
+        {"value": "1","label": "Phase 1 (2023-2032)","symbol": {"type": "simple-line","color": [215, 48, 39,255],"width": 2.5}},
+        {"value": "2","label": "Phase 2 (2033-2042)","symbol": {"type": "simple-line","color": [  0,147,191,255],"width": 2.5}},
+        {"value": "3","label": "Phase 3 (2043-2050)","symbol": {"type": "simple-line","color": [ 77, 51,167,255],"width": 2.5}}
       ]
     }
   }

@@ -44,8 +44,9 @@
                             </div>
                             <br/>
                             <div class="select-container">
-                                <label for="selectSegId"><b>Segment ID:</b></label>
+                                <label for="selectSegId"><b>Segment:</b></label>
                                 <calcite-select id="selectSegId"></calcite-select>
+                                <div id="selectPrevButton" style="display: inline;"></div>
                                 <div id="selectNextButton" style="display: inline;"></div>
                             </div>
                             <br/>
@@ -256,6 +257,10 @@
                         <calcite-label layout="inline">
                             <calcite-radio-button name="rbgYears" value="2023"></calcite-radio-button>
                             2023
+                        </calcite-label>
+                        <calcite-label layout="inline">
+                            <calcite-radio-button name="rbgYears" value="2019"></calcite-radio-button>
+                            2019
                         </calcite-label>
                     </calcite-radio-button-group>                      
                     <form id="displayVolumeSelectionBase"></form>
