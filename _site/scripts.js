@@ -104,7 +104,7 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
         color: "black",
         haloColor: "white",
         haloSize: "1px",
-        font: { size: 12, family: "sans-serif" }
+        font: { size: 10, family: "sans-serif" }
       },
       labelExpressionInfo: {
         expression: "" // Placeholder; will be updated in the function
@@ -148,8 +148,9 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
           case 'final-forecast':
             _expression = "$feature.MF" + curDisplayYear + " + $feature.ADJ" + curDisplayYear;
             rendererSegmentsVolume.valueExpression = _expression;
-            rendererSegmentsVolume.valueExpressionTitle =  'custom-expression';
+            rendererSegmentsVolume.valueExpressionTitle =  'Final Forecast';
             layerSegments.renderer = rendererSegmentsVolume;
+            labelClass.labelExpressionInfo.expression = "Text(" + _expression + ", '#,###')";
             break;
           case 'final-forecast-change':
             if (curDisplayYear==2023) {
@@ -158,38 +159,42 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
               _expression = "$feature.MF" + curDisplayYear + " + $feature.ADJ" + curDisplayYear + " - $feature.MF" + _prevDisplayYear + " - $feature.ADJ" + _prevDisplayYear;
             }
             rendererSegmentsVolumeCompare.valueExpression = _expression;
-            rendererSegmentsVolumeCompare.valueExpressionTitle =  'custom-expression';
+            rendererSegmentsVolumeCompare.valueExpressionTitle =  'Final Forecast Change';
             layerSegments.renderer = rendererSegmentsVolumeCompare;
+            labelClass.labelExpressionInfo.expression = "Text(" + _expression + ", '#,###')";
             break;
           case 'manual-adjustments':
             _expression = "$feature.ADJ" + curDisplayYear;
             rendererSegmentsVolumeAdjust.valueExpression = _expression;
-            rendererSegmentsVolumeAdjust.valueExpressionTitle =  'custom-expression';
+            rendererSegmentsVolumeAdjust.valueExpressionTitle =  'Manual Adjustments';
             layerSegments.renderer = rendererSegmentsVolumeAdjust;
+            labelClass.labelExpressionInfo.expression = "IIF(" + _expression + " == 0, '', Text(" + _expression + ", '#,###'))";
             break;
           case 'model-forecast':
             _expression = "$feature.MF" + curDisplayYear;
             rendererSegmentsVolume.valueExpression = _expression;
-            rendererSegmentsVolume.valueExpressionTitle =  'custom-expression';
+            rendererSegmentsVolume.valueExpressionTitle =  'Model Forecast';
             layerSegments.renderer = rendererSegmentsVolume;
+            labelClass.labelExpressionInfo.expression = "Text(" + _expression + ", '#,###')";
             break;
           case 'model-nobaseyearadj':
             _expression = "$feature.M" + curDisplayYear;
             rendererSegmentsVolume.valueExpression = _expression;
-            rendererSegmentsVolume.valueExpressionTitle =  'custom-expression';
+            rendererSegmentsVolume.valueExpressionTitle =  'Model No Base Year Adj';
             layerSegments.renderer = rendererSegmentsVolume;
+            labelClass.labelExpressionInfo.expression = "Text(" + _expression + ", '#,###')";
             break;
         }
         
-        labelClass.labelExpressionInfo.expression = "Text(" + _expression + ", '#,###')";
+        
         layerSegments.labelingInfo = [labelClass];
         layerSegments.refresh();
         break;
 
       case 'roadway-projects':
 
-        layerProjectsLines.definitionExpression = "mode = 'Highway' AND phase IN ('1','2','3')";  
-        layerProjectsPoints.definitionExpression = "mode = 'Highway' AND phase IN ('1','2','3')"; 
+        layerProjectsLines.definitionExpression = "mode = 'Highway'";  
+        layerProjectsPoints.definitionExpression = "mode = 'Highway'"; 
 
         layerProjectsLines.visible = true;
         layerProjectsPoints.visible = true;
@@ -199,8 +204,8 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
 
       case 'transit-projects':
 
-        layerProjectsLines.definitionExpression = "mode = 'Transit' AND phase IN ('1','2','3')";
-        layerProjectsPoints.definitionExpression = "mode = 'Transit' AND phase IN ('1','2','3')";
+        layerProjectsLines.definitionExpression = "mode = 'Transit'";
+        layerProjectsPoints.definitionExpression = "mode = 'Transit'";
         
         layerProjectsLines.visible = true;
         layerProjectsPoints.visible = true;
@@ -365,10 +370,14 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
     // Create a legend widget
     var legend = new Legend({
       view: view,
-      layerInfos: [{ layerSegments: layerSegments, title: 'Segments' }] // Replace YOUR_LAYER with the layerSegments you want to include in the legend
+      layerInfos: [
+                    { layer: layerSegments, title: 'Segments' },
+                    { layer: layerProjectsLines, title: 'Line Projects' },
+                    { layer: layerProjectsPoints, title: 'Point Projects' }
+                  ] // Replace YOUR_LAYER with the layerSegments you want to include in the legend
     });
     view.ui.add(legend, "top-right");
-    
+      
     populateSidebar();
 
   } //createMapView()
@@ -581,12 +590,45 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
         selectSegId.appendChild(option);
         if (index === 0) {
           selectSegId.value = id;
+          selectSegId.selectedOption = option;
         }
       });
       updateChart();
     }
     // run first time
     updateSegments();
+
+    // Create a new Calcite button
+    const button = document.createElement('calcite-button');
+    button.innerHTML = '>'; // Set the button text
+
+    // Add an event listener to the button for the 'click' event
+    button.addEventListener('click', function() {
+      // Get the select element with ID 'selectSegId'
+      const select = document.getElementById('selectSegId');
+  
+      if (select && select.children && select.selectedOption.nextElementSibling) {
+        // Increment the selectedIndex to select the next option
+        selectSegId.selectedOption = select.selectedOption.nextElementSibling;
+        updateChart();
+      } else {
+        alert('No more items to select.'); // Alert if there's no next option or if select is not found
+      }
+    });
+  
+    // Get the div with ID 'selectNextButton'
+    const div = document.getElementById('selectNextButton');
+  
+    if (div) {
+      // Append the button to the div
+      div.appendChild(button);
+    } else {
+      console.warn('Div with id "selectNextButton" not found.');
+    }
+    
+
+    // Append the button to the div
+    div.appendChild(button);
 
     // create chart first time... no data, update will populate datasets
     async function createChart() {

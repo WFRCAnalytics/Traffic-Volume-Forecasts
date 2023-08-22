@@ -112,6 +112,16 @@ input[type="text"].manualAdj {
     flex-grow: 1;
     height: 100%;
 }
+/*
+#selectNextButton {
+    text-align: right;
+}
+
+#selectNextButton calcite-button {
+    padding-top: 5px;
+    padding-right: 15px;
+}
+*/
 .select-container {
     display: flex;
     align-items: center; /* Centers the items vertically */

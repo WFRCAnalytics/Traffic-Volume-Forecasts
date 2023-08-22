@@ -1,7 +1,11 @@
-Scroll bars for resize window
+Add next and previous button
+Add further review button!
 Commas in years on hover in chart
 Apply adjustment button to refresh view after
 Get projects from RTP map, use the same symbology (talk to Bert or Sarah)
 Add flags to map
-Legend
+Maybe reviewed flag is when no text in notes?
 Observed data adjustment
+
+Box Elder Segments
+0089_422.7
