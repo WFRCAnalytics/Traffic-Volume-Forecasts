@@ -1,3 +1,5 @@
+let legend;
+let editorKey = 'bill';
 let layerSegments; // Global variable
 let layerProjectsLines;
 let layerProjectsPoints;
@@ -53,47 +55,6 @@ require(["esri/config",
 function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, Search, TileLayer, Graphic, Point, Polygon, Polyline, FeatureLayer, LayerList, ClassBreaksRenderer, UniqueValueRenderer, Legend, PopupTemplate, TextSymbol, Query, WebMap) {
 
   esriConfig.apiKey = "AAPK5f27bfeca6bb49728b7e12a3bfb8f423zlKckukFK95EWyRa-ie_X31rRIrqzGNoqBH3t3Chvz2aUbTKiDvCPyhvMJumf7Wk";
-
-  // Function to update the adjustments
-  updateFeature = function() {
-
-    // Query to get the specific feature with SEGID=_curSegId
-    var query = new Query();
-    query.where = "SEGID='" + selectSegId.value + "'"; // Assuming SEGID is numeric
-    query.returnGeometry = false;
-    query.outFields = ['*']; // Get all fields
-  
-    layerSegments.queryFeatures(query).then(function(results) {
-      if (results.features.length > 0) {
-        var featureToUpdate = results.features[0]; // Get the first feature that matches the query
-  
-        // Update the attributes
-        featureToUpdate.attributes.ADJ2023 = document.getElementById('adj2023Value').value;
-        featureToUpdate.attributes.ADJ2028 = document.getElementById('adj2028Value').value;
-        featureToUpdate.attributes.ADJ2032 = document.getElementById('adj2032Value').value;
-        featureToUpdate.attributes.ADJ2042 = document.getElementById('adj2042Value').value;
-        featureToUpdate.attributes.ADJ2050 = document.getElementById('adj2050Value').value;
-        featureToUpdate.attributes.NOTES   = document.getElementById('notes').value;
-
-        // Apply the edits
-        layerSegments.applyEdits({
-          updateFeatures: [featureToUpdate]
-        }).then(function(results) {
-          if (results.updateFeatureResults.length > 0) {
-            console.log('Updated Successfully');
-            updateChart();
-          }
-        }).catch(function(error) {
-          console.error('Error updating feature: ', error);
-        });
-      } else {
-        console.log('No features found with SEGID=' + _curSegId);
-      }
-    }).catch(function(error) {
-      console.error('Error querying features: ', error);
-    });
-  };
-
   function updateMap() {
     console.log('updateMap');
 
@@ -148,44 +109,46 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
           case 'final-forecast':
             _expression = "$feature.MF" + curDisplayYear + " + $feature.ADJ" + curDisplayYear;
             rendererSegmentsVolume.valueExpression = _expression;
-            rendererSegmentsVolume.valueExpressionTitle =  'Final Forecast';
+            rendererSegmentsVolume.valueExpressionTitle = curDisplayYear + ' Final Forecast';
             layerSegments.renderer = rendererSegmentsVolume;
             labelClass.labelExpressionInfo.expression = "Text(" + _expression + ", '#,###')";
             break;
-          case 'final-forecast-change':
-            if (curDisplayYear==2023) {
-              _expression = "$feature.MF" + curDisplayYear + " + $feature.ADJ" + curDisplayYear + " - $feature.AADT" + _prevDisplayYear;
-            } else {
-              _expression = "$feature.MF" + curDisplayYear + " + $feature.ADJ" + curDisplayYear + " - $feature.MF" + _prevDisplayYear + " - $feature.ADJ" + _prevDisplayYear;
-            }
+          case 'final-forecast-change-2019':
+            _expression = "$feature.MF" + curDisplayYear + " + $feature.ADJ" + curDisplayYear + " - $feature.MF2019 - $feature.ADJ2019";
             rendererSegmentsVolumeCompare.valueExpression = _expression;
-            rendererSegmentsVolumeCompare.valueExpressionTitle =  'Final Forecast Change';
+            rendererSegmentsVolumeCompare.valueExpressionTitle = curDisplayYear + ' Final Forecast Change from 2019';
+            layerSegments.renderer = rendererSegmentsVolumeCompare;
+            labelClass.labelExpressionInfo.expression = "Text(" + _expression + ", '#,###')";
+            break;
+          case 'final-forecast-change-prev':
+            _expression = "$feature.MF" + curDisplayYear + " + $feature.ADJ" + curDisplayYear + " - $feature.MF" + _prevDisplayYear + " - $feature.ADJ" + _prevDisplayYear;
+            rendererSegmentsVolumeCompare.valueExpression = _expression;
+            rendererSegmentsVolumeCompare.valueExpressionTitle = curDisplayYear + ' Final Forecast Change from ' + _prevDisplayYear;
             layerSegments.renderer = rendererSegmentsVolumeCompare;
             labelClass.labelExpressionInfo.expression = "Text(" + _expression + ", '#,###')";
             break;
           case 'manual-adjustments':
             _expression = "$feature.ADJ" + curDisplayYear;
             rendererSegmentsVolumeAdjust.valueExpression = _expression;
-            rendererSegmentsVolumeAdjust.valueExpressionTitle =  'Manual Adjustments';
+            rendererSegmentsVolumeAdjust.valueExpressionTitle = curDisplayYear + ' Manual Adjustments';
             layerSegments.renderer = rendererSegmentsVolumeAdjust;
             labelClass.labelExpressionInfo.expression = "IIF(" + _expression + " == 0, '', Text(" + _expression + ", '#,###'))";
             break;
           case 'model-forecast':
             _expression = "$feature.MF" + curDisplayYear;
             rendererSegmentsVolume.valueExpression = _expression;
-            rendererSegmentsVolume.valueExpressionTitle =  'Model Forecast';
+            rendererSegmentsVolume.valueExpressionTitle = curDisplayYear + ' Model Forecast';
             layerSegments.renderer = rendererSegmentsVolume;
             labelClass.labelExpressionInfo.expression = "Text(" + _expression + ", '#,###')";
             break;
           case 'model-nobaseyearadj':
             _expression = "$feature.M" + curDisplayYear;
             rendererSegmentsVolume.valueExpression = _expression;
-            rendererSegmentsVolume.valueExpressionTitle =  'Model No Base Year Adj';
+            rendererSegmentsVolume.valueExpressionTitle = curDisplayYear + ' Model No Base Year Adj';
             layerSegments.renderer = rendererSegmentsVolume;
             labelClass.labelExpressionInfo.expression = "Text(" + _expression + ", '#,###')";
             break;
         }
-        
         
         layerSegments.labelingInfo = [labelClass];
         layerSegments.refresh();
@@ -358,17 +321,9 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
       nextBasemap: "arcgis-imagery"
     });
     view.ui.add(basemapToggle,"bottom-left");
-  
-    // add search widget
-    var searchWidget = new Search({
-      view: view
-    });
-    view.ui.add(searchWidget, {
-      position: "top-right"
-    });
     
     // Create a legend widget
-    var legend = new Legend({
+    legend = new Legend({
       view: view,
       layerInfos: [
                     { layer: layerSegments, title: 'Segments' },
@@ -377,7 +332,15 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
                   ] // Replace YOUR_LAYER with the layerSegments you want to include in the legend
     });
     view.ui.add(legend, "top-right");
-      
+        
+    // add search widget
+    var searchWidget = new Search({
+      view: view
+    });
+    view.ui.add(searchWidget, {
+      position: "bottom-right"
+    });
+
     populateSidebar();
 
   } //createMapView()
@@ -390,7 +353,7 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
       // Extract the layerSegments value
       layerSegmentsUrl       = config[0].layerSegmentsUrl;
       layerProjectsLinesUrl  = config[0].layerProjectsLinesUrl;
-      layerProjectsPointsUrl = config[0].layerPointsUrl;
+      layerProjectsPointsUrl = config[0].layerProjectsPointsUrl;
 
       // Create a new ClassBreaksRenderer using the fetched configuration     
       rendererSegmentsVolume        = new ClassBreaksRenderer(config[0].rendererSegmentsVolume       );
@@ -635,6 +598,74 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
       }
     });
     document.getElementById('selectPrevButton').appendChild(buttonPrev);
+      
+    // Function to update the adjustments
+    function applyEdits() {
+
+      const inputBoxValue = document.getElementById('editor-key').value;
+
+      if (inputBoxValue !== editorKey) {
+          // If the input value doesn't match 'editorKey', execute the code here
+          console.error("Value doesn't match 'editorKey'!");
+          alert('Incorrect editor key.')
+          return;
+      } else {
+          console.log("Value matches 'editorKey'.");
+      }
+
+      // Query to get the specific feature with SEGID=_curSegId
+      var query = new Query();
+      query.where = "SEGID='" + selectSegId.value + "'"; // Assuming SEGID is numeric
+      query.returnGeometry = false;
+      query.outFields = ['*']; // Get all fields
+    
+      layerSegments.queryFeatures(query).then(function(results) {
+        if (results.features.length > 0) {
+          var featureToUpdate = results.features[0]; // Get the first feature that matches the query
+    
+          // Update the attributes
+          featureToUpdate.attributes.ADJ2023 = document.getElementById('adj2023Value').value;
+          featureToUpdate.attributes.ADJ2028 = document.getElementById('adj2028Value').value;
+          featureToUpdate.attributes.ADJ2032 = document.getElementById('adj2032Value').value;
+          featureToUpdate.attributes.ADJ2042 = document.getElementById('adj2042Value').value;
+          featureToUpdate.attributes.ADJ2050 = document.getElementById('adj2050Value').value;
+          featureToUpdate.attributes.NOTES   = document.getElementById('notes').value;
+
+          // Apply the edits
+          layerSegments.applyEdits({
+            updateFeatures: [featureToUpdate]
+          }).then(function(results) {
+            if (results.updateFeatureResults.length > 0) {
+              console.log('Updated Successfully');
+              updateChart();
+            }
+          }).catch(function(error) {
+            console.error('Error updating feature: ', error);
+          });
+        } else {
+          console.log('No features found with SEGID=' + _curSegId);
+        }
+      }).catch(function(error) {
+        console.error('Error querying features: ', error);
+      });
+    };
+
+    // Create a new Calcite button
+    const buttonApply = document.createElement('calcite-button');
+    buttonApply.innerHTML = 'Apply Manual Adjustments'; // Set the buttonApply text
+
+    // Add an event listener to the buttonApply for the 'click' event
+    buttonApply.addEventListener('click', function() {
+      // Get the select element with ID 'selectSegId'
+      const select = document.getElementById('selectSegId');
+  
+      if (select && select.children && select.selectedOption.nextElementSibling) {
+        applyEdits();
+      } else {
+        //alert('No more items to select.'); // Alert if there's no next option or if select is not found
+      }
+    });
+    document.getElementById('apply-edits').appendChild(buttonApply);
 
     // create chart first time... no data, update will populate datasets
     async function createChart() {
@@ -736,7 +767,7 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
       const dataProjectionGroups = await responseProjectionGroups.json();
       
       colors      = dataProjectionGroups.map(item => item.pgColor                 );
-    //hidden      = dataProjectionGroups.map(item => item.pgHidden                );
+      hidden      = dataProjectionGroups.map(item => item.pgHidden                );
       borderDash  = dataProjectionGroups.map(item => JSON.parse(item.pgBorderDash));
       borderWidth = dataProjectionGroups.map(item => item.pgBorderWidth           );
 
@@ -785,7 +816,7 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
           backgroundColor: colors[index % colors.length],
           pointRadius: 0,
           showLine: true,
-        //hidden: hiddenStates[index % hiddenStates.length],
+          hidden: hidden[index % hidden.length],
           borderDash: borderDash[index % borderDash.length],
           borderWidth: borderWidth[index % borderWidth.length]
         }));

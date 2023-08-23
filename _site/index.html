@@ -56,6 +56,7 @@
                             </div>            
                         </td>
                         <td>
+                            <h3>Flags and Overrides (COMING SOON!)</h3>
                             <calcite-combobox id="comboboxFlags" multiple placeholder="Filter segments by flags (COMING SOON!)">
                         </td>
                     </tr>
@@ -90,7 +91,7 @@
                             </td>
                         </tr>
                         <tr>
-                            <td rowspan="5">
+                            <td rowspan="6">
                                 <textarea class="top-align-input" id="notes" style="width: 100%; height: 120px;"></textarea>
                             </td>
                             <td align="right">
@@ -134,7 +135,7 @@
                         </tr>
                         <tr>
                             <td align="right">
-                                <button onclick="updateFeature()">Apply adjustments:</button>
+                                <div id="apply-edits"></div><!--<button onclick="updateFeature()">Apply adjustments:</button>-->
                             </td>
                             <td>
                                 <input type="text" id="adj2023Value" class="manualAdj right-align-input" placeholder="">
@@ -192,8 +193,17 @@
                                 <div id="m2050Value" class="tableText" align="right"></div>
                             </td>
                         </tr>
+                        <tr>
+                            <td align="right">
+                                Editor Key:
+                            </td>
+                            <td colspan="5">
+                                <div class="input-group">
+                                    <input type="text" id="editor-key" placeholder="Enter editor key" class="input">
+                                </div>
+                            </td>
+                        </tr>
                     </table>
-                    <h3>Flag Overrides (COMING SOON!)</h3>
                 </div>
             </div>
             <div id="mainContentMap">
@@ -216,8 +226,12 @@
                     <h3>Forecasts</h3>
                     <calcite-radio-button-group name="rbgForecasts" id="rbgForecasts" layout="vertical">
                         <calcite-label layout="inline">
-                            <calcite-radio-button name="rbgForecasts" value="final-forecast-change"></calcite-radio-button>
-                            Final Forecast Change
+                            <calcite-radio-button name="rbgForecasts" value="final-forecast-change-2019"></calcite-radio-button>
+                            Final Forecast Change from 2019
+                        </calcite-label>
+                        <calcite-label layout="inline">
+                            <calcite-radio-button name="rbgForecasts" value="final-forecast-change-prev"></calcite-radio-button>
+                            Final Forecast Change from Previous Year
                         </calcite-label>
                         <calcite-label layout="inline">
                             <calcite-radio-button name="rbgForecasts" value="final-forecast" checked></calcite-radio-button>

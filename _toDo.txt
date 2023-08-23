@@ -1,6 +1,12 @@
+Filter out operations projects from RTP projects
+Check boxes for forecast--wider and more opaque
+Add log file
+Add model network with segids as layer??
+Add link to SE Map
+Info buttons on terms/options
 Should we forecast no-build and needs-based?
 Add next and previous button
-Add further review list!
+Add further review flag!
 Commas in years on hover in chart
 Apply adjustment button to refresh view after
 Get projects from RTP map, use the same symbology (talk to Bert or Sarah)
@@ -26,4 +32,3 @@ Box Elder Segments
 1092_001.2 - WEIRD???
 WFRC_8037  - DOESN'T LOOK LIKE NEEDED ANYMORE... DELETE??
 WFRC_8038  - NO MODEL DATA
-WFRC_
