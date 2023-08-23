@@ -734,6 +734,7 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
             }
           }).catch(function(error) {
             console.error('Error updating feature: ', error);
+            alert('UPDATE FEATURE ERROR.');
           });
         } else {
           console.log('No features found with SEGID=' + _curSegId);
@@ -774,6 +775,7 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
         }
       }).catch(function(error) {
         console.error('Error adding feature: ', error);
+        alert('LOG FILE ERROR.');
       });
     };
 
