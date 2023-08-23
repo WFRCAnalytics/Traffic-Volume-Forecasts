@@ -5,7 +5,9 @@ let initialValue2032 = 0;
 let initialValue2042 = 0;
 let initialValue2050 = 0;
 let initialValueNote = "";
-let editorKey = 'bill';
+let editKey = 'bill';
+let tableLog;
+let tableLogUrl;
 let layerSegments; // Global variable
 let layerRoadwayProjectsLines;
 let layerRoadwayProjectsPoints;
@@ -366,6 +368,12 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
     map.add(layerRoadwayProjectsPoints);
     map.add(layerSegments);
 
+    // add log table
+    tableLog = new FeatureLayer({
+      url: tableLogUrl,
+      outFields: ["*"] 
+    });
+
     //map.add(geojsonCities);
     //map.add(geojsonCitiesWhite);
 
@@ -416,6 +424,7 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
       layerSegmentsUrl                  = config[0].layerSegmentsUrl                 ;
       layerProjectsLinesUrl             = config[0].layerProjectsLinesUrl            ;
       layerProjectsPointsUrl            = config[0].layerProjectsPointsUrl           ;
+      tableLogUrl                       = config[0].tableLogUrl                      ;
       filterRoadwayProjectsLinesFilter  = config[0].filterRoadwayProjectsLinesFilter ;
       filterTransitProjectsLinesFilter  = config[0].filterTransitProjectsLinesFilter ;
       filterRoadwayProjectsPointsFilter = config[0].filterRoadwayProjectsPointsFilter;
@@ -670,16 +679,19 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
     // Function to update the adjustments
     function applyEdits() {
 
-      const inputBoxValue = document.getElementById('editor-key').value;
+      const inputBoxValue = document.getElementById('edit-key').value;
 
-      if (inputBoxValue !== editorKey) {
-          // If the input value doesn't match 'editorKey', execute the code here
-          console.error("Value doesn't match 'editorKey'!");
-          alert('Incorrect editor key.')
+      if (inputBoxValue !== editKey) {
+          // If the input value doesn't match 'editKey', execute the code here
+          console.error("Value doesn't match 'editKey'!");
+          alert('Incorrect edit key.')
           return;
       } else {
-          console.log("Value matches 'editorKey'.");
+          console.log("Value matches 'editKey'.");
       }
+    
+      // round adjustments
+
 
       // Query to get the specific feature with SEGID=_curSegId
       var query = new Query();
@@ -690,7 +702,7 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
       layerSegments.queryFeatures(query).then(function(results) {
         if (results.features.length > 0) {
           var featureToUpdate = results.features[0]; // Get the first feature that matches the query
-    
+
           // Update the attributes
           featureToUpdate.attributes.ADJ2023 = document.getElementById('adj2023Value').value;
           featureToUpdate.attributes.ADJ2028 = document.getElementById('adj2028Value').value;
@@ -717,6 +729,7 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
                 buttonApply.classList.remove('btn-dirty');
                 buttonApply.classList.add('btn-clean');
               }
+              
               updateToSegment();
             }
           }).catch(function(error) {
@@ -727,6 +740,40 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
         }
       }).catch(function(error) {
         console.error('Error querying features: ', error);
+      });
+
+      // LOG FILE
+
+      // Create an empty Graphic to represent the new feature
+      var newFeature = {
+        attributes: {
+            SEGID: selectSegId.value
+        }
+      };
+
+      const mountainTime = new Date();
+      console.log(mountainTime);
+
+      // Populate the attributes
+      newFeature.attributes.SEGID   = selectSegId.value;
+      newFeature.attributes.EDITKEY = document.getElementById('edit-key').value;
+      newFeature.attributes.ADJ2023 = document.getElementById('adj2023Value').value;
+      newFeature.attributes.ADJ2028 = document.getElementById('adj2028Value').value;
+      newFeature.attributes.ADJ2032 = document.getElementById('adj2032Value').value;
+      newFeature.attributes.ADJ2042 = document.getElementById('adj2042Value').value;
+      newFeature.attributes.ADJ2050 = document.getElementById('adj2050Value').value;
+      newFeature.attributes.NOTES   = document.getElementById('notes').value;
+      newFeature.attributes.TIMESTAMP = mountainTime;  // Directly assign mountainTime
+
+      // Apply the edits to add the new feature
+      tableLog.applyEdits({
+        addFeatures: [newFeature]
+      }).then(function(results) {
+        if (results.addFeatureResults.length > 0) {
+            console.log('Added Successfully');
+        }
+      }).catch(function(error) {
+        console.error('Error adding feature: ', error);
       });
     };
 
