@@ -709,14 +709,14 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
           featureToUpdate.attributes.ADJ2032 = document.getElementById('adj2032Value').value;
           featureToUpdate.attributes.ADJ2042 = document.getElementById('adj2042Value').value;
           featureToUpdate.attributes.ADJ2050 = document.getElementById('adj2050Value').value;
-          featureToUpdate.attributes.NOTES   = document.getElementById('notes'       ).value;
+          featureToUpdate.attributes.NOTES   = document.getElementById('notes'       ).value.trim();
           
           initialValue2023 = document.getElementById('adj2023Value').value;
           initialValue2028 = document.getElementById('adj2028Value').value;
           initialValue2032 = document.getElementById('adj2032Value').value;
           initialValue2042 = document.getElementById('adj2042Value').value;
           initialValue2050 = document.getElementById('adj2050Value').value;
-          initialValueNote = document.getElementById('notes'       ).value;
+          initialValueNote = document.getElementById('notes'       ).value.trim();
 
           // Apply the edits
           layerSegments.applyEdits({
@@ -763,7 +763,7 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
       newFeature.attributes.ADJ2032 = document.getElementById('adj2032Value').value;
       newFeature.attributes.ADJ2042 = document.getElementById('adj2042Value').value;
       newFeature.attributes.ADJ2050 = document.getElementById('adj2050Value').value;
-      newFeature.attributes.NOTES   = document.getElementById('notes').value;
+      newFeature.attributes.NOTES   = document.getElementById('notes').value.trim(); 
       newFeature.attributes.TIMESTAMP = mountainTime;  // Directly assign mountainTime
 
       // Apply the edits to add the new feature
@@ -1003,7 +1003,7 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
         document.getElementById("adj2032Value").value = feature.attributes.ADJ2032;
         document.getElementById("adj2042Value").value = feature.attributes.ADJ2042;
         document.getElementById("adj2050Value").value = feature.attributes.ADJ2050;
-        document.getElementById("notes"       ).value = feature.attributes.NOTES  ;
+        document.getElementById("notes"       ).value = feature.attributes.NOTES.trim();
 
         // update values in final forecast
         document.getElementById("f2023Value").innerHTML = chartDataForecasts[1].y.toLocaleString('en-US');
