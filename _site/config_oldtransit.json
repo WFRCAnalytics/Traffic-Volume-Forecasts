@@ -4,7 +4,7 @@
     "layerProjectsLinesUrl" : "https://services1.arcgis.com/taguadKoI1XFwivx/arcgis/rest/services/Final_2023_RTP_Projects/FeatureServer/1",
     "layerProjectsPointsUrl": "https://services1.arcgis.com/taguadKoI1XFwivx/arcgis/rest/services/Final_2023_RTP_Projects/FeatureServer/0",
     "filterRoadwayProjectsLinesFilter"  : "mode = 'Highway' AND improvement_type IN('Widening','New Construction')",
-    "filterRoadwayProjectsPointsFilter" : "mode = 'Highway' AND improvement_type IN('Upgrade Interchange','New Interchange','Grade-Separated Crossing')",
+    "filterRoadwayProjectsPointsFilter" : "mode = 'Highway' AND improvement_type IN('Upgrade Interchange','New Interchange', 'Grade-Separated Crossing')",
     "filterTransitProjectsLinesFilter"  : "mode = 'Transit'",
     "filterTransitProjectsPointsFilter" : "mode = 'Transit'",
     "rendererSegmentsVolume": {
@@ -49,17 +49,21 @@
         {"minValue":     20000, "maxValue": 10000000, "symbol": { "type": "simple-line", "color": [  0,  0,  0], "width": 7.5}, "label": "More than 20,000"   }
       ]
     },
-    "rendererRoadwayPoints": {
-      "symbol": { "type": "simple-marker", "color": [255,  0,255, 0.35], "size": 13, "style": "circle", "outline": { "type": "simple-line", "color": [0, 0, 0, 0], "width": 2.75, "style": "solid" } }, "label": "RTP Roadway Projects"
+    "rendererPointsByPhase": {
+      "field": "phase",
+      "uniqueValueInfos": [
+        {"value": "1","label": "Phase 1 (2023-2032)","symbol": {"type": "simple-marker","color": [215, 48, 39,0.35],"size": 13,"style": "circle","outline": {"type": "simple-line","color": [  0,  0,  0,  0],"width": 2.75,"style": "solid" } } },
+        {"value": "2","label": "Phase 2 (2033-2042)","symbol": {"type": "simple-marker","color": [  0,147,191,0.35],"size": 13,"style": "circle","outline": {"type": "simple-line","color": [153,153,153, 64],"width": 2.75,"style": "solid" } } },
+        {"value": "3","label": "Phase 3 (2043-2050)","symbol": {"type": "simple-marker","color": [ 77, 51,167,0.35],"size": 13,"style": "circle","outline": {"type": "simple-line","color": [153,153,153, 64],"width": 2.75,"style": "solid" } } }
+      ]
     },
-    "rendererRoadwayLines": {
-      "symbol": { "type": "simple-line"  , "color": [255,  0,255, 0.35], "width": 10 }, "label": "RTP Roadway Projects"
-    },
-    "rendererTransitPoints": {
-      "symbol": { "type": "simple-marker", "color": [  0,  0,255, 0.35], "size": 13, "style": "circle", "outline": { "type": "simple-line", "color": [0, 0, 0, 0], "width": 2.75, "style": "solid" } }, "label": "RTP Transit Projects"
-    },
-    "rendererTransitLines": {
-      "symbol": { "type": "simple-line"  , "color": [  0,  0,255, 0.35], "width": 10 }, "label": "RTP Transit Projects"
+    "rendererLinesByPhase": {
+      "field": "phase",
+      "uniqueValueInfos": [
+        {"value": "1","label": "Phase 1 (2023-2032)","symbol": {"type": "simple-line","color": [215, 48, 39,0.35],"width": 10}},
+        {"value": "2","label": "Phase 2 (2033-2042)","symbol": {"type": "simple-line","color": [  0,147,191,0.35],"width": 10}},
+        {"value": "3","label": "Phase 3 (2043-2050)","symbol": {"type": "simple-line","color": [ 77, 51,167,0.35],"width": 10}}
+      ]
     }
   }
 ]

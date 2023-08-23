@@ -1,16 +1,24 @@
 let legend;
 let editorKey = 'bill';
 let layerSegments; // Global variable
-let layerProjectsLines;
-let layerProjectsPoints;
+let layerRoadwayProjectsLines;
+let layerRoadwayProjectsPoints;
+let layerTransitProjectsLines;
+let layerTransitProjectsPoints;
 let layerSegmentsUrl;
 let layerProjectsLinesUrl;
 let layerProjectsPointsUrl;
+let filterRoadwayProjectsLinesFilter;
+let filterRoadwayProjectsPointsFilter;
+let filterTransitProjectsLinesFilter;
+let filterTransitProjectsPointsFilter;
 let rendererSegmentsVolume;
 let rendererSegmentsVolumeCompare;
 let rendererSegmentsVolumeAdjust;
-let rendererPointsByPhase;
-let rendererLinesByPhase;
+let rendererRoadwayPoints;
+let rendererRoadwayLines;
+let rendererTransitPoints;
+let rendererTransitLines;
 let curBase;
 let curCompare = 'None';
 let curDisplayForecast = 'final-forecast';
@@ -46,13 +54,14 @@ require(["esri/config",
          "esri/widgets/LayerList",
          "esri/renderers/ClassBreaksRenderer",
          "esri/renderers/UniqueValueRenderer",
+         "esri/renderers/SimpleRenderer",
          "esri/widgets/Legend",
          "esri/PopupTemplate",
          "esri/symbols/TextSymbol",
          "esri/rest/support/Query",
          "esri/WebMap"
         ],
-function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, Search, TileLayer, Graphic, Point, Polygon, Polyline, FeatureLayer, LayerList, ClassBreaksRenderer, UniqueValueRenderer, Legend, PopupTemplate, TextSymbol, Query, WebMap) {
+function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, Search, TileLayer, Graphic, Point, Polygon, Polyline, FeatureLayer, LayerList, ClassBreaksRenderer, UniqueValueRenderer, SimpleRenderer, Legend, PopupTemplate, TextSymbol, Query, WebMap) {
 
   esriConfig.apiKey = "AAPK5f27bfeca6bb49728b7e12a3bfb8f423zlKckukFK95EWyRa-ie_X31rRIrqzGNoqBH3t3Chvz2aUbTKiDvCPyhvMJumf7Wk";
   function updateMap() {
@@ -72,110 +81,139 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
       }
     };
 
+    // Define the label class outside your updateMap function, using a placeholder for the expression
+    var labelClassOff = {
+      symbol: {
+        type: "text",
+        color: "black",
+        haloColor: "white",
+        haloSize: "1px",
+        font: { size: 10, family: "sans-serif" }
+      },
+      labelExpressionInfo: {
+        expression: "" // Placeholder; will be updated in the function
+      }
+    };
+
     var _expression = "";
-
     var _prevDisplayYear = "";
+    var _phase = "";
 
-    if (curDisplayYear=="2050") {
+    if      (curDisplayYear=="2050") {
       _prevDisplayYear = 2042;
-    } else if (curDisplayYear=="2042") {
+      _phase           = "3";
+    }
+    else if (curDisplayYear=="2042") {
       _prevDisplayYear = 2032;
-    } else if (curDisplayYear=="2032") {
+      _phase           = "2";
+    }
+    else if (curDisplayYear=="2032") {
       _prevDisplayYear = 2028;
-    } else if (curDisplayYear=="2028") {
+      _phase           = "1";
+    }
+    else if (curDisplayYear=="2028") {
       _prevDisplayYear = 2023;
-    } else if (curDisplayYear=="2023") {
-      _prevDisplayYear = 2019; // CHANGE TO 2021 WHEN SEG FILE HAS 2021 AADT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-      //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-      //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-      //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-      //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-      //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-      //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-      //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-      //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-      //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+      _phase           = "";
+    }
+    else if (curDisplayYear=="2023") {
+      _prevDisplayYear = 2019;
+      _phase           = "";
+    }
+    
+    switch (curDisplayForecast) {
+      case 'final-forecast':
+        _expression = "$feature.MF" + curDisplayYear + " + $feature.ADJ" + curDisplayYear;
+        rendererSegmentsVolume.valueExpression = _expression;
+        rendererSegmentsVolume.valueExpressionTitle = /*curDisplayYear + ' */'Final Forecast';
+        layerSegments.renderer = rendererSegmentsVolume;
+        labelClass.labelExpressionInfo.expression = "Text(" + _expression + ", '#,###')";
+        break;
+      case 'final-forecast-change-2019':
+        _expression = "$feature.MF" + curDisplayYear + " + $feature.ADJ" + curDisplayYear + " - $feature.MF2019 - $feature.ADJ2019";
+        rendererSegmentsVolumeCompare.valueExpression = _expression;
+        rendererSegmentsVolumeCompare.valueExpressionTitle = /*curDisplayYear + ' */'Final Forecast Change from 2019';
+        layerSegments.renderer = rendererSegmentsVolumeCompare;
+        labelClass.labelExpressionInfo.expression = "Text(" + _expression + ", '#,###')";
+        break;
+      case 'final-forecast-change-prev':
+        _expression = "$feature.MF" + curDisplayYear + " + $feature.ADJ" + curDisplayYear + " - $feature.MF" + _prevDisplayYear + " - $feature.ADJ" + _prevDisplayYear;
+        rendererSegmentsVolumeCompare.valueExpression = _expression;
+        rendererSegmentsVolumeCompare.valueExpressionTitle = /*curDisplayYear + ' */'Final Forecast Change from Previous Year' /* + _prevDisplayYear*/;
+        layerSegments.renderer = rendererSegmentsVolumeCompare;
+        labelClass.labelExpressionInfo.expression = "Text(" + _expression + ", '#,###')";
+        break;
+      case 'manual-adjustments':
+        _expression = "$feature.ADJ" + curDisplayYear;
+        rendererSegmentsVolumeAdjust.valueExpression = _expression;
+        rendererSegmentsVolumeAdjust.valueExpressionTitle = /*curDisplayYear + ' */'Manual Adjustments';
+        layerSegments.renderer = rendererSegmentsVolumeAdjust;
+        labelClass.labelExpressionInfo.expression = "IIF(" + _expression + " == 0, '', Text(" + _expression + ", '#,###'))";
+        break;
+      case 'model-forecast':
+        _expression = "$feature.MF" + curDisplayYear;
+        rendererSegmentsVolume.valueExpression = _expression;
+        rendererSegmentsVolume.valueExpressionTitle = /*curDisplayYear + ' */'Model Forecast';
+        layerSegments.renderer = rendererSegmentsVolume;
+        labelClass.labelExpressionInfo.expression = "Text(" + _expression + ", '#,###')";
+        break;
+      case 'model-nobaseyearadj':
+        _expression = "$feature.M" + curDisplayYear;
+        rendererSegmentsVolume.valueExpression = _expression;
+        rendererSegmentsVolume.valueExpressionTitle = /*curDisplayYear + ' */'Model No Base Year Adj';
+        layerSegments.renderer = rendererSegmentsVolume;
+        labelClass.labelExpressionInfo.expression = "Text(" + _expression + ", '#,###')";
+        break;
     }
 
-
-    switch (curBaseLayer) {
-      case 'forecasts': 
-      
-        layerProjectsLines.visible = false;
-        layerProjectsPoints.visible = false;
-        layerSegments.visible = true;
-
-        switch (curDisplayForecast) {
-          case 'final-forecast':
-            _expression = "$feature.MF" + curDisplayYear + " + $feature.ADJ" + curDisplayYear;
-            rendererSegmentsVolume.valueExpression = _expression;
-            rendererSegmentsVolume.valueExpressionTitle = curDisplayYear + ' Final Forecast';
-            layerSegments.renderer = rendererSegmentsVolume;
-            labelClass.labelExpressionInfo.expression = "Text(" + _expression + ", '#,###')";
-            break;
-          case 'final-forecast-change-2019':
-            _expression = "$feature.MF" + curDisplayYear + " + $feature.ADJ" + curDisplayYear + " - $feature.MF2019 - $feature.ADJ2019";
-            rendererSegmentsVolumeCompare.valueExpression = _expression;
-            rendererSegmentsVolumeCompare.valueExpressionTitle = curDisplayYear + ' Final Forecast Change from 2019';
-            layerSegments.renderer = rendererSegmentsVolumeCompare;
-            labelClass.labelExpressionInfo.expression = "Text(" + _expression + ", '#,###')";
-            break;
-          case 'final-forecast-change-prev':
-            _expression = "$feature.MF" + curDisplayYear + " + $feature.ADJ" + curDisplayYear + " - $feature.MF" + _prevDisplayYear + " - $feature.ADJ" + _prevDisplayYear;
-            rendererSegmentsVolumeCompare.valueExpression = _expression;
-            rendererSegmentsVolumeCompare.valueExpressionTitle = curDisplayYear + ' Final Forecast Change from ' + _prevDisplayYear;
-            layerSegments.renderer = rendererSegmentsVolumeCompare;
-            labelClass.labelExpressionInfo.expression = "Text(" + _expression + ", '#,###')";
-            break;
-          case 'manual-adjustments':
-            _expression = "$feature.ADJ" + curDisplayYear;
-            rendererSegmentsVolumeAdjust.valueExpression = _expression;
-            rendererSegmentsVolumeAdjust.valueExpressionTitle = curDisplayYear + ' Manual Adjustments';
-            layerSegments.renderer = rendererSegmentsVolumeAdjust;
-            labelClass.labelExpressionInfo.expression = "IIF(" + _expression + " == 0, '', Text(" + _expression + ", '#,###'))";
-            break;
-          case 'model-forecast':
-            _expression = "$feature.MF" + curDisplayYear;
-            rendererSegmentsVolume.valueExpression = _expression;
-            rendererSegmentsVolume.valueExpressionTitle = curDisplayYear + ' Model Forecast';
-            layerSegments.renderer = rendererSegmentsVolume;
-            labelClass.labelExpressionInfo.expression = "Text(" + _expression + ", '#,###')";
-            break;
-          case 'model-nobaseyearadj':
-            _expression = "$feature.M" + curDisplayYear;
-            rendererSegmentsVolume.valueExpression = _expression;
-            rendererSegmentsVolume.valueExpressionTitle = curDisplayYear + ' Model No Base Year Adj';
-            layerSegments.renderer = rendererSegmentsVolume;
-            labelClass.labelExpressionInfo.expression = "Text(" + _expression + ", '#,###')";
-            break;
-        }
-        
-        layerSegments.labelingInfo = [labelClass];
-        layerSegments.refresh();
-        break;
-
-      case 'roadway-projects':
-
-        layerProjectsLines.definitionExpression = "mode = 'Highway'";  
-        layerProjectsPoints.definitionExpression = "mode = 'Highway'"; 
-
-        layerProjectsLines.visible = true;
-        layerProjectsPoints.visible = true;
-        layerSegments.visible = false;
-
-        break;
-
-      case 'transit-projects':
-
-        layerProjectsLines.definitionExpression = "mode = 'Transit'";
-        layerProjectsPoints.definitionExpression = "mode = 'Transit'";
-        
-        layerProjectsLines.visible = true;
-        layerProjectsPoints.visible = true;
-        layerSegments.visible = false;
-
-        break;
+    // labels
+    if (document.getElementById('checkboxLabels').checked==true) {
+      layerSegments.labelingInfo = [labelClass];
+    } else {
+      layerSegments.labelingInfo = [labelClassOff];
     }
+
+    // forecasts
+    if (document.getElementById('checkboxForecasts').checked==true) {
+      layerSegments.visible      = true;
+    } else {
+      layerSegments.visible      = false;
+    }
+
+    // roadway projects
+    if (document.getElementById('checkboxRoadwayProjects').checked==true) {
+      layerRoadwayProjectsLines .visible = true;
+      layerRoadwayProjectsPoints.visible = true;
+    } else {
+      layerRoadwayProjectsLines .visible = false;
+      layerRoadwayProjectsPoints.visible = false;  
+    }
+
+    // transit projects
+    if (document.getElementById('checkboxTransitProjects').checked==true) {
+      layerTransitProjectsLines .visible = true;
+      layerTransitProjectsPoints.visible = true;  
+    } else {
+      layerTransitProjectsLines .visible = false;
+      layerTransitProjectsPoints.visible = false;  
+    }
+
+    if (_phase!="") {
+      layerRoadwayProjectsLines .definitionExpression = filterRoadwayProjectsLinesFilter  + " AND phase = '" + _phase + "'";
+      layerRoadwayProjectsPoints.definitionExpression = filterRoadwayProjectsPointsFilter + " AND phase = '" + _phase + "'";
+      layerTransitProjectsLines .definitionExpression = filterTransitProjectsLinesFilter  + " AND phase = '" + _phase + "'";
+      layerTransitProjectsPoints.definitionExpression = filterTransitProjectsPointsFilter + " AND phase = '" + _phase + "'";
+    } else {
+      layerRoadwayProjectsLines .visible = false;
+      layerRoadwayProjectsPoints.visible = false;
+      layerTransitProjectsLines .visible = false;
+      layerTransitProjectsPoints.visible = false;
+    }
+    
+    layerSegments             .refresh();
+    layerRoadwayProjectsLines .refresh();
+    layerRoadwayProjectsPoints.refresh();
+    layerTransitProjectsLines .refresh();
+    layerTransitProjectsPoints.refresh();
 
   };
 
@@ -203,16 +241,17 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
               updateMap();
             }
           });  
-        } else if (item.name=='rbgBaseLayers') {
-          item.addEventListener('calciteRadioButtonChange', (event) => {
-            if (event.target.checked) {
-              console.log('Selected option:', event.target.value);
-              curBaseLayer = event.target.value;
-              updateMap();
-            }
-          });  
         }
       });
+
+      function addUpdateListener(elementId) {
+        document.getElementById(elementId).addEventListener('calciteCheckboxChange', updateMap);
+      }
+      
+      addUpdateListener('checkboxForecasts');
+      addUpdateListener('checkboxRoadwayProjects');
+      addUpdateListener('checkboxTransitProjects');
+      addUpdateListener('checkboxLabels');
 
       updateMap();
 
@@ -287,23 +326,40 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
       //popupTemplate: segmentPopupTemplate
     });
 
-    layerProjectsLines = new FeatureLayer({
+    layerRoadwayProjectsLines = new FeatureLayer({
       url: layerProjectsLinesUrl,
-      renderer: rendererLinesByPhase,
-      visible: false
-      //popupTemplate: segmentPopupTemplate
+      renderer: rendererRoadwayLines,
+      visible: false,
+      definitionExpression: filterRoadwayProjectsLinesFilter
     });
 
-    layerProjectsPoints = new FeatureLayer({
+    layerRoadwayProjectsPoints = new FeatureLayer({
       url: layerProjectsPointsUrl,
-      renderer: rendererPointsByPhase,
-      visible: false
-      //popupTemplate: segmentPopupTemplate
+      renderer: rendererRoadwayPoints,
+      visible: false,
+      definitionExpression: filterRoadwayProjectsPointsFilter
     });
 
+    layerTransitProjectsLines = new FeatureLayer({
+      url: layerProjectsLinesUrl,
+      renderer: rendererTransitLines,
+      visible: false,
+      definitionExpression: filterTransitProjectsLinesFilter
+    });
+
+    layerTransitProjectsPoints = new FeatureLayer({
+      url: layerProjectsPointsUrl,
+      renderer: rendererTransitPoints,
+      visible: false,
+      definitionExpression: filterTransitProjectsPointsFilter
+    });
+
+    map.add(layerTransitProjectsLines);
+    map.add(layerTransitProjectsPoints);
+    map.add(layerRoadwayProjectsLines);
+    map.add(layerRoadwayProjectsPoints);
     map.add(layerSegments);
-    map.add(layerProjectsPoints);
-    map.add(layerProjectsLines);
+
     //map.add(geojsonCities);
     //map.add(geojsonCitiesWhite);
 
@@ -327,8 +383,8 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
       view: view,
       layerInfos: [
                     { layer: layerSegments, title: 'Segments' },
-                    { layer: layerProjectsLines, title: 'Line Projects' },
-                    { layer: layerProjectsPoints, title: 'Point Projects' }
+                    { layer: layerRoadwayProjectsLines, title: '' },
+                    { layer: layerTransitProjectsLines, title: '' },
                   ] // Replace YOUR_LAYER with the layerSegments you want to include in the legend
     });
     view.ui.add(legend, "top-right");
@@ -351,22 +407,28 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
     .then(config => {
 
       // Extract the layerSegments value
-      layerSegmentsUrl       = config[0].layerSegmentsUrl;
-      layerProjectsLinesUrl  = config[0].layerProjectsLinesUrl;
-      layerProjectsPointsUrl = config[0].layerProjectsPointsUrl;
+      layerSegmentsUrl                  = config[0].layerSegmentsUrl                 ;
+      layerProjectsLinesUrl             = config[0].layerProjectsLinesUrl            ;
+      layerProjectsPointsUrl            = config[0].layerProjectsPointsUrl           ;
+      filterRoadwayProjectsLinesFilter  = config[0].filterRoadwayProjectsLinesFilter ;
+      filterTransitProjectsLinesFilter  = config[0].filterTransitProjectsLinesFilter ;
+      filterRoadwayProjectsPointsFilter = config[0].filterRoadwayProjectsPointsFilter;
+      filterTransitProjectsPointsFilter = config[0].filterTransitProjectsPointsFilter;
 
       // Create a new ClassBreaksRenderer using the fetched configuration     
       rendererSegmentsVolume        = new ClassBreaksRenderer(config[0].rendererSegmentsVolume       );
       rendererSegmentsVolumeCompare = new ClassBreaksRenderer(config[0].rendererSegmentsVolumeCompare);
       rendererSegmentsVolumeAdjust  = new ClassBreaksRenderer(config[0].rendererSegmentsVolumeAdjust );
-      rendererPointsByPhase         = new UniqueValueRenderer(config[0].rendererPointsByPhase        );
-      rendererLinesByPhase          = new UniqueValueRenderer(config[0].rendererLinesByPhase         );
+      rendererRoadwayPoints         = new SimpleRenderer     (config[0].rendererRoadwayPoints        );
+      rendererRoadwayLines          = new SimpleRenderer     (config[0].rendererRoadwayLines         );
+      rendererTransitPoints         = new SimpleRenderer     (config[0].rendererTransitPoints        );
+      rendererTransitLines          = new SimpleRenderer     (config[0].rendererTransitLines         );
 
       // create map
       createMapView();
 
       // Use or log the layerSegments value
-      console.log('layerSegments:', layerSegmentsUrl);
+      console.log('config.json');
     })
     .catch(error => {
       console.error('Error fetching the file:', error);

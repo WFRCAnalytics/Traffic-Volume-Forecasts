@@ -82,10 +82,11 @@ input[type="text"].manualAdj {
 #sidebar { /* #sidebar is id not class!! */
     display: flex;
     flex-direction: column;
-    height: calc(100vh - 104px);
+    height: calc(100vh - 80px);
     background: #ddd;
     width: 185px;
-    padding: 15px;
+    padding-left: 15px;
+    padding-right: 15px;
     overflow: auto; /* or 'scroll' to always show the scroll bar */
 }
 

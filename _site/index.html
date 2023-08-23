@@ -208,21 +208,20 @@
             </div>
             <div id="mainContentMap">
                 <div id="sidebar">
+                    <form id="displayVolumeSelectionBase"></form>
                     <h3>Base Layers</h3>
-                    <calcite-radio-button-group name="rbgBaseLayers" id="rbgBaseLayers" layout="vertical">
-                        <calcite-label layout="inline">
-                            <calcite-radio-button name="rbgBaseLayers" value="forecasts" checked></calcite-radio-button>
-                            Forecasts
-                        </calcite-label>
-                        <calcite-label layout="inline">
-                            <calcite-radio-button name="rbgBaseLayers" value="roadway-projects"></calcite-radio-button>
-                            Road Projects
-                        </calcite-label>
-                        <calcite-label layout="inline">
-                            <calcite-radio-button name="rbgBaseLayers" value="transit-projects"></calcite-radio-button>
-                            Transit Projects
-                        </calcite-label>
-                    </calcite-radio-button-group>
+                    <calcite-label layout="inline">
+                        <calcite-checkbox id="checkboxForecasts" value="forecasts" checked></calcite-checkbox>
+                        Forecasts
+                    </calcite-label>
+                    <calcite-label layout="inline">
+                        <calcite-checkbox id="checkboxRoadwayProjects" value="roadway-projects"></calcite-checkbox>
+                        Roadway Projects
+                    </calcite-label>
+                    <calcite-label layout="inline">
+                        <calcite-checkbox id="checkboxTransitProjects" value="transit-projects"></calcite-checkbox>
+                        Transit Projects
+                    </calcite-label>
                     <h3>Forecasts</h3>
                     <calcite-radio-button-group name="rbgForecasts" id="rbgForecasts" layout="vertical">
                         <calcite-label layout="inline">
@@ -276,8 +275,13 @@
                             <calcite-radio-button name="rbgYears" value="2019"></calcite-radio-button>
                             2019
                         </calcite-label>
-                    </calcite-radio-button-group>                      
-                    <form id="displayVolumeSelectionBase"></form>
+                    </calcite-radio-button-group>
+                    <br/>
+                    <br/>
+                    <calcite-label layout="inline">
+                        <calcite-checkbox id="checkboxLabels" value="labels" checked></calcite-checkbox>
+                        Show Labels
+                    </calcite-label>                    
                     <form id="displayVolumeSelectionCompare"></form>
                 </div>
                 <div id="mapView"></div>
