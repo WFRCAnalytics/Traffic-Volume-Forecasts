@@ -624,7 +624,7 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
           selectSegId.selectedOption = option;
         }
       });
-      updateChart();
+      updateToSegment();
     }
     // run first time
     updateSegments();
@@ -641,7 +641,7 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
       if (select && select.children && select.selectedOption.nextElementSibling) {
         // Increment the selectedIndex to select the next option
         selectSegId.selectedOption = select.selectedOption.nextElementSibling;
-        updateChart();
+        updateToSegment();
       } else {
         //alert('No more items to select.'); // Alert if there's no next option or if select is not found
       }
@@ -660,7 +660,7 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
       if (select && select.children && select.selectedOption.previousElementSibling) {
         // Increment the selectedIndex to select the next option
         selectSegId.selectedOption = select.selectedOption.previousElementSibling;
-        updateChart();
+        updateToSegment();
       } else {
         //alert('No more items to select.'); // Alert if there's no next option or if select is not found
       }
@@ -717,7 +717,7 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
                 buttonApply.classList.remove('btn-dirty');
                 buttonApply.classList.add('btn-clean');
               }
-              updateChart();
+              updateToSegment();
             }
           }).catch(function(error) {
             console.error('Error updating feature: ', error);
@@ -792,7 +792,7 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
     } // createChart()
 
     // Function to update the chart with segment data
-    async function updateChart() {
+    async function updateToSegment() {
       // If there's an existing chart, destroy it
       if (!myChart) {
         createChart();
@@ -1081,18 +1081,18 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
         });
         
       }
-    } //updateChart()
+    } //updateToSegment()
   
     //populateComboboxFlagsProjGroups().then(() => {
-    //  console.log('Calling updateChart');
-    //  updateChart();
+    //  console.log('Calling updateToSegment');
+    //  updateToSegment();
     //});
 
-    updateChart();
+    updateToSegment();
 
     // Update the chart when the selectors are changed
     selectPlanArea.addEventListener('calciteSegmentedControlChange', updateCoNames);
-    selectSegId.addEventListener('calciteSelectChange', updateChart);
+    selectSegId.addEventListener('calciteSelectChange', updateToSegment);
     selectCoName.addEventListener('calciteSelectChange', updateSegments);
 
     
@@ -1120,13 +1120,13 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
     
           querySEGIDByFID(featureFID).then(function(SEGID) {
             selectSegId.value = SEGID;
-            updateChart();
+            updateToSegment();
           });
         }
       });
     });
 
-    //selectSource.addEventListener('calciteSelectChange', updateChart);
+    //selectSource.addEventListener('calciteSelectChange', updateToSegment);
   }
 
   // Load the data when the page is ready
