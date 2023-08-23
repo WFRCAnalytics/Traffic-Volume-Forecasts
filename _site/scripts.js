@@ -1,4 +1,10 @@
 let legend;
+let initialValue2023 = 0;
+let initialValue2028 = 0;
+let initialValue2032 = 0;
+let initialValue2042 = 0;
+let initialValue2050 = 0;
+let initialValueNote = "";
 let editorKey = 'bill';
 let layerSegments; // Global variable
 let layerRoadwayProjectsLines;
@@ -691,7 +697,14 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
           featureToUpdate.attributes.ADJ2032 = document.getElementById('adj2032Value').value;
           featureToUpdate.attributes.ADJ2042 = document.getElementById('adj2042Value').value;
           featureToUpdate.attributes.ADJ2050 = document.getElementById('adj2050Value').value;
-          featureToUpdate.attributes.NOTES   = document.getElementById('notes').value;
+          featureToUpdate.attributes.NOTES   = document.getElementById('notes'       ).value;
+          
+          initialValue2023 = document.getElementById('adj2023Value').value;
+          initialValue2028 = document.getElementById('adj2028Value').value;
+          initialValue2032 = document.getElementById('adj2032Value').value;
+          initialValue2042 = document.getElementById('adj2042Value').value;
+          initialValue2050 = document.getElementById('adj2050Value').value;
+          initialValueNote = document.getElementById('notes'       ).value;
 
           // Apply the edits
           layerSegments.applyEdits({
@@ -699,6 +712,11 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
           }).then(function(results) {
             if (results.updateFeatureResults.length > 0) {
               console.log('Updated Successfully');
+              const buttonApply = document.getElementById('button-apply');
+              if (buttonApply.classList.contains('btn-dirty')) {
+                buttonApply.classList.remove('btn-dirty');
+                buttonApply.classList.add('btn-clean');
+              }
               updateChart();
             }
           }).catch(function(error) {
@@ -713,8 +731,10 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
     };
 
     // Create a new Calcite button
-    const buttonApply = document.createElement('calcite-button');
+    const buttonApply = document.createElement('button');
+    buttonApply.id = 'button-apply';
     buttonApply.innerHTML = 'Apply Manual Adjustments'; // Set the buttonApply text
+    buttonApply.classList.add('btn-clean'); // Start with the red color
 
     // Add an event listener to the buttonApply for the 'click' event
     buttonApply.addEventListener('click', function() {
@@ -722,7 +742,9 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
       const select = document.getElementById('selectSegId');
   
       if (select && select.children && select.selectedOption.nextElementSibling) {
-        applyEdits();
+        if (this.classList.contains('btn-dirty')) {
+          applyEdits();
+        }
       } else {
         //alert('No more items to select.'); // Alert if there's no next option or if select is not found
       }
@@ -774,6 +796,11 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
       // If there's an existing chart, destroy it
       if (!myChart) {
         createChart();
+      }
+
+      if (buttonApply.classList.contains('btn-dirty')) {
+        buttonApply.classList.remove('btn-dirty');
+        buttonApply.classList.add('btn-clean');
       }
 
       // initialize table
@@ -957,6 +984,102 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
         document.getElementById("diff2042Value").innerHTML = (chartDataForecasts[4].y - chartDataForecasts[3].y).toLocaleString('en-US');
         document.getElementById("diff2050Value").innerHTML = (chartDataForecasts[5].y - chartDataForecasts[4].y).toLocaleString('en-US');
 
+        const inputElement2023 = document.getElementById('adj2023Value');
+        initialValue2023 = inputElement2023.value;
+
+        inputElement2023.addEventListener('input', function() {
+            if (inputElement2023.value !== initialValue2023) {
+                console.log('Input is dirty.');
+                // You can perform additional actions here if needed
+                if (buttonApply.classList.contains('btn-clean')) {
+                  buttonApply.classList.remove('btn-clean');
+                  buttonApply.classList.add('btn-dirty');
+                }
+            } else {
+                console.log('Input is clean.');
+            }
+        });
+
+        const inputElement2028 = document.getElementById('adj2028Value');
+        initialValue2028 = inputElement2028.value;
+
+        inputElement2028.addEventListener('input', function() {
+            if (inputElement2028.value !== initialValue2028) {
+                console.log('Input is dirty.');
+                // You can perform additional actions here if needed
+                if (buttonApply.classList.contains('btn-clean')) {
+                  buttonApply.classList.remove('btn-clean');
+                  buttonApply.classList.add('btn-dirty');
+                }
+            } else {
+                console.log('Input is clean.');
+            }
+        });
+        
+        const inputElement2032 = document.getElementById('adj2032Value');
+        initialValue2032 = inputElement2028.value;
+
+        inputElement2032.addEventListener('input', function() {
+            if (inputElement2032.value !== initialValue2032) {
+                console.log('Input is dirty.');
+                // You can perform additional actions here if needed
+                if (buttonApply.classList.contains('btn-clean')) {
+                  buttonApply.classList.remove('btn-clean');
+                  buttonApply.classList.add('btn-dirty');
+                }
+            } else {
+                console.log('Input is clean.');
+            }
+        });
+        
+        const inputElement2042 = document.getElementById('adj2042Value');
+        initialValue2042 = inputElement2028.value;
+
+        inputElement2042.addEventListener('input', function() {
+            if (inputElement2042.value !== initialValue2042) {
+                console.log('Input is dirty.');
+                // You can perform additional actions here if needed
+                if (buttonApply.classList.contains('btn-clean')) {
+                  buttonApply.classList.remove('btn-clean');
+                  buttonApply.classList.add('btn-dirty');
+                }
+            } else {
+                console.log('Input is clean.');
+            }
+        });
+        
+        const inputElement2050 = document.getElementById('adj2050Value');
+        initialValue2050 = inputElement2028.value;
+
+        inputElement2050.addEventListener('input', function() {
+            if (inputElement2050.value !== initialValue2050) {
+                console.log('Input is dirty.');
+                // You can perform additional actions here if needed
+                if (buttonApply.classList.contains('btn-clean')) {
+                  buttonApply.classList.remove('btn-clean');
+                  buttonApply.classList.add('btn-dirty');
+                }
+            } else {
+                console.log('Input is clean.');
+            }
+        });
+        
+        const inputElementNote = document.getElementById('notes');
+        initialValueNote = inputElementNote.value;
+
+        inputElementNote.addEventListener('input', function() {
+            if (inputElementNote.value !== initialValueNote) {
+                console.log('Input is dirty.');
+                // You can perform additional actions here if needed
+                if (buttonApply.classList.contains('btn-clean')) {
+                  buttonApply.classList.remove('btn-clean');
+                  buttonApply.classList.add('btn-dirty');
+                }
+            } else {
+                console.log('Input is clean.');
+            }
+        });
+        
       }
     } //updateChart()
   

@@ -1,5 +1,5 @@
+Round adjustment before applying edits
 Add log file
-Add model network with segids as layer??
 Add link to SE Map
 Info buttons on terms/options
 Should we forecast no-build and needs-based?
@@ -31,5 +31,5 @@ DONE!--Check boxes for forecast--wider and more opaque
 DONE!--Add next and previous button
 DONE!--Apply adjustment button to refresh view after
 DONE!--Filter out operations projects from RTP projects
-NOT-DONE!--Get projects from RTP map, use the same symbology (talk to Bert or Sarah)
-
+NO!--Get projects from RTP map, use the same symbology (talk to Bert or Sarah)
+NO!--Add model network with segids as layer??

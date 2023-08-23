@@ -1,6 +1,29 @@
+.btn-dirty {
+    padding: 6px;
+    background-color: var(--calcite-ui-warning);
+    color: black;
+    border: none;
+}
+
+.btn-dirty:hover {
+    background-color: var(--calcite-ui-warning-hover);
+    cursor: pointer;
+}
+
+.btn-clean {
+    padding: 6px;
+    background-color: var(--calcite-ui-success);
+    color: white;
+    border: none;
+}
+
+.btn-clean:hover {
+    cursor: pointer;
+}
 
 .esri-popup .esri-popup__header-title {
     color: white;
+    border: none;
 }
 
 label {
