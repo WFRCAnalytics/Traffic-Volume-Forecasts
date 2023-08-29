@@ -1,38 +1,62 @@
-Turn on roadway projects
 Auto apply changes (on lose focus)
 Round final forecast!
-Change map year as manual edits focus changes
 
-Add log file
 Bugs
 Fix click segment outside of county or not in dropdown list
 Click on map when making edits... ask to save?
+fix dirty comments paste
+Round adjustment before applying edits
+
+Flags!
+Flag countdowns!
+Add further review flag!
+Add flags to map
+Maybe reviewed flag is when no text in notes?
+
+
 
 Additional Features
 
+Show area type
+
+Save last reviewed segment and edit key?
 preserve zoom level
-Round adjustment before applying edits
 Add link to SE Map
 Info buttons on terms/options
 Should we forecast no-build and needs-based?
-Add further review flag!
 Commas in years on hover in chart
-Add flags to map
-Maybe reviewed flag is when no text in notes?
 Observed data adjustment
 Boilerplate Notes?!
+Change map year as manual edits focus changes
+
 
 Weber Segments
 0037_009.0 - WHY IS 2032 SO HIGH!
 0037_009.6 - WHY IS 2042 SO HIGH!
-0037_010.0 - WHY DID 2023 DROP!
+0037_010.0 - WHY DID 2023 DR    OP!
 0079_002.5 - WOW! WHY IS THIS SEEM DOUBLE WHAT IS SHOULD BE? COULD IT BE ONE_WAY PAIRS FURTHER EAST!
 0089_420.1 - WHY SO LOW COMPARED TO SEGMENT JUST TO SOUTH!
 RIVERDALE ROAD IN 2023?!!
-
-Weber Segments
+SR 126 (parallel to I-15) in 2023???!
+0126_013.7 - WHY SO MUCH DROP?!!!
+MIDLAND RD IN 2028??? RTP SHOWS IT in 2032???
 Break WFRC_8087 at 3300 South
-
+0126_017.5 - 2032 INTERCHANGE IMPROVEMENTS???
+0126_018.7 - 2032 INTERCHANGE IMPROVEMENTS???
+3366_000.0 - DOESN'T MAKE SENSE DROP IN 2042 WHEN NEW ROAD TO WEST AND SEGMENTS TO EAST
+3404_005.1 - WHY BIG DROP IN 2032?!!
+3434_000.4 - WHY BIG JUMP IN 2032?!!
+0235_001.2 - WHY BIG DROP IN 2050?!!
+0235_001.2 - WHY BIG JUMP IN 2050?!!
+BENCH DRIVE NEW ROADWAYS!!!!
+WFRC_8028 - WHY DO WE HAVE THIS SEGMENT??
+3368_001.7 - WHY DROP in 2028?!!
+3368_001.2 - WHY DROP in 2028?!!
+3340_004.8 - WHY DROP in 2028?!!
+3340_005.3 - WHY DROP in 2028?!!
+WFRC_8080  - WHY DROP in 2028?!!
+0134_000.0 - WHY JUMP in 2028?!!
+0134_001.0 - WHY JUMP in 2028?!!
 
 Box Elder Segments
 0089_422.7 - MORE THAN TWICE 2019
@@ -55,6 +79,6 @@ DONE!--Add next and previous button
 DONE!--Apply adjustment button to refresh view after
 DONE!--Filter out operations projects from RTP projects
 DONE!--Add log file
-
+DONE!--Turn on roadway projects
 NO!--Get projects from RTP map, use the same symbology (talk to Bert or Sarah)
 NO!--Add model network with segids as layer??

@@ -704,6 +704,7 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
           var featureToUpdate = results.features[0]; // Get the first feature that matches the query
 
           // Update the attributes
+          //featureToUpdate.attributes.ADJ2019 = document.getElementById('adj2019Value').value;
           featureToUpdate.attributes.ADJ2023 = document.getElementById('adj2023Value').value;
           featureToUpdate.attributes.ADJ2028 = document.getElementById('adj2028Value').value;
           featureToUpdate.attributes.ADJ2032 = document.getElementById('adj2032Value').value;
@@ -711,6 +712,7 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
           featureToUpdate.attributes.ADJ2050 = document.getElementById('adj2050Value').value;
           featureToUpdate.attributes.NOTES   = document.getElementById('notes'       ).value.trim();
           
+          //initialValue2019 = document.getElementById('adj2019Value').value;
           initialValue2023 = document.getElementById('adj2023Value').value;
           initialValue2028 = document.getElementById('adj2028Value').value;
           initialValue2032 = document.getElementById('adj2032Value').value;
@@ -806,7 +808,7 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
       myChart = new Chart(ctx, {
         type: 'scatter',
         options: {
-          aspectRatio: 1.5,
+          aspectRatio: 1.8,
           scales: {
             x: {
               min: 1980,
@@ -854,6 +856,7 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
 
       // initialize table
       // update values in manual adjustment boxes
+      //document.getElementById("adj2019Value").value = '';
       document.getElementById("adj2023Value").value = '';
       document.getElementById("adj2028Value").value = '';
       document.getElementById("adj2032Value").value = '';
@@ -862,6 +865,7 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
       document.getElementById("notes"       ).value = '';
 
       // update values in final forecast
+      document.getElementById("f2019Value").innerHTML = '';
       document.getElementById("f2023Value").innerHTML = '';
       document.getElementById("f2028Value").innerHTML = '';
       document.getElementById("f2032Value").innerHTML = '';
@@ -869,6 +873,7 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
       document.getElementById("f2050Value").innerHTML = '';
 
       // update values in model forecast
+      document.getElementById("mf2019Value").innerHTML = '';
       document.getElementById("mf2023Value").innerHTML = '';
       document.getElementById("mf2028Value").innerHTML = '';
       document.getElementById("mf2032Value").innerHTML = '';
@@ -876,6 +881,7 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
       document.getElementById("mf2050Value").innerHTML = '';
 
       // update values in model raw
+      document.getElementById("m2019Value").innerHTML = '';
       document.getElementById("m2023Value").innerHTML = '';
       document.getElementById("m2028Value").innerHTML = '';
       document.getElementById("m2032Value").innerHTML = '';
@@ -883,13 +889,45 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
       document.getElementById("m2050Value").innerHTML = '';
 
       // update values in model forecast
+      document.getElementById("diff2019Value").innerHTML = '';
       document.getElementById("diff2023Value").innerHTML = '';
       document.getElementById("diff2028Value").innerHTML = '';
       document.getElementById("diff2032Value").innerHTML = '';
       document.getElementById("diff2042Value").innerHTML = '';
       document.getElementById("diff2050Value").innerHTML = '';
-      
+
+      // update values in model raw
+      document.getElementById("dyvol2019Value").innerHTML = '';
+      document.getElementById("dyvol2023Value").innerHTML = '';
+      document.getElementById("dyvol2028Value").innerHTML = '';
+      document.getElementById("dyvol2032Value").innerHTML = '';
+      document.getElementById("dyvol2042Value").innerHTML = '';
+      document.getElementById("dyvol2050Value").innerHTML = '';
     
+      // update values in model raw
+      document.getElementById("lanes2019Value").innerHTML = '';
+      document.getElementById("lanes2023Value").innerHTML = '';
+      document.getElementById("lanes2028Value").innerHTML = '';
+      document.getElementById("lanes2032Value").innerHTML = '';
+      document.getElementById("lanes2042Value").innerHTML = '';
+      document.getElementById("lanes2050Value").innerHTML = '';
+
+      // update values in model raw
+      document.getElementById("ft2019Value").innerHTML = '';
+      document.getElementById("ft2023Value").innerHTML = '';
+      document.getElementById("ft2028Value").innerHTML = '';
+      document.getElementById("ft2032Value").innerHTML = '';
+      document.getElementById("ft2042Value").innerHTML = '';
+      document.getElementById("ft2050Value").innerHTML = '';
+
+      // update values in model raw
+      document.getElementById("at2019Value").innerHTML = '';
+      document.getElementById("at2023Value").innerHTML = '';
+      document.getElementById("at2028Value").innerHTML = '';
+      document.getElementById("at2032Value").innerHTML = '';
+      document.getElementById("at2042Value").innerHTML = '';
+      document.getElementById("at2050Value").innerHTML = '';
+
       const selectSegId = document.getElementById('selectSegId');
       const _curSegId = selectSegId.value;
 
@@ -934,6 +972,10 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
         const chartDataAadt         = filteredAadt        .map(item => ({ x: item.YEAR, y: item.AADT        })).sort((a, b) => a.x - b.x);
         const chartDataModForecasts = filteredModForecasts.map(item => ({ x: item.YEAR, y: item.modForecast })).sort((a, b) => a.x - b.x);
         const chartDataModAadt      = filteredModForecasts.map(item => ({ x: item.YEAR, y: item.modAadt     })).sort((a, b) => a.x - b.x);        
+        const chartDataModDyvol     = filteredModForecasts.map(item => ({ x: item.YEAR, y: item.DY_VOL      })).sort((a, b) => a.x - b.x);        
+        const chartDataModLanes     = filteredModForecasts.map(item => ({ x: item.YEAR, y: item.LANES       })).sort((a, b) => a.x - b.x);        
+        const chartDataModFt        = filteredModForecasts.map(item => ({ x: item.YEAR, y: item.FT          })).sort((a, b) => a.x - b.x);        
+        const chartDataModAt        = filteredModForecasts.map(item => ({ x: item.YEAR, y: item.ATYPENAME   })).sort((a, b) => a.x - b.x);        
         const chartDataForecasts    = chartDataModForecasts.map((item, index) => {
           // Add the corresponding adjustment value
           return { x: item.x, y: item.y + (adjustments[index] || 0) };
@@ -998,6 +1040,7 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
         onSelectFeature(feature);
 
         // update values in manual adjustment boxes
+        //document.getElementById("adj2019Value").value = feature.attributes.ADJ2023;
         document.getElementById("adj2023Value").value = feature.attributes.ADJ2023;
         document.getElementById("adj2028Value").value = feature.attributes.ADJ2028;
         document.getElementById("adj2032Value").value = feature.attributes.ADJ2032;
@@ -1006,6 +1049,7 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
         document.getElementById("notes"       ).value = feature.attributes.NOTES.trim();
 
         // update values in final forecast
+        document.getElementById("f2019Value").innerHTML = chartDataForecasts[0].y.toLocaleString('en-US');
         document.getElementById("f2023Value").innerHTML = chartDataForecasts[1].y.toLocaleString('en-US');
         document.getElementById("f2028Value").innerHTML = chartDataForecasts[2].y.toLocaleString('en-US');
         document.getElementById("f2032Value").innerHTML = chartDataForecasts[3].y.toLocaleString('en-US');
@@ -1013,6 +1057,7 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
         document.getElementById("f2050Value").innerHTML = chartDataForecasts[5].y.toLocaleString('en-US');
 
         // update values in model forecast
+        document.getElementById("mf2019Value").innerHTML = chartDataModForecasts[0].y.toLocaleString('en-US');
         document.getElementById("mf2023Value").innerHTML = chartDataModForecasts[1].y.toLocaleString('en-US');
         document.getElementById("mf2028Value").innerHTML = chartDataModForecasts[2].y.toLocaleString('en-US');
         document.getElementById("mf2032Value").innerHTML = chartDataModForecasts[3].y.toLocaleString('en-US');
@@ -1020,6 +1065,7 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
         document.getElementById("mf2050Value").innerHTML = chartDataModForecasts[5].y.toLocaleString('en-US');
 
         // update values in model no base year adjustment
+        document.getElementById("m2019Value").innerHTML = chartDataModAadt[0].y.toLocaleString('en-US');
         document.getElementById("m2023Value").innerHTML = chartDataModAadt[1].y.toLocaleString('en-US');
         document.getElementById("m2028Value").innerHTML = chartDataModAadt[2].y.toLocaleString('en-US');
         document.getElementById("m2032Value").innerHTML = chartDataModAadt[3].y.toLocaleString('en-US');
@@ -1027,11 +1073,44 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
         document.getElementById("m2050Value").innerHTML = chartDataModAadt[5].y.toLocaleString('en-US');
 
         // update values in model forecast change
+        document.getElementById("diff2019Value").innerHTML = "";
         document.getElementById("diff2023Value").innerHTML = (chartDataForecasts[1].y - chartDataForecasts[0].y).toLocaleString('en-US');
         document.getElementById("diff2028Value").innerHTML = (chartDataForecasts[2].y - chartDataForecasts[1].y).toLocaleString('en-US');
         document.getElementById("diff2032Value").innerHTML = (chartDataForecasts[3].y - chartDataForecasts[2].y).toLocaleString('en-US');
         document.getElementById("diff2042Value").innerHTML = (chartDataForecasts[4].y - chartDataForecasts[3].y).toLocaleString('en-US');
         document.getElementById("diff2050Value").innerHTML = (chartDataForecasts[5].y - chartDataForecasts[4].y).toLocaleString('en-US');
+
+        // update values in model no base year adjustment
+        document.getElementById("dyvol2019Value").innerHTML = Math.round(chartDataModDyvol[0].y).toLocaleString('en-US');
+        document.getElementById("dyvol2023Value").innerHTML = Math.round(chartDataModDyvol[1].y).toLocaleString('en-US');
+        document.getElementById("dyvol2028Value").innerHTML = Math.round(chartDataModDyvol[2].y).toLocaleString('en-US');
+        document.getElementById("dyvol2032Value").innerHTML = Math.round(chartDataModDyvol[3].y).toLocaleString('en-US');
+        document.getElementById("dyvol2042Value").innerHTML = Math.round(chartDataModDyvol[4].y).toLocaleString('en-US');
+        document.getElementById("dyvol2050Value").innerHTML = Math.round(chartDataModDyvol[5].y).toLocaleString('en-US');
+
+        // update values in model no base year adjustment
+        document.getElementById("lanes2019Value").innerHTML = chartDataModLanes[0].y.toLocaleString('en-US');
+        document.getElementById("lanes2023Value").innerHTML = chartDataModLanes[1].y.toLocaleString('en-US');
+        document.getElementById("lanes2028Value").innerHTML = chartDataModLanes[2].y.toLocaleString('en-US');
+        document.getElementById("lanes2032Value").innerHTML = chartDataModLanes[3].y.toLocaleString('en-US');
+        document.getElementById("lanes2042Value").innerHTML = chartDataModLanes[4].y.toLocaleString('en-US');
+        document.getElementById("lanes2050Value").innerHTML = chartDataModLanes[5].y.toLocaleString('en-US');
+
+        // update values in model no base year adjustment
+        document.getElementById("ft2019Value").innerHTML = chartDataModFt[0].y.toLocaleString('en-US');
+        document.getElementById("ft2023Value").innerHTML = chartDataModFt[1].y.toLocaleString('en-US');
+        document.getElementById("ft2028Value").innerHTML = chartDataModFt[2].y.toLocaleString('en-US');
+        document.getElementById("ft2032Value").innerHTML = chartDataModFt[3].y.toLocaleString('en-US');
+        document.getElementById("ft2042Value").innerHTML = chartDataModFt[4].y.toLocaleString('en-US');
+        document.getElementById("ft2050Value").innerHTML = chartDataModFt[5].y.toLocaleString('en-US');
+
+        // update values in model no base year adjustment
+        document.getElementById("at2019Value").innerHTML = chartDataModAt[0].y;
+        document.getElementById("at2023Value").innerHTML = chartDataModAt[1].y;
+        document.getElementById("at2028Value").innerHTML = chartDataModAt[2].y;
+        document.getElementById("at2032Value").innerHTML = chartDataModAt[3].y;
+        document.getElementById("at2042Value").innerHTML = chartDataModAt[4].y;
+        document.getElementById("at2050Value").innerHTML = chartDataModAt[5].y;
 
         const inputElement2023 = document.getElementById('adj2023Value');
         initialValue2023 = inputElement2023.value;

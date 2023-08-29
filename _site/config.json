@@ -9,7 +9,6 @@
     "filterTransitProjectsLinesFilter"  : "mode = 'Transit'",
     "filterTransitProjectsPointsFilter" : "mode = 'Transit'",
     "rendererSegmentsVolume": {
-      "field": "MF2050",
       "classBreakInfos": [
         { "minValue":      0, "maxValue":     6000, "symbol": { "type": "simple-line", "color": [ 49, 57,138], "width": 0.2 }, "label":"0 to 6,000"        },
         { "minValue":   6001, "maxValue":    18000, "symbol": { "type": "simple-line", "color": [ 27,169,230], "width": 1.2 }, "label":"6,000 to 18,000"   },
@@ -23,7 +22,6 @@
       ]
     },
     "rendererSegmentsVolumeCompare": {
-      "field": "",
       "classBreakInfos": [
         {"minValue": -999999, "maxValue":    -5001, "symbol": { "type": "simple-line", "color": [  0,112,255], "width": 3.2}, "label": "Less than -5,000"},
         {"minValue":   -5000, "maxValue":       -1, "symbol": { "type": "simple-line", "color": [115,178,255], "width": 2.2}, "label": "-5,000 to -10"   },
@@ -35,7 +33,6 @@
       ]
     },
     "rendererSegmentsVolumeAdjust": {
-      "field": "",
       "classBreakInfos": [
         {"minValue":   -999999, "maxValue":   -20000, "symbol": { "type": "simple-line", "color": [  0, 77,168], "width": 7.5}, "label": "Less than -20,000"  },
         {"minValue":    -19999, "maxValue":   -10000, "symbol": { "type": "simple-line", "color": [  0, 92,230], "width": 6.0}, "label": "-19,999 to -10,000" },
