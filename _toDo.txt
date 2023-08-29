@@ -1,8 +1,8 @@
 Turn on roadway projects
 Auto apply changes (on lose focus)
+Round final forecast!
+Change map year as manual edits focus changes
 
-
-Round adjustment before applying edits
 Add log file
 Add link to SE Map
 Info buttons on terms/options
@@ -18,7 +18,9 @@ Weber Segments
 0037_009.0 - WHY IS 2032 SO HIGH!
 0037_009.6 - WHY IS 2042 SO HIGH!
 0037_010.0 - WHY DID 2023 DROP!
-
+0079_002.5 - WOW! WHY IS THIS SEEM DOUBLE WHAT IS SHOULD BE? COULD IT BE ONE_WAY PAIRS FURTHER EAST!
+0089_420.1 - WHY SO LOW COMPARED TO SEGMENT JUST TO SOUTH!
+RIVERDALE ROAD IN 2023?!!
 
 Box Elder Segments
 0089_422.7 - MORE THAN TWICE 2019
