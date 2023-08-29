@@ -68,11 +68,6 @@
                 <div>
                     <table width="100%">
                         <tr>
-                            <td colspan="7">
-                                <span class="notes-container">Notes:<textarea class="top-align-input" id="notes" style="width: 100%; height: 20px;"></textarea></span>
-                            </td>
-                        </tr>
-                        <tr>
                             <td width="52%">
                                 &nbsp;
                             </td>
@@ -312,8 +307,13 @@
                                 </div>
                             </td>
                         </tr>
+                        <tr>
+                            <td colspan="7">
+                                <span class="notes-container">Notes:<textarea class="top-align-input" id="notes" style="width: 100%; height: 20px;"></textarea></span>
+                            </td>
+                        </tr>
                     </table>
-                    <a href="https://unifiedplan.org/utah-household-job-map/" target="_blank">Utah Statewide Household and Job Forecast Map</a>
+                    <!--<a href="https://unifiedplan.org/utah-household-job-map/" target="_blank">Utah Statewide Household and Job Forecast Map</a>-->
                 </div>
             </div>
             <div id="mainContentMap">
@@ -390,7 +390,11 @@
                     <calcite-label layout="inline">
                         <calcite-checkbox id="checkboxLabels" value="labels" checked></calcite-checkbox>
                         Show Labels
-                    </calcite-label>                    
+                    </calcite-label>
+                    <calcite-label layout="inline">
+                        <calcite-checkbox id="checkboxNoNotes" value="nonotes"></calcite-checkbox>
+                        No Notes
+                    </calcite-label>
                 </div>
                 <div id="mapView"></div>
             </div>

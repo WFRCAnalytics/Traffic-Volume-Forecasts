@@ -180,6 +180,12 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
       layerSegments.labelingInfo = [labelClassOff];
     }
 
+    if (document.getElementById('checkboxNoNotes').checked==true) {
+      layerSegments.definitionExpression = "NOTES = ''";
+    } else {
+      layerSegments.definitionExpression = "";
+    }
+
     // forecasts
     if (document.getElementById('checkboxForecasts').checked==true) {
       layerSegments.visible      = true;
@@ -260,6 +266,7 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
       addUpdateListener('checkboxRoadwayProjects');
       addUpdateListener('checkboxTransitProjects');
       addUpdateListener('checkboxLabels');
+      addUpdateListener('checkboxNoNotes');
 
       updateMap();
 
