@@ -1,3 +1,7 @@
+Turn on roadway projects
+Auto apply changes (on lose focus)
+
+
 Round adjustment before applying edits
 Add log file
 Add link to SE Map
@@ -8,8 +12,13 @@ Commas in years on hover in chart
 Add flags to map
 Maybe reviewed flag is when no text in notes?
 Observed data adjustment
-Auto apply changes
 Boilerplate Notes?!
+
+Weber Segments
+0037_009.0 - WHY IS 2032 SO HIGH!
+0037_009.6 - WHY IS 2042 SO HIGH!
+0037_010.0 - WHY DID 2023 DROP!
+
 
 Box Elder Segments
 0089_422.7 - MORE THAN TWICE 2019
