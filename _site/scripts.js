@@ -5,7 +5,7 @@ let initialValue2032 = 0;
 let initialValue2042 = 0;
 let initialValue2050 = 0;
 let initialValueNote = "";
-let editKey = 'bill';
+let editKey = ['bill','suzie'];
 let tableLog;
 let tableLogUrl;
 let layerSegments; // Global variable
@@ -681,7 +681,7 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
 
       const inputBoxValue = document.getElementById('edit-key').value;
 
-      if (inputBoxValue !== editKey) {
+      if (!editKey.includes(inputBoxValue)) {
           // If the input value doesn't match 'editKey', execute the code here
           console.error("Value doesn't match 'editKey'!");
           alert('Incorrect edit key.')

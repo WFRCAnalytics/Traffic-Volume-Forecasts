@@ -4,6 +4,14 @@ Round final forecast!
 Change map year as manual edits focus changes
 
 Add log file
+Bugs
+Fix click segment outside of county or not in dropdown list
+Click on map when making edits... ask to save?
+
+Additional Features
+
+preserve zoom level
+Round adjustment before applying edits
 Add link to SE Map
 Info buttons on terms/options
 Should we forecast no-build and needs-based?
@@ -21,6 +29,10 @@ Weber Segments
 0079_002.5 - WOW! WHY IS THIS SEEM DOUBLE WHAT IS SHOULD BE? COULD IT BE ONE_WAY PAIRS FURTHER EAST!
 0089_420.1 - WHY SO LOW COMPARED TO SEGMENT JUST TO SOUTH!
 RIVERDALE ROAD IN 2023?!!
+
+Weber Segments
+Break WFRC_8087 at 3300 South
+
 
 Box Elder Segments
 0089_422.7 - MORE THAN TWICE 2019
@@ -42,5 +54,7 @@ DONE!--Check boxes for forecast--wider and more opaque
 DONE!--Add next and previous button
 DONE!--Apply adjustment button to refresh view after
 DONE!--Filter out operations projects from RTP projects
+DONE!--Add log file
+
 NO!--Get projects from RTP map, use the same symbology (talk to Bert or Sarah)
 NO!--Add model network with segids as layer??
