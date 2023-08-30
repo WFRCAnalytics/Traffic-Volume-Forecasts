@@ -125,13 +125,13 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
     }
     else if (curDisplayYear=="2023") {
       _prevDisplayYear = 2019;
-      _phase           = "";
     }
     
     switch (curDisplayForecast) {
       case 'final-forecast':
         _expression = "$feature.MF" + curDisplayYear + " + $feature.ADJ" + curDisplayYear;
         rendererSegmentsVolume.valueExpression = _expression;
+        layerSegments.definitionExpression = "CO_NAME = '" + document.getElementById('selectCoName').value + "'";
         rendererSegmentsVolume.valueExpressionTitle = /*curDisplayYear + ' */'Final Forecast';
         layerSegments.renderer = rendererSegmentsVolume;
         labelClass.labelExpressionInfo.expression = "Text(" + _expression + ", '#,###')";
@@ -139,6 +139,7 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
       case 'final-forecast-change-2019':
         _expression = "$feature.MF" + curDisplayYear + " + $feature.ADJ" + curDisplayYear + " - $feature.MF2019 - $feature.ADJ2019";
         rendererSegmentsVolumeCompare.valueExpression = _expression;
+        layerSegments.definitionExpression = "CO_NAME = '" + document.getElementById('selectCoName').value + "'";
         rendererSegmentsVolumeCompare.valueExpressionTitle = /*curDisplayYear + ' */'Final Forecast Change from 2019';
         layerSegments.renderer = rendererSegmentsVolumeCompare;
         labelClass.labelExpressionInfo.expression = "Text(" + _expression + ", '#,###')";
@@ -146,6 +147,7 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
       case 'final-forecast-change-prev':
         _expression = "$feature.MF" + curDisplayYear + " + $feature.ADJ" + curDisplayYear + " - $feature.MF" + _prevDisplayYear + " - $feature.ADJ" + _prevDisplayYear;
         rendererSegmentsVolumeCompare.valueExpression = _expression;
+        layerSegments.definitionExpression = "CO_NAME = '" + document.getElementById('selectCoName').value + "'";
         rendererSegmentsVolumeCompare.valueExpressionTitle = /*curDisplayYear + ' */'Final Forecast Change from Previous Year' /* + _prevDisplayYear*/;
         layerSegments.renderer = rendererSegmentsVolumeCompare;
         labelClass.labelExpressionInfo.expression = "Text(" + _expression + ", '#,###')";
@@ -153,6 +155,7 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
       case 'manual-adjustments':
         _expression = "$feature.ADJ" + curDisplayYear;
         rendererSegmentsVolumeAdjust.valueExpression = _expression;
+        layerSegments.definitionExpression = "CO_NAME = '" + document.getElementById('selectCoName').value + "'";
         rendererSegmentsVolumeAdjust.valueExpressionTitle = /*curDisplayYear + ' */'Manual Adjustments';
         layerSegments.renderer = rendererSegmentsVolumeAdjust;
         labelClass.labelExpressionInfo.expression = "IIF(" + _expression + " == 0, '', Text(" + _expression + ", '#,###'))";
@@ -160,6 +163,7 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
       case 'model-forecast':
         _expression = "$feature.MF" + curDisplayYear;
         rendererSegmentsVolume.valueExpression = _expression;
+        layerSegments.definitionExpression = "CO_NAME = '" + document.getElementById('selectCoName').value + "'";
         rendererSegmentsVolume.valueExpressionTitle = /*curDisplayYear + ' */'Model Forecast';
         layerSegments.renderer = rendererSegmentsVolume;
         labelClass.labelExpressionInfo.expression = "Text(" + _expression + ", '#,###')";
@@ -167,6 +171,7 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
       case 'model-nobaseyearadj':
         _expression = "$feature.M" + curDisplayYear;
         rendererSegmentsVolume.valueExpression = _expression;
+        layerSegments.definitionExpression = "CO_NAME = '" + document.getElementById('selectCoName').value + "'";
         rendererSegmentsVolume.valueExpressionTitle = /*curDisplayYear + ' */'Model No Base Year Adj';
         layerSegments.renderer = rendererSegmentsVolume;
         labelClass.labelExpressionInfo.expression = "Text(" + _expression + ", '#,###')";
@@ -181,9 +186,9 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
     }
 
     if (document.getElementById('checkboxNoNotes').checked==true) {
-      layerSegments.definitionExpression = "NOTES = ''";
+      layerSegments.definitionExpression += " AND NOTES = ''";
     } else {
-      layerSegments.definitionExpression = "";
+      layerSegments.definitionExpression += "";
     }
 
     // forecasts
@@ -640,7 +645,8 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
           selectSegId.selectedOption = option;
         }
       });
-      updateToSegment();
+      updatePanelInfo();
+      updateMap();
     }
     // run first time
     updateSegments();
@@ -657,7 +663,7 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
       if (select && select.children && select.selectedOption.nextElementSibling) {
         // Increment the selectedIndex to select the next option
         selectSegId.selectedOption = select.selectedOption.nextElementSibling;
-        updateToSegment();
+        updatePanelInfo();
       } else {
         //alert('No more items to select.'); // Alert if there's no next option or if select is not found
       }
@@ -676,7 +682,7 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
       if (select && select.children && select.selectedOption.previousElementSibling) {
         // Increment the selectedIndex to select the next option
         selectSegId.selectedOption = select.selectedOption.previousElementSibling;
-        updateToSegment();
+        updatePanelInfo();
       } else {
         //alert('No more items to select.'); // Alert if there's no next option or if select is not found
       }
@@ -739,7 +745,7 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
                 buttonApply.classList.add('btn-clean');
               }
               
-              updateToSegment();
+              updatePanelInfo();
             }
           }).catch(function(error) {
             console.error('Error updating feature: ', error);
@@ -791,7 +797,7 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
     // Create a new Calcite button
     const buttonApply = document.createElement('button');
     buttonApply.id = 'button-apply';
-    buttonApply.innerHTML = 'Apply Manual Adjustments'; // Set the buttonApply text
+    buttonApply.innerHTML = 'Save Changes'; // Set the buttonApply text
     buttonApply.classList.add('btn-clean'); // Start with the red color
 
     // Add an event listener to the buttonApply for the 'click' event
@@ -832,7 +838,7 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
                 }
               },
               title: {
-                display: true,
+                display: false,
                 text: 'YEAR'
               }
             },
@@ -850,7 +856,7 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
     } // createChart()
 
     // Function to update the chart with segment data
-    async function updateToSegment() {
+    async function updatePanelInfo() {
       // If there's an existing chart, destroy it
       if (!myChart) {
         createChart();
@@ -1011,7 +1017,7 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
         // Create the chart
         myChart.data.datasets = [
           {
-            label: 'Observed AADT',
+            label: 'UDOT Estimated AADT',
             data: chartDataAadt,
             borderColor: 'lightgray',
             backgroundColor: 'lightgray',
@@ -1216,18 +1222,18 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
         });
         
       }
-    } //updateToSegment()
+    } //updatePanelInfo()
   
     //populateComboboxFlagsProjGroups().then(() => {
-    //  console.log('Calling updateToSegment');
-    //  updateToSegment();
+    //  console.log('Calling updatePanelInfo');
+    //  updatePanelInfo();
     //});
 
-    updateToSegment();
+    updatePanelInfo();
 
     // Update the chart when the selectors are changed
     selectPlanArea.addEventListener('calciteSegmentedControlChange', updateCoNames);
-    selectSegId.addEventListener('calciteSelectChange', updateToSegment);
+    selectSegId.addEventListener('calciteSelectChange', updatePanelInfo);
     selectCoName.addEventListener('calciteSelectChange', updateSegments);
 
     
@@ -1255,13 +1261,13 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
     
           querySEGIDByFID(featureFID).then(function(SEGID) {
             selectSegId.value = SEGID;
-            updateToSegment();
+            updatePanelInfo();
           });
         }
       });
     });
 
-    //selectSource.addEventListener('calciteSelectChange', updateToSegment);
+    //selectSource.addEventListener('calciteSelectChange', updatePanelInfo);
   }
 
   // Load the data when the page is ready

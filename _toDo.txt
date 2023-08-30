@@ -1,3 +1,5 @@
+Trip intensity (TAZ-->TOTHH+(1.8 TOTEMP))
+
 Auto apply changes (on lose focus)
 Round final forecast!
 
@@ -12,7 +14,7 @@ Flag countdowns!
 Add further review flag!
 Add flags to map
 Maybe reviewed flag is when no text in notes?
-
+High model adjustment factor
 
 
 Additional Features

@@ -61,12 +61,11 @@
                         </td>
                     </tr>
                 </table>
-                <br/>
                 <div class="chart-container">
                     <canvas id="chartType"></canvas>
                 </div>
                 <div>
-                    <table width="100%">
+                    <table class="light-blue-table" width="100%">
                         <tr>
                             <td width="52%">
                                 &nbsp;
@@ -138,10 +137,9 @@
                         </tr>
                         <tr>
                             <td align="right">
-                                <div id="apply-edits"></div><!--<button onclick="updateFeature()">Apply adjustments:</button>-->
+                                Manual Adjustments:
                             </td>
                             <td>
-                                
                             </td>
                             <td>
                                 <input type="text" id="adj2023Value" class="manualAdj right-align-input" placeholder="">
@@ -298,18 +296,18 @@
                             </td>
                         </tr>
                         <tr>
-                            <td align="right">
-                                Edit Key:
+                            <td colspan="7">
+                                <span class="notes-container">Notes:<textarea class="top-align-input" id="notes" style="width: 100%; height: 30px;"></textarea></span>
                             </td>
-                            <td colspan="6">
+                        </tr>
+                        <tr>
+                            <td colspan="5" align="right">
                                 <div class="input-group">
                                     <input type="text" id="edit-key" placeholder="Enter edit key" class="input">
                                 </div>
                             </td>
-                        </tr>
-                        <tr>
-                            <td colspan="7">
-                                <span class="notes-container">Notes:<textarea class="top-align-input" id="notes" style="width: 100%; height: 20px;"></textarea></span>
+                            <td colspan="2" align="right">
+                                <div id="apply-edits"></div><!--<button onclick="updateFeature()">Save Changes</button>-->
                             </td>
                         </tr>
                     </table>

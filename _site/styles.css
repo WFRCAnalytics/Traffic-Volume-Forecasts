@@ -1,3 +1,7 @@
+.light-blue-table {
+    background-color: lightgrey;
+}
+
 .notes-container {
     display: flex;
     align-items: center;
