@@ -4,23 +4,21 @@ Auto apply changes (on lose focus)
 Round final forecast!
 
 Bugs
-Fix click segment outside of county or not in dropdown list
 Click on map when making edits... ask to save?
 fix dirty comments paste
 Round adjustment before applying edits
 
 Flags!
 Flag countdowns!
-Add further review flag!
 Add flags to map
 Maybe reviewed flag is when no text in notes?
 High model adjustment factor
+Add further review flag!
 
 
 Additional Features
 
 Show area type
-
 Save last reviewed segment and edit key?
 preserve zoom level
 Add link to SE Map
@@ -82,5 +80,7 @@ DONE!--Apply adjustment button to refresh view after
 DONE!--Filter out operations projects from RTP projects
 DONE!--Add log file
 DONE!--Turn on roadway projects
+DONE!--ONLY SEGS FOR COUNTY IN DROP DOWN ARE SHOWN - Fix click segment outside of county or not in dropdown list
+
 NO!--Get projects from RTP map, use the same symbology (talk to Bert or Sarah)
 NO!--Add model network with segids as layer??

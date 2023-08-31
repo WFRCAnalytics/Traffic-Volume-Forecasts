@@ -1,10 +1,12 @@
 let legend;
-let initialValue2023 = 0;
-let initialValue2028 = 0;
-let initialValue2032 = 0;
-let initialValue2042 = 0;
-let initialValue2050 = 0;
-let initialValueNote = "";
+let inputIds = [
+  'adj2019Value', 'adj2023Value', 'adj2028Value', 
+  'adj2032Value', 'adj2042Value', 'adj2050Value', 'notes'
+];
+let years = ["2019", "2023", "2028", "2032", "2042", "2050"];
+let prefixes = ["adj", "f", "mf", "m", "diff", "dyvol", "lanes", "ft", "at"];
+
+let initialValues = [0,0,0,0,0,0,""];
 let editKey = ['bill','suzie'];
 let tableLog;
 let tableLogUrl;
@@ -32,8 +34,8 @@ let curCompare = 'None';
 let curDisplayForecast = 'final-forecast';
 let curDisplayYear = '2050';
 let defBase = 'MF2050';
-let defaultPlanArea = 'WFRC';
-let defaultCounty   = 'BOX ELDER';
+let defaultPlanArea = 'Entire State';
+let defaultCounty   = 'All Counties';
 let defaultSource = 'AADTHistory.xlsx';
 let myChart; // Keep track of the current chart
 let view;
@@ -126,12 +128,32 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
     else if (curDisplayYear=="2023") {
       _prevDisplayYear = 2019;
     }
+
+    if (document.getElementById('selectPlanArea').value!=='Entire State') {
+      // A single plan area and a single county
+      if (document.getElementById('selectCoName').value!=='All Counties') {
+        layerSegments.definitionExpression = "CO_NAME = '" + document.getElementById('selectCoName').value + "' AND PLANAREA = '" + document.getElementById('selectPlanArea').value + "'"
+      }
+      // A single plan area but all counties
+      else {
+        layerSegments.definitionExpression = "PLANAREA = '" + document.getElementById('selectPlanArea').value + "'";
+      }
+    } else {
+      // the entire state but a single county
+      if (document.getElementById('selectCoName').value!=='All Counties') {
+        layerSegments.definitionExpression = "CO_NAME = '" + document.getElementById('selectCoName').value + "'";
+      }
+      // the entire state and all counties
+      else {
+        layerSegments.definitionExpression = "";
+      }
+    }
     
     switch (curDisplayForecast) {
       case 'final-forecast':
         _expression = "$feature.MF" + curDisplayYear + " + $feature.ADJ" + curDisplayYear;
         rendererSegmentsVolume.valueExpression = _expression;
-        layerSegments.definitionExpression = "CO_NAME = '" + document.getElementById('selectCoName').value + "'";
+        
         rendererSegmentsVolume.valueExpressionTitle = /*curDisplayYear + ' */'Final Forecast';
         layerSegments.renderer = rendererSegmentsVolume;
         labelClass.labelExpressionInfo.expression = "Text(" + _expression + ", '#,###')";
@@ -139,7 +161,6 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
       case 'final-forecast-change-2019':
         _expression = "$feature.MF" + curDisplayYear + " + $feature.ADJ" + curDisplayYear + " - $feature.MF2019 - $feature.ADJ2019";
         rendererSegmentsVolumeCompare.valueExpression = _expression;
-        layerSegments.definitionExpression = "CO_NAME = '" + document.getElementById('selectCoName').value + "'";
         rendererSegmentsVolumeCompare.valueExpressionTitle = /*curDisplayYear + ' */'Final Forecast Change from 2019';
         layerSegments.renderer = rendererSegmentsVolumeCompare;
         labelClass.labelExpressionInfo.expression = "Text(" + _expression + ", '#,###')";
@@ -147,7 +168,6 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
       case 'final-forecast-change-prev':
         _expression = "$feature.MF" + curDisplayYear + " + $feature.ADJ" + curDisplayYear + " - $feature.MF" + _prevDisplayYear + " - $feature.ADJ" + _prevDisplayYear;
         rendererSegmentsVolumeCompare.valueExpression = _expression;
-        layerSegments.definitionExpression = "CO_NAME = '" + document.getElementById('selectCoName').value + "'";
         rendererSegmentsVolumeCompare.valueExpressionTitle = /*curDisplayYear + ' */'Final Forecast Change from Previous Year' /* + _prevDisplayYear*/;
         layerSegments.renderer = rendererSegmentsVolumeCompare;
         labelClass.labelExpressionInfo.expression = "Text(" + _expression + ", '#,###')";
@@ -155,7 +175,6 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
       case 'manual-adjustments':
         _expression = "$feature.ADJ" + curDisplayYear;
         rendererSegmentsVolumeAdjust.valueExpression = _expression;
-        layerSegments.definitionExpression = "CO_NAME = '" + document.getElementById('selectCoName').value + "'";
         rendererSegmentsVolumeAdjust.valueExpressionTitle = /*curDisplayYear + ' */'Manual Adjustments';
         layerSegments.renderer = rendererSegmentsVolumeAdjust;
         labelClass.labelExpressionInfo.expression = "IIF(" + _expression + " == 0, '', Text(" + _expression + ", '#,###'))";
@@ -163,7 +182,6 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
       case 'model-forecast':
         _expression = "$feature.MF" + curDisplayYear;
         rendererSegmentsVolume.valueExpression = _expression;
-        layerSegments.definitionExpression = "CO_NAME = '" + document.getElementById('selectCoName').value + "'";
         rendererSegmentsVolume.valueExpressionTitle = /*curDisplayYear + ' */'Model Forecast';
         layerSegments.renderer = rendererSegmentsVolume;
         labelClass.labelExpressionInfo.expression = "Text(" + _expression + ", '#,###')";
@@ -171,7 +189,6 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
       case 'model-nobaseyearadj':
         _expression = "$feature.M" + curDisplayYear;
         rendererSegmentsVolume.valueExpression = _expression;
-        layerSegments.definitionExpression = "CO_NAME = '" + document.getElementById('selectCoName').value + "'";
         rendererSegmentsVolume.valueExpressionTitle = /*curDisplayYear + ' */'Model No Base Year Adj';
         layerSegments.renderer = rendererSegmentsVolume;
         labelClass.labelExpressionInfo.expression = "Text(" + _expression + ", '#,###')";
@@ -526,6 +543,12 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
       }
     }
 
+    // Add entire state option first
+    const newItem = document.createElement('calcite-segmented-control-item');
+    newItem.textContent = 'Entire State';
+    newItem.value = 'Entire State';
+    selectPlanArea.appendChild(newItem);
+
     // Append the items for the unique PLANAREA values
     uniquePlanAreas.forEach(planArea => {
       const item = document.createElement('calcite-segmented-control-item');
@@ -547,7 +570,14 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
 
     function updateCoNames() {
       // Filter dataSegments by PLANAREA and then extract the CO_NAME values
-      const coNames = dataSegments.filter(item => item.PLANAREA === document.getElementById('selectPlanArea').value).map(item => item.CO_NAME);
+      var coNames;
+
+      if (document.getElementById('selectPlanArea').value === 'Entire State') {
+        coNames = dataSegments.map(item => item.CO_NAME);
+      } else {
+        coNames = dataSegments.filter(item => item.PLANAREA === document.getElementById('selectPlanArea').value).map(item => item.CO_NAME);
+      }
+      
       // Create a Set from the coNames array to remove duplicates
       const uniqueCoNames = [...new Set(coNames)].sort();;
 
@@ -557,6 +587,13 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
           selectCoName.removeChild(selectCoName.firstChild);
         }
       }
+      
+      // Add all counties option
+      const newItem = document.createElement('calcite-option');
+      newItem.textContent = 'All Counties';
+      newItem.value = 'All Counties';
+      selectCoName.appendChild(newItem);
+      selectCoName.value = 'All Counties';
 
       uniqueCoNames.forEach((id,index) => {
         const option = document.createElement('calcite-option');
@@ -567,9 +604,7 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
           option.textContent = id;
         }
         selectCoName.appendChild(option);
-        if (index==0) {
-          selectCoName.value = id;
-        }
+
       });
       
       if (selectSegId) {
@@ -625,28 +660,53 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
     // Populate the SEGID selector from the data
 
     function updateSegments() {
-      const filteredSegments = dataSegments.filter(item => item.CO_NAME === document.getElementById('selectCoName').value && item.PLANAREA === document.getElementById('selectPlanArea').value);
-      const segIds = [...new Set(filteredSegments.map(item => item.SEGID))].sort();
+      
+      var _filteredSegments;
 
-      // Remove all existing child elements
-      if (selectSegId.firstChild) {
-        while (selectSegId.firstChild) {
-          selectSegId.removeChild(selectSegId.firstChild);
+      if (document.getElementById('selectPlanArea').value!=='Entire State') {
+        // A single plan area and a single county
+        if (document.getElementById('selectCoName').value!=='All Counties') {
+          _filteredSegments = dataSegments.filter(item => item.CO_NAME === document.getElementById('selectCoName').value && item.PLANAREA === document.getElementById('selectPlanArea').value);
         }
+        // A single plan area but all counties
+        else {
+          _filteredSegments = dataSegments.filter(item => item.PLANAREA === document.getElementById('selectPlanArea').value);
+        }
+      } else {
+        // the entire state but a single county
+        if (document.getElementById('selectCoName').value!=='All Counties') {
+          _filteredSegments = dataSegments.filter(item => item.CO_NAME === document.getElementById('selectCoName').value);
+        }
+        // the entire state and all counties
+        else {
+          _filteredSegments = dataSegments;
+        }
+        
       }
+      
+      if (typeof _filteredSegments !== 'undefined' && _filteredSegments !== null) {
+        const segIds = [...new Set(_filteredSegments.map(item => item.SEGID))].sort();
 
-      segIds.forEach((id,index) => {
-        const option = document.createElement('calcite-option');
-        option.value = id;
-        option.textContent = id;
-        selectSegId.appendChild(option);
-        if (index === 0) {
-          selectSegId.value = id;
-          selectSegId.selectedOption = option;
+        // Remove all existing child elements
+        if (selectSegId.firstChild) {
+          while (selectSegId.firstChild) {
+            selectSegId.removeChild(selectSegId.firstChild);
+          }
         }
-      });
-      updatePanelInfo();
-      updateMap();
+  
+        segIds.forEach((id,index) => {
+          const option = document.createElement('calcite-option');
+          option.value = id;
+          option.textContent = id;
+          selectSegId.appendChild(option);
+          if (index === 0) {
+            selectSegId.value = id;
+            selectSegId.selectedOption = option;
+          }
+        });
+        updatePanelInfo();
+        updateMap();
+      }
     }
     // run first time
     updateSegments();
@@ -724,14 +784,11 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
           featureToUpdate.attributes.ADJ2042 = document.getElementById('adj2042Value').value;
           featureToUpdate.attributes.ADJ2050 = document.getElementById('adj2050Value').value;
           featureToUpdate.attributes.NOTES   = document.getElementById('notes'       ).value.trim();
-          
-          //initialValue2019 = document.getElementById('adj2019Value').value;
-          initialValue2023 = document.getElementById('adj2023Value').value;
-          initialValue2028 = document.getElementById('adj2028Value').value;
-          initialValue2032 = document.getElementById('adj2032Value').value;
-          initialValue2042 = document.getElementById('adj2042Value').value;
-          initialValue2050 = document.getElementById('adj2050Value').value;
-          initialValueNote = document.getElementById('notes'       ).value.trim();
+                    
+          inputIds.forEach(id => {
+            const inputElement = document.getElementById(id);
+            initialValues[id] = inputElement.value.trim();
+          });
 
           // Apply the edits
           layerSegments.applyEdits({
@@ -805,7 +862,7 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
       // Get the select element with ID 'selectSegId'
       const select = document.getElementById('selectSegId');
   
-      if (select && select.children && select.selectedOption.nextElementSibling) {
+      if (select && select.children) {
         if (this.classList.contains('btn-dirty')) {
           applyEdits();
         }
@@ -862,84 +919,35 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
         createChart();
       }
 
-      if (buttonApply.classList.contains('btn-dirty')) {
-        buttonApply.classList.remove('btn-dirty');
-        buttonApply.classList.add('btn-clean');
+      const buttonApply = document.getElementById('button-apply');
+
+      if (buttonApply) {
+        if (buttonApply.classList.contains('btn-dirty')) {
+          buttonApply.classList.remove('btn-dirty');
+          buttonApply.classList.add('btn-clean');
+        }          
       }
 
-      // initialize table
-      // update values in manual adjustment boxes
-      //document.getElementById("adj2019Value").value = '';
-      document.getElementById("adj2023Value").value = '';
-      document.getElementById("adj2028Value").value = '';
-      document.getElementById("adj2032Value").value = '';
-      document.getElementById("adj2042Value").value = '';
-      document.getElementById("adj2050Value").value = '';
-      document.getElementById("notes"       ).value = '';
+      // Function to clear values based on the provided prefixes and years
+      function clearValues() {
+        for (const prefix of prefixes) {
+          for (const year of years) {
+            const elementId = `${prefix}${year}Value`;
+            const element = document.getElementById(elementId);
 
-      // update values in final forecast
-      document.getElementById("f2019Value").innerHTML = '';
-      document.getElementById("f2023Value").innerHTML = '';
-      document.getElementById("f2028Value").innerHTML = '';
-      document.getElementById("f2032Value").innerHTML = '';
-      document.getElementById("f2042Value").innerHTML = '';
-      document.getElementById("f2050Value").innerHTML = '';
+            if (element) {
+              if (element.tagName === 'INPUT') {
+                element.value = '';
+              } else {
+                element.innerHTML = '';
+              }
+            }
+          }
+        }
+      }
 
-      // update values in model forecast
-      document.getElementById("mf2019Value").innerHTML = '';
-      document.getElementById("mf2023Value").innerHTML = '';
-      document.getElementById("mf2028Value").innerHTML = '';
-      document.getElementById("mf2032Value").innerHTML = '';
-      document.getElementById("mf2042Value").innerHTML = '';
-      document.getElementById("mf2050Value").innerHTML = '';
-
-      // update values in model raw
-      document.getElementById("m2019Value").innerHTML = '';
-      document.getElementById("m2023Value").innerHTML = '';
-      document.getElementById("m2028Value").innerHTML = '';
-      document.getElementById("m2032Value").innerHTML = '';
-      document.getElementById("m2042Value").innerHTML = '';
-      document.getElementById("m2050Value").innerHTML = '';
-
-      // update values in model forecast
-      document.getElementById("diff2019Value").innerHTML = '';
-      document.getElementById("diff2023Value").innerHTML = '';
-      document.getElementById("diff2028Value").innerHTML = '';
-      document.getElementById("diff2032Value").innerHTML = '';
-      document.getElementById("diff2042Value").innerHTML = '';
-      document.getElementById("diff2050Value").innerHTML = '';
-
-      // update values in model raw
-      document.getElementById("dyvol2019Value").innerHTML = '';
-      document.getElementById("dyvol2023Value").innerHTML = '';
-      document.getElementById("dyvol2028Value").innerHTML = '';
-      document.getElementById("dyvol2032Value").innerHTML = '';
-      document.getElementById("dyvol2042Value").innerHTML = '';
-      document.getElementById("dyvol2050Value").innerHTML = '';
-    
-      // update values in model raw
-      document.getElementById("lanes2019Value").innerHTML = '';
-      document.getElementById("lanes2023Value").innerHTML = '';
-      document.getElementById("lanes2028Value").innerHTML = '';
-      document.getElementById("lanes2032Value").innerHTML = '';
-      document.getElementById("lanes2042Value").innerHTML = '';
-      document.getElementById("lanes2050Value").innerHTML = '';
-
-      // update values in model raw
-      document.getElementById("ft2019Value").innerHTML = '';
-      document.getElementById("ft2023Value").innerHTML = '';
-      document.getElementById("ft2028Value").innerHTML = '';
-      document.getElementById("ft2032Value").innerHTML = '';
-      document.getElementById("ft2042Value").innerHTML = '';
-      document.getElementById("ft2050Value").innerHTML = '';
-
-      // update values in model raw
-      document.getElementById("at2019Value").innerHTML = '';
-      document.getElementById("at2023Value").innerHTML = '';
-      document.getElementById("at2028Value").innerHTML = '';
-      document.getElementById("at2032Value").innerHTML = '';
-      document.getElementById("at2042Value").innerHTML = '';
-      document.getElementById("at2050Value").innerHTML = '';
+      // Call the function to clear values
+      clearValues();
 
       const selectSegId = document.getElementById('selectSegId');
       const _curSegId = selectSegId.value;
@@ -1061,164 +1069,100 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
         document.getElementById("adj2050Value").value = feature.attributes.ADJ2050;
         document.getElementById("notes"       ).value = feature.attributes.NOTES.trim();
 
-        // update values in final forecast
-        document.getElementById("f2019Value").innerHTML = chartDataForecasts[0].y.toLocaleString('en-US');
-        document.getElementById("f2023Value").innerHTML = chartDataForecasts[1].y.toLocaleString('en-US');
-        document.getElementById("f2028Value").innerHTML = chartDataForecasts[2].y.toLocaleString('en-US');
-        document.getElementById("f2032Value").innerHTML = chartDataForecasts[3].y.toLocaleString('en-US');
-        document.getElementById("f2042Value").innerHTML = chartDataForecasts[4].y.toLocaleString('en-US');
-        document.getElementById("f2050Value").innerHTML = chartDataForecasts[5].y.toLocaleString('en-US');
+        // Define all data arrays in a localized dictionary
+        const dataArrays = {
+          chartDataForecasts,
+          chartDataModForecasts,
+          chartDataModAadt,
+          chartDataModDyvol,
+          chartDataModLanes,
+          chartDataModFt,
+          chartDataModAt,
+          // ... Add other data arrays as needed
+        };
 
-        // update values in model forecast
-        document.getElementById("mf2019Value").innerHTML = chartDataModForecasts[0].y.toLocaleString('en-US');
-        document.getElementById("mf2023Value").innerHTML = chartDataModForecasts[1].y.toLocaleString('en-US');
-        document.getElementById("mf2028Value").innerHTML = chartDataModForecasts[2].y.toLocaleString('en-US');
-        document.getElementById("mf2032Value").innerHTML = chartDataModForecasts[3].y.toLocaleString('en-US');
-        document.getElementById("mf2042Value").innerHTML = chartDataModForecasts[4].y.toLocaleString('en-US');
-        document.getElementById("mf2050Value").innerHTML = chartDataModForecasts[5].y.toLocaleString('en-US');
+        // Define mapping for each data array to its DOM prefix
+        const mappings = [
+          { prefix: "f"    , data: "chartDataForecasts"   , special: "toLocaleString" },
+          { prefix: "mf"   , data: "chartDataModForecasts", special: "toLocaleString" },
+          { prefix: "m"    , data: "chartDataModAadt"     , special: "toLocaleString" },
+          { prefix: "dyvol", data: "chartDataModDyvol"    , special: "Math.round" },
+          { prefix: "lanes", data: "chartDataModLanes"    , special: "toLocaleString" },
+          { prefix: "ft"   , data: "chartDataModFt"       , special: "toLocaleString" },
+          { prefix: "at"   , data: "chartDataModAt"       , special: "direct" }
+        ];
 
-        // update values in model no base year adjustment
-        document.getElementById("m2019Value").innerHTML = chartDataModAadt[0].y.toLocaleString('en-US');
-        document.getElementById("m2023Value").innerHTML = chartDataModAadt[1].y.toLocaleString('en-US');
-        document.getElementById("m2028Value").innerHTML = chartDataModAadt[2].y.toLocaleString('en-US');
-        document.getElementById("m2032Value").innerHTML = chartDataModAadt[3].y.toLocaleString('en-US');
-        document.getElementById("m2042Value").innerHTML = chartDataModAadt[4].y.toLocaleString('en-US');
-        document.getElementById("m2050Value").innerHTML = chartDataModAadt[5].y.toLocaleString('en-US');
+        mappings.forEach(map => {
+          years.forEach((year, index) => {
+            const elementId = `${map.prefix}${year}Value`;
+            const element = document.getElementById(elementId);
+            let value;
 
-        // update values in model forecast change
-        document.getElementById("diff2019Value").innerHTML = "";
-        document.getElementById("diff2023Value").innerHTML = (chartDataForecasts[1].y - chartDataForecasts[0].y).toLocaleString('en-US');
-        document.getElementById("diff2028Value").innerHTML = (chartDataForecasts[2].y - chartDataForecasts[1].y).toLocaleString('en-US');
-        document.getElementById("diff2032Value").innerHTML = (chartDataForecasts[3].y - chartDataForecasts[2].y).toLocaleString('en-US');
-        document.getElementById("diff2042Value").innerHTML = (chartDataForecasts[4].y - chartDataForecasts[3].y).toLocaleString('en-US');
-        document.getElementById("diff2050Value").innerHTML = (chartDataForecasts[5].y - chartDataForecasts[4].y).toLocaleString('en-US');
-
-        // update values in model no base year adjustment
-        document.getElementById("dyvol2019Value").innerHTML = Math.round(chartDataModDyvol[0].y).toLocaleString('en-US');
-        document.getElementById("dyvol2023Value").innerHTML = Math.round(chartDataModDyvol[1].y).toLocaleString('en-US');
-        document.getElementById("dyvol2028Value").innerHTML = Math.round(chartDataModDyvol[2].y).toLocaleString('en-US');
-        document.getElementById("dyvol2032Value").innerHTML = Math.round(chartDataModDyvol[3].y).toLocaleString('en-US');
-        document.getElementById("dyvol2042Value").innerHTML = Math.round(chartDataModDyvol[4].y).toLocaleString('en-US');
-        document.getElementById("dyvol2050Value").innerHTML = Math.round(chartDataModDyvol[5].y).toLocaleString('en-US');
-
-        // update values in model no base year adjustment
-        document.getElementById("lanes2019Value").innerHTML = chartDataModLanes[0].y.toLocaleString('en-US');
-        document.getElementById("lanes2023Value").innerHTML = chartDataModLanes[1].y.toLocaleString('en-US');
-        document.getElementById("lanes2028Value").innerHTML = chartDataModLanes[2].y.toLocaleString('en-US');
-        document.getElementById("lanes2032Value").innerHTML = chartDataModLanes[3].y.toLocaleString('en-US');
-        document.getElementById("lanes2042Value").innerHTML = chartDataModLanes[4].y.toLocaleString('en-US');
-        document.getElementById("lanes2050Value").innerHTML = chartDataModLanes[5].y.toLocaleString('en-US');
-
-        // update values in model no base year adjustment
-        document.getElementById("ft2019Value").innerHTML = chartDataModFt[0].y.toLocaleString('en-US');
-        document.getElementById("ft2023Value").innerHTML = chartDataModFt[1].y.toLocaleString('en-US');
-        document.getElementById("ft2028Value").innerHTML = chartDataModFt[2].y.toLocaleString('en-US');
-        document.getElementById("ft2032Value").innerHTML = chartDataModFt[3].y.toLocaleString('en-US');
-        document.getElementById("ft2042Value").innerHTML = chartDataModFt[4].y.toLocaleString('en-US');
-        document.getElementById("ft2050Value").innerHTML = chartDataModFt[5].y.toLocaleString('en-US');
-
-        // update values in model no base year adjustment
-        document.getElementById("at2019Value").innerHTML = chartDataModAt[0].y;
-        document.getElementById("at2023Value").innerHTML = chartDataModAt[1].y;
-        document.getElementById("at2028Value").innerHTML = chartDataModAt[2].y;
-        document.getElementById("at2032Value").innerHTML = chartDataModAt[3].y;
-        document.getElementById("at2042Value").innerHTML = chartDataModAt[4].y;
-        document.getElementById("at2050Value").innerHTML = chartDataModAt[5].y;
-
-        const inputElement2023 = document.getElementById('adj2023Value');
-        initialValue2023 = inputElement2023.value;
-
-        inputElement2023.addEventListener('input', function() {
-            if (inputElement2023.value !== initialValue2023) {
-                console.log('Input is dirty.');
-                // You can perform additional actions here if needed
-                if (buttonApply.classList.contains('btn-clean')) {
-                  buttonApply.classList.remove('btn-clean');
-                  buttonApply.classList.add('btn-dirty');
-                }
+            const dataArray = dataArrays[map.data];
+            if (dataArray && dataArray[index]) {
+              if (map.special === "toLocaleString") {
+                value = dataArray[index].y.toLocaleString('en-US');
+              } else if (map.special === "Math.round") {
+                value = Math.round(dataArray[index].y).toLocaleString('en-US');
+              } else if (map.special === "direct") {
+                value = dataArray[index].y;
+              }
             } else {
-                console.log('Input is clean.');
+              value = "";
             }
+
+            if (element) {
+              if (element.tagName === 'INPUT') {
+                element.value = value;
+              } else {
+                element.innerHTML = value;
+              }
+            }
+          });
         });
 
-        const inputElement2028 = document.getElementById('adj2028Value');
-        initialValue2028 = inputElement2028.value;
-
-        inputElement2028.addEventListener('input', function() {
-            if (inputElement2028.value !== initialValue2028) {
-                console.log('Input is dirty.');
-                // You can perform additional actions here if needed
-                if (buttonApply.classList.contains('btn-clean')) {
-                  buttonApply.classList.remove('btn-clean');
-                  buttonApply.classList.add('btn-dirty');
-                }
+        // Handle special case for diff values
+        years.forEach((year, index) => {
+          const elementId = `diff${year}Value`;
+          const element = document.getElementById(elementId);
+          
+          if (element) {
+            if (index === 0) {
+              element.innerHTML = "";
             } else {
-                console.log('Input is clean.');
+              // Ensure both the current and previous elements in the array are defined
+              if (chartDataForecasts[index] && chartDataForecasts[index - 1]) {
+                const difference = chartDataForecasts[index].y - chartDataForecasts[index - 1].y;
+                element.innerHTML = difference.toLocaleString('en-US');
+              } else {
+                element.innerHTML = "";  // Default to an empty string if data isn't available
+              }
             }
+          }
         });
-        
-        const inputElement2032 = document.getElementById('adj2032Value');
-        initialValue2032 = inputElement2028.value;
 
-        inputElement2032.addEventListener('input', function() {
-            if (inputElement2032.value !== initialValue2032) {
+        // Special case for notes
+        const notesElement = document.getElementById("notes");
+        if (notesElement) {
+          notesElement.value = feature.attributes.NOTES.trim();
+        }
+       
+        inputIds.forEach(id => {
+            const inputElement = document.getElementById(id);
+            initialValues[id] = inputElement.value;
+            
+            inputElement.addEventListener('input', function() {
+              const buttonApply = document.getElementById('button-apply');
+              if (inputElement.value !== initialValues[id]) {
                 console.log('Input is dirty.');
-                // You can perform additional actions here if needed
                 if (buttonApply.classList.contains('btn-clean')) {
                   buttonApply.classList.remove('btn-clean');
                   buttonApply.classList.add('btn-dirty');
                 }
-            } else {
+              } else {
                 console.log('Input is clean.');
-            }
-        });
-        
-        const inputElement2042 = document.getElementById('adj2042Value');
-        initialValue2042 = inputElement2028.value;
-
-        inputElement2042.addEventListener('input', function() {
-            if (inputElement2042.value !== initialValue2042) {
-                console.log('Input is dirty.');
-                // You can perform additional actions here if needed
-                if (buttonApply.classList.contains('btn-clean')) {
-                  buttonApply.classList.remove('btn-clean');
-                  buttonApply.classList.add('btn-dirty');
-                }
-            } else {
-                console.log('Input is clean.');
-            }
-        });
-        
-        const inputElement2050 = document.getElementById('adj2050Value');
-        initialValue2050 = inputElement2028.value;
-
-        inputElement2050.addEventListener('input', function() {
-            if (inputElement2050.value !== initialValue2050) {
-                console.log('Input is dirty.');
-                // You can perform additional actions here if needed
-                if (buttonApply.classList.contains('btn-clean')) {
-                  buttonApply.classList.remove('btn-clean');
-                  buttonApply.classList.add('btn-dirty');
-                }
-            } else {
-                console.log('Input is clean.');
-            }
-        });
-        
-        const inputElementNote = document.getElementById('notes');
-        initialValueNote = inputElementNote.value;
-
-        inputElementNote.addEventListener('input', function() {
-            if (inputElementNote.value !== initialValueNote) {
-                console.log('Input is dirty.');
-                // You can perform additional actions here if needed
-                if (buttonApply.classList.contains('btn-clean')) {
-                  buttonApply.classList.remove('btn-clean');
-                  buttonApply.classList.add('btn-dirty');
-                }
-            } else {
-                console.log('Input is clean.');
-            }
+              }
+            });
         });
         
       }
