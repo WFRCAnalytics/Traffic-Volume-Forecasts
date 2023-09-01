@@ -3,6 +3,13 @@ Trip intensity (TAZ-->TOTHH+(1.8 TOTEMP))
 Auto apply changes (on lose focus)
 Round final forecast!
 
+Add historic estimate adjustment field
+
+
+Notes:
+Separate into 'Reviewed Notes:' (NOTES_REV) and 'Further Review Notes' (NOTES_FREV)
+
+
 Bugs
 Click on map when making edits... ask to save?
 fix dirty comments paste
