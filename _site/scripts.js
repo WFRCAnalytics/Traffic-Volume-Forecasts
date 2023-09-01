@@ -34,8 +34,8 @@ let curCompare = 'None';
 let curDisplayForecast = 'final-forecast';
 let curDisplayYear = '2050';
 let defBase = 'MF2050';
-let defaultPlanArea = 'Entire State';
-let defaultCounty   = 'All Counties';
+let defaultPlanArea = 'WFRC';
+let defaultCounty   = 'Davis';
 let defaultSource = 'AADTHistory.xlsx';
 let myChart; // Keep track of the current chart
 let view;
@@ -972,7 +972,7 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
       // Query the feature layer to find the feature with the matching SEGID
       const query = layerSegments.createQuery();
       query.where = "SEGID = '" + _curSegId + "'"; // Replace with your field name and SEGID value
-      query.outFields = ["SEGID", "ADJ2019", "ADJ2023", "ADJ2028", "ADJ2032", "ADJ2042", "ADJ2050", "NOTES"];
+      query.outFields = '*';
       const result = await layerSegments.queryFeatures(query);
 
       // If a matching feature was found, zoom in to it
@@ -1165,6 +1165,60 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
             });
         });
         
+        //build flag table
+        
+        // Function to evaluate criteria
+        function evaluateFlag(feature, flag) {
+          return feature.attributes[flag.flagName] === 1;
+        }
+
+        // Mock event handling function to simulate updating the feature
+        // This is where you would put your code to update the feature's attributes
+        function updateFeature(featureId, orFlagName, newValue) {
+          console.log(`Updating feature with ID ${featureId} and field ${orFlagName} to value ${newValue}`);
+          // Actual code to update the feature goes here
+        }
+
+        function generateTable() {
+          let tableHtml = '<table border="1"><thead><tr><th>Flag Name</th><th>Flag Description</th><th>Toggle</th></tr></thead><tbody>';
+
+          dataFlags.forEach(flag => {
+            if (evaluateFlag(feature, flag)) {
+              const orFlagName = flag.flagName.replace('FL_', 'OV_');
+              const toggleValue = feature.attributes[orFlagName];
+              const switchId = `switch_${orFlagName}`;
+
+              tableHtml += `<tr>
+                <td>${flag.flagName}</td>
+                <td>${flag.flagDescription}</td>
+                <td>
+                  <calcite-switch
+                    id="${switchId}"
+                    scale="s"
+                    switched="${toggleValue === 1 ? 'true' : 'false'}">
+                  </calcite-switch>
+                </td>
+              </tr>`;
+            }
+          });
+
+          tableHtml += '</tbody></table>';
+          document.getElementById("flags").innerHTML = tableHtml;
+
+          // Attach event listeners
+          dataFlags.forEach(flag => {
+            const orFlagName = flag.flagName.replace('FL_', 'OV_');
+            const switchId = `switch_${orFlagName}`;
+
+            document.getElementById(switchId).addEventListener('calciteSwitchChange', (event) => {
+              const newValue = event.target.switched ? 1 : 0;
+              updateFeature(feature.attributes.SEGID, orFlagName, newValue);
+            });
+          });
+        }
+
+        generateTable();
+
       }
     } //updatePanelInfo()
   
