@@ -1,30 +1,15 @@
-Trip intensity (TAZ-->TOTHH+(1.8 TOTEMP))
-
-Auto apply changes (on lose focus)
-Round final forecast!
-
-Add historic estimate adjustment field
-
-
-Notes:
-Separate into 'Reviewed Notes:' (NOTES_REV) and 'Further Review Notes' (NOTES_FREV)
-
-
-Bugs
+BUGS
 Click on map when making edits... ask to save?
 fix dirty comments paste
-Round adjustment before applying edits
+Round adjustment before applying edits or Round final forecast!
 
-Flags!
-Flag countdowns!
+
+ADDITIONAL FEATURES
 Add flags to map
-Maybe reviewed flag is when no text in notes?
-High model adjustment factor
-Add further review flag!
-
-
-Additional Features
-
+Flag countdowns!
+Add SE data: Development intensity (TAZ-->TOTHH+(1.8 TOTEMP))
+Auto apply changes (on lose focus)
+Add historic estimate adjustment field
 Show area type
 Save last reviewed segment and edit key?
 preserve zoom level
@@ -88,6 +73,10 @@ DONE!--Filter out operations projects from RTP projects
 DONE!--Add log file
 DONE!--Turn on roadway projects
 DONE!--ONLY SEGS FOR COUNTY IN DROP DOWN ARE SHOWN - Fix click segment outside of county or not in dropdown list
+DONE!--Maybe reviewed flag is when no text in notes?
+DONE!--High model adjustment factor
+DONE!--Add further review flag!
+DONE!--Separate into 'Reviewed Notes:' (NOTES_REV) and 'Further Review Notes' (NOTES_FREV)
 
 NO!--Get projects from RTP map, use the same symbology (talk to Bert or Sarah)
-NO!--Add model network with segids as layer??
+NO!--Add model network with SEGIDs as layer??

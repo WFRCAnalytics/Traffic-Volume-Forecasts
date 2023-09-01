@@ -35,7 +35,7 @@ let curDisplayForecast = 'final-forecast';
 let curDisplayYear = '2050';
 let defBase = 'MF2050';
 let defaultPlanArea = 'WFRC';
-let defaultCounty   = 'Davis';
+let defaultCounty   = 'DAVIS';
 let defaultSource = 'AADTHistory.xlsx';
 let myChart; // Keep track of the current chart
 let view;
@@ -254,6 +254,7 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
   };
 
   function populateSidebar() {
+    console.log('populateSidebar');
 
     // Once the layerSegments is loaded, populate the radio buttons with the fields
     layerSegments.load().then(function () {
@@ -296,6 +297,7 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
   }
 
   function createMapView() {
+    console.log('createMapView');
     
     const map = new Map({
       basemap: "gray-vector" // Basemap layerSegments service
@@ -483,6 +485,8 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
   let currentHighlightGraphic = null;
 
   function onSelectFeature(feature) {
+    console.log('onSelectFeature');
+
     // Create a graphic using the highlight symbol and the feature's geometry
     const highlightGraphic = new Graphic({
       geometry: feature.geometry,
@@ -506,6 +510,7 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
   }
 
   async function loadAppData() {
+    console.log('loadAppData');
     const responseAadt = await fetch('data/aadt.json');
     const dataAadt = await responseAadt.json();
     
@@ -569,6 +574,8 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
     // Populate the county selector from the data
 
     function updateCoNames() {
+      console.log ('updateCoNames');
+
       // Filter dataSegments by PLANAREA and then extract the CO_NAME values
       var coNames;
 
@@ -660,6 +667,7 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
     // Populate the SEGID selector from the data
 
     function updateSegments() {
+      console.log('updateSegments');
       
       var _filteredSegments;
 
@@ -751,6 +759,7 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
       
     // Function to update the adjustments
     function applyEdits() {
+      console.log('applyEdits');
 
       const inputBoxValue = document.getElementById('edit-key').value;
 
@@ -773,6 +782,8 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
       query.outFields = ['*']; // Get all fields
     
       layerSegments.queryFeatures(query).then(function(results) {
+        console.log('queryFeatures');
+
         if (results.features.length > 0) {
           var featureToUpdate = results.features[0]; // Get the first feature that matches the query
 
@@ -874,6 +885,7 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
 
     // create chart first time... no data, update will populate datasets
     async function createChart() {
+      console.log('createChart');
       const ctx = document.getElementById('chartType').getContext('2d');
       myChart = new Chart(ctx, {
         type: 'scatter',
@@ -1180,7 +1192,7 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
         }
 
         function generateTable() {
-          let tableHtml = '<table border="1"><thead><tr><th>Flag Name</th><th>Flag Description</th><th>Toggle</th></tr></thead><tbody>';
+          let tableHtml = '<table border="0"><thead><tr><th colspan="2" align="left">Override Flags</th></tr></thead><tbody>';
 
           dataFlags.forEach(flag => {
             if (evaluateFlag(feature, flag)) {
@@ -1189,8 +1201,6 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
               const switchId = `switch_${orFlagName}`;
 
               tableHtml += `<tr>
-                <td>${flag.flagName}</td>
-                <td>${flag.flagDescription}</td>
                 <td>
                   <calcite-switch
                     id="${switchId}"
@@ -1198,6 +1208,7 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
                     switched="${toggleValue === 1 ? 'true' : 'false'}">
                   </calcite-switch>
                 </td>
+                <td>${flag.flagDescription}</td>
               </tr>`;
             }
           });
@@ -1205,7 +1216,7 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
           tableHtml += '</tbody></table>';
           document.getElementById("flags").innerHTML = tableHtml;
 
-          // Attach event listeners
+          /*// Attach event listeners
           dataFlags.forEach(flag => {
             const orFlagName = flag.flagName.replace('FL_', 'OV_');
             const switchId = `switch_${orFlagName}`;
@@ -1214,7 +1225,7 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
               const newValue = event.target.switched ? 1 : 0;
               updateFeature(feature.attributes.SEGID, orFlagName, newValue);
             });
-          });
+          });*/
         }
 
         generateTable();
@@ -1236,6 +1247,8 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
 
     
     function querySEGIDByFID(FID) {
+      console.log('querySEGIDByFID');
+
       return new Promise(function(resolve, reject) {
         var query = layerSegments.createQuery();
         query.where = "FID = " + FID;
@@ -1249,6 +1262,7 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
     }
 
     view.on("click", function(event) {
+      console.log('view click');
       view.hitTest(event).then(function(response) {
         var result = response.results.find(function(result) {
           return result.graphic.layer === layerSegments;
