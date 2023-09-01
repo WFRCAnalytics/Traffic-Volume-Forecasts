@@ -7,7 +7,7 @@ let years = ["2019", "2023", "2028", "2032", "2042", "2050"];
 let prefixes = ["adj", "f", "mf", "m", "diff", "dyvol", "lanes", "ft", "at"];
 
 let initialValues = [0,0,0,0,0,0,""];
-let editKey = ['bill','suzie'];
+let editKey = ['billTEMP','suzieNO'];
 let tableLog;
 let tableLogUrl;
 let layerSegments; // Global variable
