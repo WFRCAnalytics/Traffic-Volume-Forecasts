@@ -1,3 +1,10 @@
+.h3-no-margin {
+    font-size: 1.20em; /* This size is typically close to the default size for h3 in many browsers. Adjust as needed. */
+    font-weight: bold;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
 .grey-text {
     color: darkgrey;
 }

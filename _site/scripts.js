@@ -1372,10 +1372,10 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
         }
         
         function generateTable() {
-          let tableHtml = '<table border="0" width="300px"><thead><tr><th colspan="2" align="left">Flag Overrides</th></tr></thead><tbody>';
         
           const renderedFlags = []; // Keep track of rendered flags
-        
+          tableHtml = '';
+
           dataFlags.forEach(flag => {
             if (evaluateFlag(feature, flag)) {
               const orFlagName = flag.flagName.replace('FL_', 'OV_');
@@ -1390,14 +1390,16 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
                     ${toggleValue === 1 ? 'checked' : ''}>
                   </calcite-switch>
                 </td>
-                <td>${flag.flagDescription}</td>
+                <td class="tableText">${flag.flagDescription}</td>
               </tr>`;
         
               renderedFlags.push(orFlagName);
             }
           });
         
-          tableHtml += '</tbody></table>';
+          if (renderedFlags.length) {
+            tableHtml = '<table border="0" width="300px"><thead><tr><th colspan="2" align="left">Flag Overrides</th></tr></thead><tbody>' + tableHtml + '</tbody></table>';
+          }
           document.getElementById("flags").innerHTML = tableHtml;
         
           renderedFlags.forEach(orFlagName => {
@@ -1434,12 +1436,12 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
     document.getElementById('checkboxFlags').addEventListener('calciteCheckboxChange', updateSegments);
 
     
-    function querySEGIDByFID(FID) {
-      console.log('querySEGIDByFID');
+    function querySEGIDByOBJECTID(OBJECTID) {
+      console.log('querySEGIDByOBJECTID');
 
       return new Promise(function(resolve, reject) {
         var query = layerSegments.createQuery();
-        query.where = "FID = " + FID;
+        query.where = "OBJECTID = " + OBJECTID;
         query.outFields = ["SEGID"];
     
         layerSegments.queryFeatures(query).then(function(results) {
@@ -1457,9 +1459,9 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
         });
     
         if (result) {
-          var featureFID = result.graphic.attributes.FID;
+          var featureOBJECTID = result.graphic.attributes.OBJECTID;
     
-          querySEGIDByFID(featureFID).then(function(SEGID) {
+          querySEGIDByOBJECTID(featureOBJECTID).then(function(SEGID) {
             selectSegId.value = SEGID;
             updatePanelInfo();
           });
