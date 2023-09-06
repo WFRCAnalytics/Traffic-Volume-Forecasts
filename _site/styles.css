@@ -1,5 +1,13 @@
+.grey-text {
+    color: darkgrey;
+}
+
 .light-blue-table {
     background-color: lightblue;
+}
+
+.light-grey-table {
+    background-color: lightgrey;
 }
 
 .notes-container {
@@ -65,6 +73,10 @@ body {
     font-size: 14px;
 }
 
+.tableTextSmall {
+    font-size: 12px;
+}
+
 .tableFinal {
     background-color: rgba(255, 166, 0, 0.493);
 }
@@ -119,7 +131,7 @@ input[type="text"].manualAdj {
     flex-direction: column;
     height: calc(100vh - 80px);
     background: #ddd;
-    width: 185px;
+    width: 200px;
     padding-left: 15px;
     padding-right: 15px;
     overflow: auto; /* or 'scroll' to always show the scroll bar */

@@ -1,16 +1,19 @@
+let defaultPlanArea = "WFRC";
 let legend;
 let inputIds = [
   'adj2019Value', 'adj2023Value', 'adj2028Value', 
-  'adj2032Value', 'adj2042Value', 'adj2050Value', 'notes'
+  'adj2032Value', 'adj2042Value', 'adj2050Value',
+  'notes', 'notes_furrev'
 ];
 let years = ["2019", "2023", "2028", "2032", "2042", "2050"];
 let prefixes = ["adj", "f", "mf", "m", "diff", "dyvol", "lanes", "ft", "at"];
-
 let initialValues = [0,0,0,0,0,0,""];
-let editKey = ['billTEMP','suzieNO'];
+let editKey = ['bill','suzieNO'];
 let tableLog;
 let tableLogUrl;
-let layerSegments; // Global variable
+let selectedFlags = [];
+let layerSegments;
+let layerFlags;
 let layerRoadwayProjectsLines;
 let layerRoadwayProjectsPoints;
 let layerTransitProjectsLines;
@@ -29,13 +32,8 @@ let rendererRoadwayPoints;
 let rendererRoadwayLines;
 let rendererTransitPoints;
 let rendererTransitLines;
-let curBase;
-let curCompare = 'None';
+let rendererSegmentsFlags;
 let curDisplayForecast = 'final-forecast';
-let curDisplayYear = '2050';
-let defBase = 'MF2050';
-let defaultPlanArea = 'WFRC';
-let defaultCounty   = 'DAVIS';
 let defaultSource = 'AADTHistory.xlsx';
 let myChart; // Keep track of the current chart
 let view;
@@ -44,7 +42,6 @@ let colors;
 let hidden;
 let borderDash;
 let borderWidth;
-let curBaseLayer='forecasts';
 let rtpLayers;
 
 require(["esri/config",
@@ -74,6 +71,8 @@ require(["esri/config",
 function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, Search, TileLayer, Graphic, Point, Polygon, Polyline, FeatureLayer, LayerList, ClassBreaksRenderer, UniqueValueRenderer, SimpleRenderer, Legend, PopupTemplate, TextSymbol, Query, WebMap) {
 
   esriConfig.apiKey = "AAPK5f27bfeca6bb49728b7e12a3bfb8f423zlKckukFK95EWyRa-ie_X31rRIrqzGNoqBH3t3Chvz2aUbTKiDvCPyhvMJumf7Wk";
+
+  // updateMap
   function updateMap() {
     console.log('updateMap');
 
@@ -109,23 +108,23 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
     var _prevDisplayYear = "";
     var _phase = "";
 
-    if      (curDisplayYear=="2050") {
+    if      (selectYear.value=="2050") {
       _prevDisplayYear = 2042;
       _phase           = "3";
     }
-    else if (curDisplayYear=="2042") {
+    else if (selectYear.value=="2042") {
       _prevDisplayYear = 2032;
       _phase           = "2";
     }
-    else if (curDisplayYear=="2032") {
+    else if (selectYear.value=="2032") {
       _prevDisplayYear = 2028;
       _phase           = "1";
     }
-    else if (curDisplayYear=="2028") {
+    else if (selectYear.value=="2028") {
       _prevDisplayYear = 2023;
       _phase           = "";
     }
-    else if (curDisplayYear=="2023") {
+    else if (selectYear.value=="2023") {
       _prevDisplayYear = 2019;
     }
 
@@ -151,49 +150,78 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
     
     switch (curDisplayForecast) {
       case 'final-forecast':
-        _expression = "$feature.MF" + curDisplayYear + " + $feature.ADJ" + curDisplayYear;
+        _expression = "$feature.MF" + selectYear.value + " + $feature.ADJ" + selectYear.value;
         rendererSegmentsVolume.valueExpression = _expression;
         
-        rendererSegmentsVolume.valueExpressionTitle = /*curDisplayYear + ' */'Final Forecast';
+        rendererSegmentsVolume.valueExpressionTitle = /*selectYear.value + ' */'Final Forecast';
         layerSegments.renderer = rendererSegmentsVolume;
         labelClass.labelExpressionInfo.expression = "Text(" + _expression + ", '#,###')";
         break;
       case 'final-forecast-change-2019':
-        _expression = "$feature.MF" + curDisplayYear + " + $feature.ADJ" + curDisplayYear + " - $feature.MF2019 - $feature.ADJ2019";
+        _expression = "$feature.MF" + selectYear.value + " + $feature.ADJ" + selectYear.value + " - $feature.M2019";
         rendererSegmentsVolumeCompare.valueExpression = _expression;
-        rendererSegmentsVolumeCompare.valueExpressionTitle = /*curDisplayYear + ' */'Final Forecast Change from 2019';
+        rendererSegmentsVolumeCompare.valueExpressionTitle = /*selectYear.value + ' */'Final Forecast Change from 2019';
         layerSegments.renderer = rendererSegmentsVolumeCompare;
         labelClass.labelExpressionInfo.expression = "Text(" + _expression + ", '#,###')";
         break;
       case 'final-forecast-change-prev':
-        _expression = "$feature.MF" + curDisplayYear + " + $feature.ADJ" + curDisplayYear + " - $feature.MF" + _prevDisplayYear + " - $feature.ADJ" + _prevDisplayYear;
+        _expression = "$feature.MF" + selectYear.value + " + $feature.ADJ" + selectYear.value + " - $feature.MF" + _prevDisplayYear + " - $feature.ADJ" + _prevDisplayYear;
         rendererSegmentsVolumeCompare.valueExpression = _expression;
-        rendererSegmentsVolumeCompare.valueExpressionTitle = /*curDisplayYear + ' */'Final Forecast Change from Previous Year' /* + _prevDisplayYear*/;
+        rendererSegmentsVolumeCompare.valueExpressionTitle = /*selectYear.value + ' */'Final Forecast Change from Previous Year' /* + _prevDisplayYear*/;
         layerSegments.renderer = rendererSegmentsVolumeCompare;
         labelClass.labelExpressionInfo.expression = "Text(" + _expression + ", '#,###')";
         break;
       case 'manual-adjustments':
-        _expression = "$feature.ADJ" + curDisplayYear;
+        _expression = "$feature.ADJ" + selectYear.value;
         rendererSegmentsVolumeAdjust.valueExpression = _expression;
-        rendererSegmentsVolumeAdjust.valueExpressionTitle = /*curDisplayYear + ' */'Manual Adjustments';
+        rendererSegmentsVolumeAdjust.valueExpressionTitle = /*selectYear.value + ' */'Manual Adjustments';
         layerSegments.renderer = rendererSegmentsVolumeAdjust;
         labelClass.labelExpressionInfo.expression = "IIF(" + _expression + " == 0, '', Text(" + _expression + ", '#,###'))";
         break;
       case 'model-forecast':
-        _expression = "$feature.MF" + curDisplayYear;
+        _expression = "$feature.MF" + selectYear.value;
         rendererSegmentsVolume.valueExpression = _expression;
-        rendererSegmentsVolume.valueExpressionTitle = /*curDisplayYear + ' */'Model Forecast';
+        rendererSegmentsVolume.valueExpressionTitle = /*selectYear.value + ' */'Model Forecast';
         layerSegments.renderer = rendererSegmentsVolume;
         labelClass.labelExpressionInfo.expression = "Text(" + _expression + ", '#,###')";
         break;
       case 'model-nobaseyearadj':
-        _expression = "$feature.M" + curDisplayYear;
+        _expression = "$feature.M" + selectYear.value;
         rendererSegmentsVolume.valueExpression = _expression;
-        rendererSegmentsVolume.valueExpressionTitle = /*curDisplayYear + ' */'Model No Base Year Adj';
+        rendererSegmentsVolume.valueExpressionTitle = /*selectYear.value + ' */'Model No Base Year Adj';
         layerSegments.renderer = rendererSegmentsVolume;
         labelClass.labelExpressionInfo.expression = "Text(" + _expression + ", '#,###')";
         break;
     }
+
+    // flags
+    if (document.getElementById('checkboxFlags').checked==true && selectedFlags.length) {
+
+      let _expressions = [];
+
+      selectedFlags.forEach(flag => {
+        // Condition for FL_ flag
+        const flCondition = `${flag.flagName} = 1`;
+    
+        // Additional condition for OR_ flag
+        const orFlagName = flag.flagName.replace("FL_", "OR_");
+        const orCondition = `${orFlagName} = 0`;
+    
+        // Combine the two conditions with AND and group them with parentheses
+        const combinedCondition = `(${flCondition} AND ${orCondition})`;
+    
+        _expressions.push(combinedCondition);
+      });
+    
+      // Join the combined conditions using OR
+      const _finalExpression = _expressions.join(" OR ");
+
+      layerFlags.definitionExpression = layerSegments.definitionExpression + " AND (" + _finalExpression + ")";
+      layerFlags.visible = true;
+    } else {
+      layerFlags.definitionExpression += "";
+      layerFlags.visible = false;
+    }  
 
     // labels
     if (document.getElementById('checkboxLabels').checked==true) {
@@ -210,9 +238,9 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
 
     // forecasts
     if (document.getElementById('checkboxForecasts').checked==true) {
-      layerSegments.visible      = true;
+      layerSegments.visible = true;
     } else {
-      layerSegments.visible      = false;
+      layerSegments.visible = false;
     }
 
     // roadway projects
@@ -267,14 +295,6 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
             if (event.target.checked) {
               console.log('Selected option:', event.target.value);
               curDisplayForecast = event.target.value;
-              updateMap();
-            }
-          });  
-        } else if (item.name=='rbgYears') {
-          item.addEventListener('calciteRadioButtonChange', (event) => {
-            if (event.target.checked) {
-              console.log('Selected option:', event.target.value);
-              curDisplayYear = event.target.value;
               updateMap();
             }
           });  
@@ -365,6 +385,13 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
       //popupTemplate: segmentPopupTemplate
     });
 
+    // Create a FeatureLayer using the layerSegments URL, the renderer, and the label class
+    layerFlags = new FeatureLayer({
+      url: layerSegmentsUrl,
+      renderer: rendererSegmentsFlags,
+      //popupTemplate: segmentPopupTemplate
+    });
+
     layerRoadwayProjectsLines = new FeatureLayer({
       url: layerProjectsLinesUrl,
       renderer: rendererRoadwayLines,
@@ -397,6 +424,7 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
     map.add(layerTransitProjectsPoints);
     map.add(layerRoadwayProjectsLines);
     map.add(layerRoadwayProjectsPoints);
+    map.add(layerFlags);
     map.add(layerSegments);
 
     // add log table
@@ -430,6 +458,7 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
                     { layer: layerSegments, title: 'Segments' },
                     { layer: layerRoadwayProjectsLines, title: '' },
                     { layer: layerTransitProjectsLines, title: '' },
+                    { layer: layerFlags, title: 'Flagged Segments' }
                   ] // Replace YOUR_LAYER with the layerSegments you want to include in the legend
     });
     view.ui.add(legend, "top-right");
@@ -469,6 +498,7 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
       rendererRoadwayLines          = new SimpleRenderer     (config[0].rendererRoadwayLines         );
       rendererTransitPoints         = new SimpleRenderer     (config[0].rendererTransitPoints        );
       rendererTransitLines          = new SimpleRenderer     (config[0].rendererTransitLines         );
+      rendererSegmentsFlags         = new SimpleRenderer     (config[0].rendererSegmentsFlags        );
 
       // create map
       createMapView();
@@ -621,14 +651,9 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
     // run first time
     updateCoNames();
 
-    selectCoName.value = defaultCounty;
-
-
     // FLAGS
 
     document.addEventListener('calciteComboboxChange', handleSelection);
-
-    const selectedFlags = [];
     
     function populateComboboxFlags() {
       const combobox = document.getElementById('comboboxFlags');
@@ -649,9 +674,8 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
         });
       });
 
-
-      // Code for filtering segments by flags
-
+      updateMap();
+      updateSegments();
 
       console.log(selectedFlags); // Logs the selected flags
     }
@@ -665,57 +689,72 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
     // SEGMENTS
 
     // Populate the SEGID selector from the data
-
     function updateSegments() {
       console.log('updateSegments');
       
-      var _filteredSegments;
-
-      if (document.getElementById('selectPlanArea').value!=='Entire State') {
-        // A single plan area and a single county
-        if (document.getElementById('selectCoName').value!=='All Counties') {
-          _filteredSegments = dataSegments.filter(item => item.CO_NAME === document.getElementById('selectCoName').value && item.PLANAREA === document.getElementById('selectPlanArea').value);
+      const query = new Query();
+      query.returnGeometry = false;
+      query.outFields = ["*"];
+      query.orderByFields = ['SEGID ASC']
+      
+      // Building where condition based on user inputs
+      let whereCondition = [];
+    
+      if (document.getElementById('selectPlanArea').value !== 'Entire State') {
+        whereCondition.push(`PLANAREA = '${document.getElementById('selectPlanArea').value}'`);
+    
+        if (document.getElementById('selectCoName').value !== 'All Counties') {
+          whereCondition.push(`CO_NAME = '${document.getElementById('selectCoName').value}'`);
         }
-        // A single plan area but all counties
-        else {
-          _filteredSegments = dataSegments.filter(item => item.PLANAREA === document.getElementById('selectPlanArea').value);
-        }
-      } else {
-        // the entire state but a single county
-        if (document.getElementById('selectCoName').value!=='All Counties') {
-          _filteredSegments = dataSegments.filter(item => item.CO_NAME === document.getElementById('selectCoName').value);
-        }
-        // the entire state and all counties
-        else {
-          _filteredSegments = dataSegments;
-        }
-        
+      } else if (document.getElementById('selectCoName').value !== 'All Counties') {
+        whereCondition.push(`CO_NAME = '${document.getElementById('selectCoName').value}'`);
+      }
+    
+      if (selectedFlags.length && document.getElementById('checkboxFlags').checked==true) {
+        let flagsToCheck = [];
+        selectedFlags.forEach(flag => {
+          flagsToCheck.push(`${flag.flagName} = 1`);
+        });
+    
+        whereCondition.push(flagsToCheck.join(' AND '));
       }
       
-      if (typeof _filteredSegments !== 'undefined' && _filteredSegments !== null) {
-        const segIds = [...new Set(_filteredSegments.map(item => item.SEGID))].sort();
+      query.where = whereCondition.join(' AND ');
+    
+      // Execute the query
+      layerSegments.queryFeatures(query).then(function(result){
+        console.log('layerSegments.queryFeatures');
+        // Here, result.features contains your _filteredSegments
+        const _filteredSegments = result.features;
+        
+        // check to see if segments exist
+        if (typeof _filteredSegments !== 'undefined' && _filteredSegments !== null) {
 
-        // Remove all existing child elements
-        if (selectSegId.firstChild) {
-          while (selectSegId.firstChild) {
-            selectSegId.removeChild(selectSegId.firstChild);
+          // Remove all existing child elements
+          if (selectSegId.firstChild) {
+            while (selectSegId.firstChild) {
+              selectSegId.removeChild(selectSegId.firstChild);
+            }
           }
+    
+          _filteredSegments.forEach((feature, index) => {
+            const option = document.createElement('calcite-option');
+            const segmentId = feature.attributes.SEGID;
+            option.value = segmentId;
+            option.textContent = segmentId;
+            selectSegId.appendChild(option);
+            if (index === 0) {
+              selectSegId.value = segmentId;
+              selectSegId.selectedOption = option;
+            }
+          });
+          updatePanelInfo();
+          updateMap();
         }
-  
-        segIds.forEach((id,index) => {
-          const option = document.createElement('calcite-option');
-          option.value = id;
-          option.textContent = id;
-          selectSegId.appendChild(option);
-          if (index === 0) {
-            selectSegId.value = id;
-            selectSegId.selectedOption = option;
-          }
-        });
-        updatePanelInfo();
-        updateMap();
-      }
+      });
+
     }
+
     // run first time
     updateSegments();
 
@@ -756,7 +795,48 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
       }
     });
     document.getElementById('selectPrevButton').appendChild(buttonPrev);
-      
+
+    
+    // year buttons
+
+    // Create a new Calcite button
+    const buttonNextYear = document.createElement('calcite-button');
+    buttonNextYear.innerHTML = '>'; // Set the buttonNextYear text
+
+    // Add an event listener to the button for the 'click' event
+    buttonNextYear.addEventListener('click', function() {
+      // Get the select element with ID 'selectYear'
+      const select = document.getElementById('selectYear');
+  
+      if (select && select.children && select.selectedOption.nextElementSibling) {
+        // Increment the selectedIndex to select the next option
+        selectYear.selectedOption = select.selectedOption.nextElementSibling;
+        updateMap();
+      } else {
+        //alert('No more items to select.'); // Alert if there's no next option or if select is not found
+      }
+    });
+    document.getElementById('selectNextYearButton').appendChild(buttonNextYear);
+  
+    // Create a new Calcite button
+    const buttonPrevYear = document.createElement('calcite-button');
+    buttonPrevYear.innerHTML = '<'; // Set the buttonPrev text
+
+    // Add an event listener to the buttonPrev for the 'click' event
+    buttonPrevYear.addEventListener('click', function() {
+      // Get the select element with ID 'selectYear'
+      const select = document.getElementById('selectYear');
+  
+      if (select && select.children && select.selectedOption.previousElementSibling) {
+        // Increment the selectedIndex to select the next option
+        selectYear.selectedOption = select.selectedOption.previousElementSibling;
+        updateMap();
+      } else {
+        //alert('No more items to select.'); // Alert if there's no next option or if select is not found
+      }
+    });
+    document.getElementById('selectPrevYearButton').appendChild(buttonPrevYear);
+
     // Function to update the adjustments
     function applyEdits() {
       console.log('applyEdits');
@@ -789,13 +869,37 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
 
           // Update the attributes
           //featureToUpdate.attributes.ADJ2019 = document.getElementById('adj2019Value').value;
-          featureToUpdate.attributes.ADJ2023 = document.getElementById('adj2023Value').value;
-          featureToUpdate.attributes.ADJ2028 = document.getElementById('adj2028Value').value;
-          featureToUpdate.attributes.ADJ2032 = document.getElementById('adj2032Value').value;
-          featureToUpdate.attributes.ADJ2042 = document.getElementById('adj2042Value').value;
-          featureToUpdate.attributes.ADJ2050 = document.getElementById('adj2050Value').value;
-          featureToUpdate.attributes.NOTES   = document.getElementById('notes'       ).value.trim();
-                    
+          featureToUpdate.attributes.ADJ2023      = parseInt(document.getElementById('adj2023Value').value);
+          featureToUpdate.attributes.ADJ2028      = parseInt(document.getElementById('adj2028Value').value);
+          featureToUpdate.attributes.ADJ2032      = parseInt(document.getElementById('adj2032Value').value);
+          featureToUpdate.attributes.ADJ2042      = parseInt(document.getElementById('adj2042Value').value);
+          featureToUpdate.attributes.ADJ2050      = parseInt(document.getElementById('adj2050Value').value);
+          featureToUpdate.attributes.NOTES        = document.getElementById('notes'       ).value.trim();
+          featureToUpdate.attributes.NOTES_FURREV = document.getElementById('notes_furrev').value.trim();
+
+          dataFlags.forEach(flag => {
+            // Replace the field names with their values in the segment
+            let evalString = flag.flagCriteria
+              .replace(/\[([^\]]+)\]/g, function(_, fieldName) {
+                return `featureToUpdate.attributes.${fieldName}`;
+              })
+              .replace(/&/g, '&&')  // replace bitwise AND with logical AND
+              .replace(/\|/g, '||');  // replace bitwise OR with logical OR
+            
+            // previous value
+            const _prvValue = featureToUpdate.attributes[flag.flagName]
+            const _newValue = eval(evalString) ? 1 : 0;
+            
+            // if the new value equal 0 and the previous value equaled 1 then set override to zero
+            if (_prvValue===1 && _newValue===0) {
+              featureToUpdate.attributes[flag.flagName.replace('FL_', 'OV_')] = 0;
+            }
+
+            // Evaluate the modified criteria
+            featureToUpdate.attributes[flag.flagName] = _newValue;
+
+          });
+
           inputIds.forEach(id => {
             const inputElement = document.getElementById(id);
             initialValues[id] = inputElement.value.trim();
@@ -839,14 +943,15 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
       console.log(mountainTime);
 
       // Populate the attributes
-      newFeature.attributes.SEGID   = selectSegId.value;
-      newFeature.attributes.EDITKEY = document.getElementById('edit-key').value;
-      newFeature.attributes.ADJ2023 = document.getElementById('adj2023Value').value;
-      newFeature.attributes.ADJ2028 = document.getElementById('adj2028Value').value;
-      newFeature.attributes.ADJ2032 = document.getElementById('adj2032Value').value;
-      newFeature.attributes.ADJ2042 = document.getElementById('adj2042Value').value;
-      newFeature.attributes.ADJ2050 = document.getElementById('adj2050Value').value;
-      newFeature.attributes.NOTES   = document.getElementById('notes').value.trim(); 
+      newFeature.attributes.SEGID        = selectSegId.value;
+      newFeature.attributes.EDITKEY      = document.getElementById('edit-key').value;
+      newFeature.attributes.ADJ2023      = document.getElementById('adj2023Value').value;
+      newFeature.attributes.ADJ2028      = document.getElementById('adj2028Value').value;
+      newFeature.attributes.ADJ2032      = document.getElementById('adj2032Value').value;
+      newFeature.attributes.ADJ2042      = document.getElementById('adj2042Value').value;
+      newFeature.attributes.ADJ2050      = document.getElementById('adj2050Value').value;
+      newFeature.attributes.NOTES        = document.getElementById('notes').value.trim();
+      newFeature.attributes.NOTES_FURREV = document.getElementById('notes_furrev').value.trim();
       newFeature.attributes.TIMESTAMP = mountainTime;  // Directly assign mountainTime
 
       // Apply the edits to add the new feature
@@ -966,6 +1071,17 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
 
       // Filter the data based on SEGID and SOURCE
       const filteredAadt = dataAadt.filter(item => item.SEGID === _curSegId && item.SOURCE === defaultSource);
+      const aadt2019Entry = filteredAadt.find(item => item.YEAR === 2019);
+
+      let aadt2019Value;
+
+      if (aadt2019Entry) {
+        aadt2019Value = aadt2019Entry.AADT;
+      } else {
+        aadt2019Value = 0;
+        console.error("No AADT value found for the year 2019.");
+      }
+      
       const filteredModForecasts = dataModVolAdj.filter(item => item.SEGID === _curSegId);
       const filteredLinForecasts = dataLinForecasts.filter(item =>
         item.SEGID === _curSegId &&
@@ -1063,13 +1179,19 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
         // Refresh the chart
         myChart.update();
 
-        view.goTo({
-          target: feature.geometry,
-          zoom: 12             // Adjust the zoom level as needed
-        }, {
-          duration: 2000,        // Duration of animation in milliseconds, adjust as needed
-          easing: "in-out-cubic" // Easing function for smooth animation
-        });
+        if (document.getElementById('checkboxAutoZoom').checked==true) {
+          // Get current zoom level
+          var currentZoom = view.zoom;
+
+          view.goTo({
+            target: feature.geometry,
+            zoom: currentZoom // Use the current zoom level
+          }, {
+            duration: 2000,
+            easing: "in-out-cubic"
+          });
+        }
+
         onSelectFeature(feature);
 
         // update values in manual adjustment boxes
@@ -1080,6 +1202,7 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
         document.getElementById("adj2042Value").value = feature.attributes.ADJ2042;
         document.getElementById("adj2050Value").value = feature.attributes.ADJ2050;
         document.getElementById("notes"       ).value = feature.attributes.NOTES.trim();
+        document.getElementById("notes_furrev").value = feature.attributes.NOTES_FURREV.trim();
 
         // Define all data arrays in a localized dictionary
         const dataArrays = {
@@ -1123,6 +1246,10 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
               value = "";
             }
 
+            if (map.data=="chartDataForecasts" && year==2019) {
+              value = aadt2019Value.toLocaleString('en-US');
+            }
+
             if (element) {
               if (element.tagName === 'INPUT') {
                 element.value = value;
@@ -1143,7 +1270,10 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
               element.innerHTML = "";
             } else {
               // Ensure both the current and previous elements in the array are defined
-              if (chartDataForecasts[index] && chartDataForecasts[index - 1]) {
+              if (index===1) { // for 2023
+                const difference = chartDataForecasts[index].y - aadt2019Value;
+                element.innerHTML = difference.toLocaleString('en-US');
+              } else if (chartDataForecasts[index] && chartDataForecasts[index - 1]) {
                 const difference = chartDataForecasts[index].y - chartDataForecasts[index - 1].y;
                 element.innerHTML = difference.toLocaleString('en-US');
               } else {
@@ -1157,6 +1287,12 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
         const notesElement = document.getElementById("notes");
         if (notesElement) {
           notesElement.value = feature.attributes.NOTES.trim();
+        }
+
+        // Special case for notes
+        const notesFurRevElement = document.getElementById("notes_furrev");
+        if (notesFurRevElement) {
+          notesFurRevElement.value = feature.attributes.NOTES_FURREV.trim();
         }
        
         inputIds.forEach(id => {
@@ -1184,49 +1320,89 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
           return feature.attributes[flag.flagName] === 1;
         }
 
-        // Mock event handling function to simulate updating the feature
-        // This is where you would put your code to update the feature's attributes
-        function updateFeature(featureId, orFlagName, newValue) {
-          console.log(`Updating feature with ID ${featureId} and field ${orFlagName} to value ${newValue}`);
-          // Actual code to update the feature goes here
+        function updateFeature(featureID, flagName, newValue) {
+          console.log('override toggle updateFeature')
+        
+          const inputBoxValue = document.getElementById('edit-key').value;
+        
+          if (!editKey.includes(inputBoxValue)) {
+            console.error("Value doesn't match 'editKey'!");
+            alert('Incorrect edit key.');
+            return Promise.resolve(false);
+          }
+        
+          // Step 1: Query the layer for the specific feature by SEGID
+          let query = layerSegments.createQuery();
+          query.where = `SEGID = '${featureID}'`;
+        
+          return layerSegments.queryFeatures(query).then(results => {
+            if (results.features.length > 0) {
+              let featureToUpdate = results.features[0];
+              featureToUpdate.attributes[flagName] = newValue;
+        
+              return layerSegments.applyEdits({
+                updateFeatures: [featureToUpdate]
+              });
+            } else {
+              console.error('No features found with SEGID=' + featureID);
+              throw new Error('No features found');
+            }
+          }).then(applyEditsResult => {
+            if (applyEditsResult.updateFeatureResults.length > 0) {
+              console.log('Feature updated successfully');
+              return true;
+            } else {
+              console.error('Failed to update feature');
+              return false;
+            }
+          }).catch(err => {
+            console.error('Error:', err);
+            return false;
+          });
         }
-
+        
         function generateTable() {
-          let tableHtml = '<table border="0"><thead><tr><th colspan="2" align="left">Override Flags</th></tr></thead><tbody>';
-
+          let tableHtml = '<table border="0" width="300px"><thead><tr><th colspan="2" align="left">Flag Overrides</th></tr></thead><tbody>';
+        
+          const renderedFlags = []; // Keep track of rendered flags
+        
           dataFlags.forEach(flag => {
             if (evaluateFlag(feature, flag)) {
               const orFlagName = flag.flagName.replace('FL_', 'OV_');
               const toggleValue = feature.attributes[orFlagName];
               const switchId = `switch_${orFlagName}`;
-
+        
               tableHtml += `<tr>
                 <td>
                   <calcite-switch
                     id="${switchId}"
                     scale="s"
-                    switched="${toggleValue === 1 ? 'true' : 'false'}">
+                    ${toggleValue === 1 ? 'checked' : ''}>
                   </calcite-switch>
                 </td>
                 <td>${flag.flagDescription}</td>
               </tr>`;
+        
+              renderedFlags.push(orFlagName);
             }
           });
-
+        
           tableHtml += '</tbody></table>';
           document.getElementById("flags").innerHTML = tableHtml;
-
-          /*// Attach event listeners
-          dataFlags.forEach(flag => {
-            const orFlagName = flag.flagName.replace('FL_', 'OV_');
+        
+          renderedFlags.forEach(orFlagName => {
             const switchId = `switch_${orFlagName}`;
-
             document.getElementById(switchId).addEventListener('calciteSwitchChange', (event) => {
-              const newValue = event.target.switched ? 1 : 0;
-              updateFeature(feature.attributes.SEGID, orFlagName, newValue);
+              const newValue = event.target.checked ? 1 : 0;
+        
+              updateFeature(feature.attributes.SEGID, orFlagName, newValue).then(_updateSuccess => {
+                if (!_updateSuccess) {
+                  event.target.checked = !newValue;
+                }
+              });
             });
-          });*/
-        }
+          });
+        }       
 
         generateTable();
 
@@ -1244,6 +1420,8 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
     selectPlanArea.addEventListener('calciteSegmentedControlChange', updateCoNames);
     selectSegId.addEventListener('calciteSelectChange', updatePanelInfo);
     selectCoName.addEventListener('calciteSelectChange', updateSegments);
+    selectYear.addEventListener('calciteSelectChange', updateMap);
+    document.getElementById('checkboxFlags').addEventListener('calciteCheckboxChange', updateSegments);
 
     
     function querySEGIDByFID(FID) {

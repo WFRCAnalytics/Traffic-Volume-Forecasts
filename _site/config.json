@@ -47,17 +47,20 @@
         {"minValue":     20000, "maxValue": 10000000, "symbol": { "type": "simple-line", "color": [  0,  0,  0], "width": 7.5}, "label": "More than 20,000"   }
       ]
     },
+    "rendererSegmentsFlags": {
+      "symbol": { "type": "simple-line"  , "color": [255,255,  0, 0.85], "width": 15 }, "label": "Flagged Segments"
+    },
     "rendererRoadwayPoints": {
-      "symbol": { "type": "simple-marker", "color": [255,  0,255, 0.35], "size": 13, "style": "circle", "outline": { "type": "simple-line", "color": [0, 0, 0, 0], "width": 2.75, "style": "solid" } }, "label": "RTP Roadway Projects"
+      "symbol": { "type": "simple-marker", "color": [255,  0,255, 0.20], "size": 18, "style": "circle", "outline": { "type": "simple-line", "color": [0, 0, 0, 0], "width": 2.75, "style": "solid" } }, "label": "RTP Roadway Projects"
     },
     "rendererRoadwayLines": {
-      "symbol": { "type": "simple-line"  , "color": [255,  0,255, 0.35], "width": 10 }, "label": "RTP Roadway Projects"
+      "symbol": { "type": "simple-line"  , "color": [255,  0,255, 0.20], "width": 15 }, "label": "RTP Roadway Projects"
     },
     "rendererTransitPoints": {
-      "symbol": { "type": "simple-marker", "color": [  0,  0,255, 0.35], "size": 13, "style": "circle", "outline": { "type": "simple-line", "color": [0, 0, 0, 0], "width": 2.75, "style": "solid" } }, "label": "RTP Transit Projects"
+      "symbol": { "type": "simple-marker", "color": [  0,  0,255, 0.20], "size": 23, "style": "circle", "outline": { "type": "simple-line", "color": [0, 0, 0, 0], "width": 2.75, "style": "solid" } }, "label": "RTP Transit Projects"
     },
     "rendererTransitLines": {
-      "symbol": { "type": "simple-line"  , "color": [  0,  0,255, 0.35], "width": 10 }, "label": "RTP Transit Projects"
+      "symbol": { "type": "simple-line"  , "color": [  0,  0,255, 0.20], "width": 20 }, "label": "RTP Transit Projects"
     }
   }
 ]

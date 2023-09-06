@@ -5,6 +5,7 @@ Round adjustment before applying edits or Round final forecast!
 
 
 ADDITIONAL FEATURES
+Chart legend - custom table with main series more prominently features
 Add flags to map
 Flag countdowns!
 Add SE data: Development intensity (TAZ-->TOTHH+(1.8 TOTEMP))
