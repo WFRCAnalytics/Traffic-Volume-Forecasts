@@ -877,14 +877,41 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
         if (results.features.length > 0) {
           var featureToUpdate = results.features[0]; // Get the first feature that matches the query
 
-          // Update the attributes
-          //featureToUpdate.attributes.ADJ2019 = document.getElementById('adj2019Value').value;
-          featureToUpdate.attributes.ADJ2023      = parseInt(document.getElementById('adj2023Value').value);
-          featureToUpdate.attributes.ADJ2028      = parseInt(document.getElementById('adj2028Value').value);
-          featureToUpdate.attributes.ADJ2032      = parseInt(document.getElementById('adj2032Value').value);
-          featureToUpdate.attributes.ADJ2042      = parseInt(document.getElementById('adj2042Value').value);
-          featureToUpdate.attributes.ADJ2050      = parseInt(document.getElementById('adj2050Value').value);
-          featureToUpdate.attributes.NOTES        = document.getElementById('notes'       ).value.trim();
+          // Define the custom rounding function
+          function customRounding(value) {
+            if (0 <= value && value < 100) {
+              return Math.round(value / 10) * 10;
+            } else if (100 <= value && value < 1000) {
+              return Math.round(value / 50) * 50;
+            } else if (1000 <= value && value < 10000) {
+              return Math.round(value / 100) * 100;
+            } else if (10000 <= value && value < 100000) {
+              return Math.round(value / 500) * 500;
+            } else if (value >= 100000) {
+              return Math.round(value / 1000) * 1000;
+            } else {
+              return value;
+            }
+          }
+
+          // Function to get rounded adjustment and update the input value
+          function getRoundedAdjustment(year) {
+            const adjValueElement = document.getElementById('adj' + year + 'Value');
+            const currentValue = featureToUpdate.attributes['MF' + year];
+            const adjustmentValue = parseInt(adjValueElement.value);
+            const roundedValue = customRounding(currentValue + adjustmentValue);
+            const newAdj = roundedValue - currentValue;
+            adjValueElement.value = newAdj;
+            return newAdj;
+          }
+
+          // Example usage for different years
+          featureToUpdate.attributes.ADJ2023 = getRoundedAdjustment('2023');
+          featureToUpdate.attributes.ADJ2028 = getRoundedAdjustment('2028');
+          featureToUpdate.attributes.ADJ2032 = getRoundedAdjustment('2032');
+          featureToUpdate.attributes.ADJ2042 = getRoundedAdjustment('2042');
+          featureToUpdate.attributes.ADJ2050 = getRoundedAdjustment('2050');
+          featureToUpdate.attributes.NOTES = document.getElementById('notes').value.trim();
           featureToUpdate.attributes.NOTES_FURREV = document.getElementById('notes_furrev').value.trim();
 
           dataFlags.forEach(flag => {
