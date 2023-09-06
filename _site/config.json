@@ -48,7 +48,7 @@
       ]
     },
     "rendererSegmentsFlags": {
-      "symbol": { "type": "simple-line"  , "color": [255,255,  0, 0.85], "width": 15 }, "label": "Flagged Segments"
+      "symbol": { "type": "simple-line"  , "color": [255,  0,  0, 0.50], "width": 15 }, "label": "Flagged Segments"
     },
     "rendererRoadwayPoints": {
       "symbol": { "type": "simple-marker", "color": [255,  0,255, 0.20], "size": 18, "style": "circle", "outline": { "type": "simple-line", "color": [0, 0, 0, 0], "width": 2.75, "style": "solid" } }, "label": "RTP Roadway Projects"

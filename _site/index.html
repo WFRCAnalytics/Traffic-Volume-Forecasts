@@ -69,282 +69,283 @@
 
                     </tr>
                 </table>
-                <div class="chart-container">
-                    <canvas id="chartType"></canvas>
-                </div>
-                <div>
-                    <table width="100%">
-                        <tr>
-                            <td width="90px;" >
-                                &nbsp;
-                            </td>
-                            <td>
-                                &nbsp;
-                            </td>
-                            <td width="60px;" align="center">
-                                2019
-                            </td>
-                            <td width="60px;" align="center">
-                                2023
-                            </td>
-                            <td width="60px;" align="center">
-                                2028
-                            </td>
-                            <td width="60px;" align="center">
-                                2032
-                            </td>
-                            <td width="60px;" align="center">
-                                2042
-                            </td>
-                            <td width="60px;" align="center">
-                                2050
-                            </td>
-                        </tr>
-                        <tr>
-                            <td align="center" rowspan="2">
-                                Historic Adjustment
-                            </td>
-                            <td align="right">
-                                Final Forecast Change:
-                            </td>
-                            <td>
-                                <div id="diff2019Value" class="tableText" align="right"></div>
-                            </td>
-                            <td>
-                                <div id="diff2023Value" class="tableText" align="right"></div>
-                            </td>
-                            <td>
-                                <div id="diff2028Value" class="tableText" align="right"></div>
-                            </td>
-                            <td>
-                                <div id="diff2032Value" class="tableText" align="right"></div>
-                            </td>
-                            <td>
-                                <div id="diff2042Value" class="tableText" align="right"></div>
-                            </td>
-                            <td>
-                                <div id="diff2050Value" class="tableText" align="right"></div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td align="right">
-                                Final Forecast:
-                            </td>
-                            <td>
-                                <div id="f2019Value" class="tableText" align="right"></div>
-                            </td>
-                            <td>
-                                <div id="f2023Value" class="tableText tableFinal" align="right"></div>
-                            </td>
-                            <td>
-                                <div id="f2028Value" class="tableText tableFinal" align="right"></div>
-                            </td>
-                            <td>
-                                <div id="f2032Value" class="tableText tableFinal" align="right"></div>
-                            </td>
-                            <td>
-                                <div id="f2042Value" class="tableText tableFinal" align="right"></div>
-                            </td>
-                            <td>
-                                <div id="f2050Value" class="tableText tableFinal" align="right"></div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td align="center">
-                                <input type="text" id="adjHistValue" class="manualAdj right-align-input" placeholder="">
-                            </td>
-                            <td align="right">
-                                Manual Adjustments:
-                            </td>
-                            <td>
-                                <input type="text" id="adj2019Value" class="manualAdj right-align-input" placeholder="" hidden>
-                            </td>
-                            <td>
-                                <input type="text" id="adj2023Value" class="manualAdj right-align-input" placeholder="">
-                            </td>
-                            <td>
-                                <input type="text" id="adj2028Value" class="manualAdj right-align-input" placeholder="">
-                            </td>
-                            <td>
-                                <input type="text" id="adj2032Value" class="manualAdj right-align-input" placeholder="">
-                            </td>
-                            <td>
-                                <input type="text" id="adj2042Value" class="manualAdj right-align-input" placeholder="">
-                            </td>
-                            <td>
-                                <input type="text" id="adj2050Value" class="manualAdj right-align-input" placeholder="">
-                            </td>
-                        </tr>
-                        <tr>
-                            <td colspan="2" align="right">
-                                Model Forecast:
-                            </td>
-                            <td>
-                                <div id="mf2019Value" class="tableText" align="right"></div>
-                            </td>
-                            <td>
-                                <div id="mf2023Value" class="tableText tableModel" align="right"></div>
-                            </td>
-                            <td>
-                                <div id="mf2028Value" class="tableText tableModel" align="right"></div>
-                            </td>
-                            <td>
-                                <div id="mf2032Value" class="tableText tableModel" align="right"></div>
-                            </td>
-                            <td>
-                                <div id="mf2042Value" class="tableText tableModel" align="right"></div>
-                            </td>
-                            <td>
-                                <div id="mf2050Value" class="tableText tableModel" align="right"></div>
-                            </td>
-                        </tr>
-                        <tr class="light-grey-table">
-                            <td colspan="2" align="right">
-                                Model AADT:
-                            </td>
-                            <td>
-                                <div id="m2019Value" class="tableText" align="right"></div>
-                            </td>
-                            <td>
-                                <div id="m2023Value" class="tableText" align="right"></div>
-                            </td>
-                            <td>
-                                <div id="m2028Value" class="tableText" align="right"></div>
-                            </td>
-                            <td>
-                                <div id="m2032Value" class="tableText" align="right"></div>
-                            </td>
-                            <td>
-                                <div id="m2042Value" class="tableText" align="right"></div>
-                            </td>
-                            <td>
-                                <div id="m2050Value" class="tableText" align="right"></div>
-                            </td>
-                        </tr>
-                        <tr class="light-grey-table">
-                            <td colspan="2" align="right">
-                                Model AWDT:
-                            </td>
-                            <td>
-                                <div id="dyvol2019Value" class="tableText" align="right"></div>
-                            </td>
-                            <td>
-                                <div id="dyvol2023Value" class="tableText" align="right"></div>
-                            </td>
-                            <td>
-                                <div id="dyvol2028Value" class="tableText" align="right"></div>
-                            </td>
-                            <td>
-                                <div id="dyvol2032Value" class="tableText" align="right"></div>
-                            </td>
-                            <td>
-                                <div id="dyvol2042Value" class="tableText" align="right"></div>
-                            </td>
-                            <td>
-                                <div id="dyvol2050Value" class="tableText" align="right"></div>
-                            </td>
-                        </tr>
-                        <tr class="light-grey-table">
-                            <td colspan="2" align="right">
-                                Model Lanes:
-                            </td>
-                            <td>
-                                <div id="lanes2019Value" class="tableText" align="right"></div>
-                            </td>
-                            <td>
-                                <div id="lanes2023Value" class="tableText" align="right"></div>
-                            </td>
-                            <td>
-                                <div id="lanes2028Value" class="tableText" align="right"></div>
-                            </td>
-                            <td>
-                                <div id="lanes2032Value" class="tableText" align="right"></div>
-                            </td>
-                            <td>
-                                <div id="lanes2042Value" class="tableText" align="right"></div>
-                            </td>
-                            <td>
-                                <div id="lanes2050Value" class="tableText" align="right"></div>
-                            </td>
-                        </tr>
-                        <tr class="light-grey-table">
-                            <td colspan="2" align="right">
-                                Model Functional Type:
-                            </td>
-                            <td>
-                                <div id="ft2019Value" class="tableText" align="right"></div>
-                            </td>
-                            <td>
-                                <div id="ft2023Value" class="tableText" align="right"></div>
-                            </td>
-                            <td>
-                                <div id="ft2028Value" class="tableText" align="right"></div>
-                            </td>
-                            <td>
-                                <div id="ft2032Value" class="tableText" align="right"></div>
-                            </td>
-                            <td>
-                                <div id="ft2042Value" class="tableText" align="right"></div>
-                            </td>
-                            <td>
-                                <div id="ft2050Value" class="tableText" align="right"></div>
-                            </td>
-                        </tr>
-                        <tr class="light-grey-table">
-                            <td colspan="2" align="right">
-                                Model Area Type:
-                            </td>
-                            <td>
-                                <div id="at2019Value" class="tableTextSmall" align="right"></div>
-                            </td>
-                            <td>
-                                <div id="at2023Value" class="tableTextSmall" align="right"></div>
-                            </td>
-                            <td>
-                                <div id="at2028Value" class="tableTextSmall" align="right"></div>
-                            </td>
-                            <td>
-                                <div id="at2032Value" class="tableTextSmall" align="right"></div>
-                            </td>
-                            <td>
-                                <div id="at2042Value" class="tableTextSmall" align="right"></div>
-                            </td>
-                            <td>
-                                <div id="at2050Value" class="tableTextSmall" align="right"></div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td colspan="2" rowspan="2" valign="top">
-                                <div id="flags"></div>
-                            </td>
-                            <td>
-                                <div class="tableTextSmall">Review Complete Notes:</div>
-                            </td>
-                            <td colspan="6">
-                                <textarea class="top-align-input" id="notes" style="width: 100%; height: 70px;"></textarea>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <div class="tableTextSmall">Further Review Notes:</div>
-                            </td>
-                            <td colspan="6">
-                                <textarea class="top-align-input" id="notes_furrev" style="width: 100%; height:50px;"></textarea>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td colspan="5" align="right">
-                                <div class="input-group">
-                                    <input type="text" id="edit-key" placeholder="Enter edit key" class="input">
-                                </div>
-                            </td>
-                            <td colspan="2" align="right">
-                                <div id="apply-edits"></div><!--<button onclick="updateFeature()">Save Changes</button>-->
-                            </td>
-                        </tr>
-                    </table>
-                    <!--<a href="https://unifiedplan.org/utah-household-job-map/" target="_blank">Utah Statewide Household and Job Forecast Map</a>-->
-                    
+                <div id="segdetail">
+                    <div class="chart-container">
+                        <canvas id="chartType"></canvas>
+                    </div>
+                    <div>
+                        <table width="100%">
+                            <tr>
+                                <td width="90px;" >
+                                    &nbsp;
+                                </td>
+                                <td>
+                                    &nbsp;
+                                </td>
+                                <td width="60px;" align="center">
+                                    2019
+                                </td>
+                                <td width="60px;" align="center">
+                                    2023
+                                </td>
+                                <td width="60px;" align="center">
+                                    2028
+                                </td>
+                                <td width="60px;" align="center">
+                                    2032
+                                </td>
+                                <td width="60px;" align="center">
+                                    2042
+                                </td>
+                                <td width="60px;" align="center">
+                                    2050
+                                </td>
+                            </tr>
+                            <tr>
+                                <td align="center" rowspan="2">
+                                    Historic Adjustment
+                                </td>
+                                <td align="right">
+                                    Final Forecast Change:
+                                </td>
+                                <td>
+                                    <div id="diff2019Value" class="tableText" align="right"></div>
+                                </td>
+                                <td>
+                                    <div id="diff2023Value" class="tableText" align="right"></div>
+                                </td>
+                                <td>
+                                    <div id="diff2028Value" class="tableText" align="right"></div>
+                                </td>
+                                <td>
+                                    <div id="diff2032Value" class="tableText" align="right"></div>
+                                </td>
+                                <td>
+                                    <div id="diff2042Value" class="tableText" align="right"></div>
+                                </td>
+                                <td>
+                                    <div id="diff2050Value" class="tableText" align="right"></div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td align="right">
+                                    Final Forecast:
+                                </td>
+                                <td>
+                                    <div id="f2019Value" class="tableText" align="right"></div>
+                                </td>
+                                <td>
+                                    <div id="f2023Value" class="tableText tableFinal" align="right"></div>
+                                </td>
+                                <td>
+                                    <div id="f2028Value" class="tableText tableFinal" align="right"></div>
+                                </td>
+                                <td>
+                                    <div id="f2032Value" class="tableText tableFinal" align="right"></div>
+                                </td>
+                                <td>
+                                    <div id="f2042Value" class="tableText tableFinal" align="right"></div>
+                                </td>
+                                <td>
+                                    <div id="f2050Value" class="tableText tableFinal" align="right"></div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td align="center">
+                                    <input type="text" id="adjHistValue" class="manualAdj right-align-input" placeholder="">
+                                </td>
+                                <td align="right">
+                                    Manual Adjustments:
+                                </td>
+                                <td>
+                                    <input type="text" id="adj2019Value" class="manualAdj right-align-input" placeholder="" hidden>
+                                </td>
+                                <td>
+                                    <input type="text" id="adj2023Value" class="manualAdj right-align-input" placeholder="">
+                                </td>
+                                <td>
+                                    <input type="text" id="adj2028Value" class="manualAdj right-align-input" placeholder="">
+                                </td>
+                                <td>
+                                    <input type="text" id="adj2032Value" class="manualAdj right-align-input" placeholder="">
+                                </td>
+                                <td>
+                                    <input type="text" id="adj2042Value" class="manualAdj right-align-input" placeholder="">
+                                </td>
+                                <td>
+                                    <input type="text" id="adj2050Value" class="manualAdj right-align-input" placeholder="">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" align="right">
+                                    Model Forecast:
+                                </td>
+                                <td>
+                                    <div id="mf2019Value" class="tableText" align="right"></div>
+                                </td>
+                                <td>
+                                    <div id="mf2023Value" class="tableText tableModel" align="right"></div>
+                                </td>
+                                <td>
+                                    <div id="mf2028Value" class="tableText tableModel" align="right"></div>
+                                </td>
+                                <td>
+                                    <div id="mf2032Value" class="tableText tableModel" align="right"></div>
+                                </td>
+                                <td>
+                                    <div id="mf2042Value" class="tableText tableModel" align="right"></div>
+                                </td>
+                                <td>
+                                    <div id="mf2050Value" class="tableText tableModel" align="right"></div>
+                                </td>
+                            </tr>
+                            <tr class="light-grey-table">
+                                <td colspan="2" align="right">
+                                    Model AADT:
+                                </td>
+                                <td>
+                                    <div id="m2019Value" class="tableText" align="right"></div>
+                                </td>
+                                <td>
+                                    <div id="m2023Value" class="tableText" align="right"></div>
+                                </td>
+                                <td>
+                                    <div id="m2028Value" class="tableText" align="right"></div>
+                                </td>
+                                <td>
+                                    <div id="m2032Value" class="tableText" align="right"></div>
+                                </td>
+                                <td>
+                                    <div id="m2042Value" class="tableText" align="right"></div>
+                                </td>
+                                <td>
+                                    <div id="m2050Value" class="tableText" align="right"></div>
+                                </td>
+                            </tr>
+                            <tr class="light-grey-table">
+                                <td colspan="2" align="right">
+                                    Model AWDT:
+                                </td>
+                                <td>
+                                    <div id="dyvol2019Value" class="tableText" align="right"></div>
+                                </td>
+                                <td>
+                                    <div id="dyvol2023Value" class="tableText" align="right"></div>
+                                </td>
+                                <td>
+                                    <div id="dyvol2028Value" class="tableText" align="right"></div>
+                                </td>
+                                <td>
+                                    <div id="dyvol2032Value" class="tableText" align="right"></div>
+                                </td>
+                                <td>
+                                    <div id="dyvol2042Value" class="tableText" align="right"></div>
+                                </td>
+                                <td>
+                                    <div id="dyvol2050Value" class="tableText" align="right"></div>
+                                </td>
+                            </tr>
+                            <tr class="light-grey-table">
+                                <td colspan="2" align="right">
+                                    Model Lanes:
+                                </td>
+                                <td>
+                                    <div id="lanes2019Value" class="tableText" align="right"></div>
+                                </td>
+                                <td>
+                                    <div id="lanes2023Value" class="tableText" align="right"></div>
+                                </td>
+                                <td>
+                                    <div id="lanes2028Value" class="tableText" align="right"></div>
+                                </td>
+                                <td>
+                                    <div id="lanes2032Value" class="tableText" align="right"></div>
+                                </td>
+                                <td>
+                                    <div id="lanes2042Value" class="tableText" align="right"></div>
+                                </td>
+                                <td>
+                                    <div id="lanes2050Value" class="tableText" align="right"></div>
+                                </td>
+                            </tr>
+                            <tr class="light-grey-table">
+                                <td colspan="2" align="right">
+                                    Model Functional Type:
+                                </td>
+                                <td>
+                                    <div id="ft2019Value" class="tableText" align="right"></div>
+                                </td>
+                                <td>
+                                    <div id="ft2023Value" class="tableText" align="right"></div>
+                                </td>
+                                <td>
+                                    <div id="ft2028Value" class="tableText" align="right"></div>
+                                </td>
+                                <td>
+                                    <div id="ft2032Value" class="tableText" align="right"></div>
+                                </td>
+                                <td>
+                                    <div id="ft2042Value" class="tableText" align="right"></div>
+                                </td>
+                                <td>
+                                    <div id="ft2050Value" class="tableText" align="right"></div>
+                                </td>
+                            </tr>
+                            <tr class="light-grey-table">
+                                <td colspan="2" align="right">
+                                    Model Area Type:
+                                </td>
+                                <td>
+                                    <div id="at2019Value" class="tableTextSmall" align="right"></div>
+                                </td>
+                                <td>
+                                    <div id="at2023Value" class="tableTextSmall" align="right"></div>
+                                </td>
+                                <td>
+                                    <div id="at2028Value" class="tableTextSmall" align="right"></div>
+                                </td>
+                                <td>
+                                    <div id="at2032Value" class="tableTextSmall" align="right"></div>
+                                </td>
+                                <td>
+                                    <div id="at2042Value" class="tableTextSmall" align="right"></div>
+                                </td>
+                                <td>
+                                    <div id="at2050Value" class="tableTextSmall" align="right"></div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="2" rowspan="2" valign="top">
+                                    <div id="flags"></div>
+                                </td>
+                                <td>
+                                    <div class="tableTextSmall">Review Complete Notes:</div>
+                                </td>
+                                <td colspan="6">
+                                    <textarea class="top-align-input" id="notes" style="width: 100%; height: 70px;"></textarea>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div class="tableTextSmall">Further Review Notes:</div>
+                                </td>
+                                <td colspan="6">
+                                    <textarea class="top-align-input" id="notes_furrev" style="width: 100%; height:50px;"></textarea>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="5" align="right">
+                                    <div class="input-group">
+                                        <input type="text" id="edit-key" placeholder="Enter edit key" class="input">
+                                    </div>
+                                </td>
+                                <td colspan="2" align="right">
+                                    <div id="apply-edits"></div><!--<button onclick="updateFeature()">Save Changes</button>-->
+                                </td>
+                            </tr>
+                        </table>
+                        <!--<a href="https://unifiedplan.org/utah-household-job-map/" target="_blank">Utah Statewide Household and Job Forecast Map</a>-->
+                    </div>
                 </div>
             </div>
             <div id="mainContentMap">

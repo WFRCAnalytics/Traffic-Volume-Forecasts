@@ -8,7 +8,7 @@ let inputIds = [
 let years = ["2019", "2023", "2028", "2032", "2042", "2050"];
 let prefixes = ["adj", "f", "mf", "m", "diff", "dyvol", "lanes", "ft", "at"];
 let initialValues = [0,0,0,0,0,0,""];
-let editKey = ['bill','suzieNO'];
+let editKey = ['bill','suzie'];
 let tableLog;
 let tableLogUrl;
 let selectedFlags = [];
@@ -203,8 +203,8 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
         // Condition for FL_ flag
         const flCondition = `${flag.flagName} = 1`;
     
-        // Additional condition for OR_ flag
-        const orFlagName = flag.flagName.replace("FL_", "OR_");
+        // Additional condition for OV_ flag
+        const orFlagName = flag.flagName.replace("FL_", "OV_");
         const orCondition = `${orFlagName} = 0`;
     
         // Combine the two conditions with AND and group them with parentheses
@@ -523,7 +523,7 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
       symbol: {
         type: "simple-line", // autocasts as new SimpleLineSymbol()
         color: [255, 255, 0], // red color
-        width: 2
+        width: 5
       }
     });
 
@@ -709,18 +709,34 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
       } else if (document.getElementById('selectCoName').value !== 'All Counties') {
         whereCondition.push(`CO_NAME = '${document.getElementById('selectCoName').value}'`);
       }
-    
+
       if (selectedFlags.length && document.getElementById('checkboxFlags').checked==true) {
-        let flagsToCheck = [];
         selectedFlags.forEach(flag => {
-          flagsToCheck.push(`${flag.flagName} = 1`);
+          // Condition for FL_ flag
+          const flCondition = `${flag.flagName} = 1`;
+      
+          // Additional condition for OV_ flag
+          const orFlagName = flag.flagName.replace("FL_", "OV_");
+          const orCondition = `${orFlagName} = 0`;
+      
+          // Combine the two conditions with AND and group them with parentheses
+          const combinedCondition = `(${flCondition} AND ${orCondition})`;
+      
+          whereCondition.push(combinedCondition);
         });
-    
-        whereCondition.push(flagsToCheck.join(' AND '));
       }
       
       query.where = whereCondition.join(' AND ');
-    
+      
+      // Remove all existing child elements
+      if (selectSegId.firstChild) {
+        while (selectSegId.firstChild) {
+          selectSegId.removeChild(selectSegId.firstChild);
+        }
+      }
+
+      document.getElementById('segdetail').style.display = 'none';
+
       // Execute the query
       layerSegments.queryFeatures(query).then(function(result){
         console.log('layerSegments.queryFeatures');
@@ -728,14 +744,7 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
         const _filteredSegments = result.features;
         
         // check to see if segments exist
-        if (typeof _filteredSegments !== 'undefined' && _filteredSegments !== null) {
-
-          // Remove all existing child elements
-          if (selectSegId.firstChild) {
-            while (selectSegId.firstChild) {
-              selectSegId.removeChild(selectSegId.firstChild);
-            }
-          }
+        if (_filteredSegments.length) {
     
           _filteredSegments.forEach((feature, index) => {
             const option = document.createElement('calcite-option');
@@ -748,6 +757,7 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
               selectSegId.selectedOption = option;
             }
           });
+          document.getElementById('segdetail').style.display = 'block';
           updatePanelInfo();
           updateMap();
         }
