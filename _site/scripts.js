@@ -1167,6 +1167,8 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
           return { x: item.x, y: item.y + (adjustments[index] || 0) };
         }).sort((a, b) => a.x - b.x);
 
+        const _yearsOfData = chartDataModAt.map(item => item.x);
+
         // Group the filteredLinForecasts by PROJGRP
         const groupedLinForecasts = filteredLinForecasts.reduce((groups, item) => {
           (groups[item.PROJGRP] = groups[item.PROJGRP] || []).push(item);
@@ -1265,7 +1267,7 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
         ];
 
         mappings.forEach(map => {
-          years.forEach((year, index) => {
+          _yearsOfData.forEach((year, index) => {
             const elementId = `${map.prefix}${year}Value`;
             const element = document.getElementById(elementId);
             let value;
@@ -1298,7 +1300,7 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
         });
 
         // Handle special case for diff values
-        years.forEach((year, index) => {
+        _yearsOfData.forEach((year, index) => {
           const elementId = `diff${year}Value`;
           const element = document.getElementById(elementId);
           
@@ -1307,7 +1309,7 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
               element.innerHTML = "";
             } else {
               // Ensure both the current and previous elements in the array are defined
-              if (index===1) { // for 2023
+              if (year===2023) { // for 2023
                 const difference = chartDataForecasts[index].y - aadt2019Value;
                 element.innerHTML = difference.toLocaleString('en-US');
               } else if (chartDataForecasts[index] && chartDataForecasts[index - 1]) {
