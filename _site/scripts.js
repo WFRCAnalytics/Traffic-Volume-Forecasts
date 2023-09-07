@@ -1079,7 +1079,7 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
         if (buttonApply.classList.contains('btn-dirty')) {
           buttonApply.classList.remove('btn-dirty');
           buttonApply.classList.add('btn-clean');
-        }          
+        }
       }
 
       // Function to clear values based on the provided prefixes and years
