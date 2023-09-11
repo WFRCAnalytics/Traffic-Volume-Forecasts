@@ -11,7 +11,8 @@ let initialValues = [0,0,0,0,0,0,""];
 let editKey = ['bill','suzie'];
 let tableLog;
 let tableLogUrl;
-let selectedFlags = [];
+let flagsSegList = [];
+let flagsMap = [];
 let layerSegments;
 let layerFlags;
 let layerRoadwayProjectsLines;
@@ -76,6 +77,8 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
   function updateMap() {
     console.log('updateMap');
 
+    layerFlags.visible = false;
+
     // Define the label class outside your updateMap function, using a placeholder for the expression
     var labelClass = {
       symbol: {
@@ -127,11 +130,23 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
     else if (selectYear.value=="2023") {
       _prevDisplayYear = 2019;
     }
-
-    if (document.getElementById('selectPlanArea').value!=='Entire State') {
+    
+    function buildDefinitionExpression(baseExpression, flagsExpression) {
+      if (baseExpression && flagsExpression) {
+        return `${baseExpression} AND (${flagsExpression})`;
+      } else if (baseExpression) {
+        return baseExpression;
+      } else if (flagsExpression) {
+        return flagsExpression;
+      }
+      return "";
+    }
+    
+    // Determine the base definitionExpression based on selected options
+    if (document.getElementById('selectPlanArea').value !== 'Entire State') {
       // A single plan area and a single county
-      if (document.getElementById('selectCoName').value!=='All Counties') {
-        layerSegments.definitionExpression = "CO_NAME = '" + document.getElementById('selectCoName').value + "' AND PLANAREA = '" + document.getElementById('selectPlanArea').value + "'"
+      if (document.getElementById('selectCoName').value !== 'All Counties') {
+        layerSegments.definitionExpression = "CO_NAME = '" + document.getElementById('selectCoName').value + "' AND PLANAREA = '" + document.getElementById('selectPlanArea').value + "'";
       }
       // A single plan area but all counties
       else {
@@ -139,7 +154,7 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
       }
     } else {
       // the entire state but a single county
-      if (document.getElementById('selectCoName').value!=='All Counties') {
+      if (document.getElementById('selectCoName').value !== 'All Counties') {
         layerSegments.definitionExpression = "CO_NAME = '" + document.getElementById('selectCoName').value + "'";
       }
       // the entire state and all counties
@@ -147,7 +162,66 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
         layerSegments.definitionExpression = "";
       }
     }
+
     
+    // flagsMap
+    let _flagsMapExpression = "";
+    if (flagsMap.length) {
+      let _expressions = [];
+    
+      flagsMap.forEach(flagName => {
+        // Condition for FL_ flag
+        const flCondition = `${flagName} = 1`;
+    
+        // Additional condition for OV_ flag
+        const ovFlagName = flagName.replace("FL_", "OV_");
+        const ovCondition = `${ovFlagName} = 0`;
+    
+        // Combine the two conditions with AND and group them with parentheses
+        const combinedCondition = `(${flCondition} AND ${ovCondition})`;
+    
+        _expressions.push(combinedCondition);
+      });
+    
+      // Join the combined conditions using OR
+      _flagsMapExpression = _expressions.join(" OR ");
+    } 
+
+        
+    // flagsSegList
+    let _flagsSegListExpression = "";
+    if (flagsSegList.length) {
+      let _expressions = [];
+    
+      flagsSegList.forEach(flag => {
+        // Condition for FL_ flag
+        const flCondition = `${flag.flagName} = 1`;
+    
+        // Additional condition for OV_ flag
+        const ovFlagName = flag.flagName.replace("FL_", "OV_");
+        const ovCondition = `${ovFlagName} = 0`;
+    
+        // Combine the two conditions with AND and group them with parentheses
+        const combinedCondition = `(${flCondition} AND ${ovCondition})`;
+    
+        _expressions.push(combinedCondition);
+      });
+    
+      // Join the combined conditions using OR
+      _flagsSegListExpression = _expressions.join(" OR ");
+    
+    }
+
+    layerSegments.definitionExpression = buildDefinitionExpression(layerSegments.definitionExpression, _flagsSegListExpression);
+    layerFlags.definitionExpression = buildDefinitionExpression(layerSegments.definitionExpression, _flagsMapExpression);
+
+    if (_flagsMapExpression!='') { 
+      layerFlags.visible = true;
+    } else {
+      layerFlags.visible = false;
+    }
+
+
     switch (curDisplayForecast) {
       case 'final-forecast':
         _expression = "$feature.MF" + selectYear.value + " + $feature.ADJ" + selectYear.value;
@@ -194,35 +268,6 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
         break;
     }
 
-    // flags
-    if (document.getElementById('checkboxFlags').checked==true && selectedFlags.length) {
-
-      let _expressions = [];
-
-      selectedFlags.forEach(flag => {
-        // Condition for FL_ flag
-        const flCondition = `${flag.flagName} = 1`;
-    
-        // Additional condition for OV_ flag
-        const orFlagName = flag.flagName.replace("FL_", "OV_");
-        const orCondition = `${orFlagName} = 0`;
-    
-        // Combine the two conditions with AND and group them with parentheses
-        const combinedCondition = `(${flCondition} AND ${orCondition})`;
-    
-        _expressions.push(combinedCondition);
-      });
-    
-      // Join the combined conditions using OR
-      const _finalExpression = _expressions.join(" OR ");
-
-      layerFlags.definitionExpression = layerSegments.definitionExpression + " AND (" + _finalExpression + ")";
-      layerFlags.visible = true;
-    } else {
-      layerFlags.definitionExpression += "";
-      layerFlags.visible = false;
-    }  
-
     // labels
     if (document.getElementById('checkboxLabels').checked==true) {
       layerSegments.labelingInfo = [labelClass];
@@ -230,11 +275,11 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
       layerSegments.labelingInfo = [labelClassOff];
     }
 
-    if (document.getElementById('checkboxNoNotes').checked==true) {
-      layerSegments.definitionExpression += " AND NOTES = ''";
-    } else {
-      layerSegments.definitionExpression += "";
-    }
+    //if (document.getElementById('checkboxNoNotes').checked==true) {
+    //  layerSegments.definitionExpression += " AND NOTES = ''";
+    //} else {
+    //  layerSegments.definitionExpression += "";
+    //}
 
     // forecasts
     if (document.getElementById('checkboxForecasts').checked==true) {
@@ -309,7 +354,7 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
       addUpdateListener('checkboxRoadwayProjects');
       addUpdateListener('checkboxTransitProjects');
       addUpdateListener('checkboxLabels');
-      addUpdateListener('checkboxNoNotes');
+      //addUpdateListener('checkboxNoNotes');
 
       updateMap();
 
@@ -653,22 +698,58 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
 
     // FLAGS
 
-    document.addEventListener('calciteComboboxChange', handleSelection);
+    document.addEventListener('calciteComboboxChange', handleFlagsSegListSelection);
     
+    function createCalciteCheckboxWithLabel(flagName,flagDescription) {
+      // Create elements
+      const checkbox = document.createElement('calcite-checkbox');
+      checkbox.value = flagName;
+      const labelText = document.createTextNode(flagDescription);
+      const label = document.createElement('label');
+
+      label.classList.add('custom-checkbox-label');
+
+      // Add an event listener to the checkbox
+      checkbox.addEventListener('calciteCheckboxChange', function(event) {
+        if (event.target.checked) {
+          flagsMap.push(event.target.value);
+        } else {
+          const index = flagsMap.indexOf(event.target.value);
+          if (index > -1) {
+            flagsMap.splice(index, 1);
+          }
+        }
+        updateMap();
+      });
+
+      // Configure and append elements
+      label.appendChild(checkbox);
+      label.appendChild(labelText);
+    
+      return label;
+    }
+
     function populateComboboxFlags() {
       const combobox = document.getElementById('comboboxFlags');
+      const flagChecksDiv = document.getElementById('flagChecks');
+    
       dataFlags.forEach(flag => {
-        const item = document.createElement('calcite-combobox-item');
-        item.text = flag.flagName;
-        item.textLabel = flag.flagDescription; // Store the entire flag object as a string
-        combobox.appendChild(item);
+        // Create and append combobox items
+        const comboboxItem = document.createElement('calcite-combobox-item');
+        comboboxItem.text = flag.flagName;
+        comboboxItem.textLabel = flag.flagDescription;
+        combobox.appendChild(comboboxItem);
+    
+        // Create and append check boxes
+        const checkboxLabel = createCalciteCheckboxWithLabel(flag.flagName, flag.flagDescription);
+        flagChecksDiv.appendChild(checkboxLabel);    
       });
     }
     
-    function handleSelection(event) {
-      selectedFlags.length = 0; // Clear the previous selection
+    function handleFlagsSegListSelection(event) {
+      flagsSegList.length = 0; // Clear the previous selection
       event.target.selectedItems.forEach(item => {
-        selectedFlags.push({
+        flagsSegList.push({
           flagName: item.text,
           flagDescription: item.textLabel
         });
@@ -677,7 +758,7 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
       updateMap();
       updateSegments();
 
-      console.log(selectedFlags); // Logs the selected flags
+      console.log(flagsSegList); // Logs the selected flags
     }
     
     populateComboboxFlags();    
@@ -710,17 +791,17 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
         whereCondition.push(`CO_NAME = '${document.getElementById('selectCoName').value}'`);
       }
 
-      if (selectedFlags.length && document.getElementById('checkboxFlags').checked==true) {
-        selectedFlags.forEach(flag => {
+      if (flagsSegList.length) {
+        flagsSegList.forEach(flag => {
           // Condition for FL_ flag
           const flCondition = `${flag.flagName} = 1`;
       
           // Additional condition for OV_ flag
-          const orFlagName = flag.flagName.replace("FL_", "OV_");
-          const orCondition = `${orFlagName} = 0`;
+          const ovFlagName = flag.flagName.replace("FL_", "OV_");
+          const ovCondition = `${ovFlagName} = 0`;
       
           // Combine the two conditions with AND and group them with parentheses
-          const combinedCondition = `(${flCondition} AND ${orCondition})`;
+          const combinedCondition = `(${flCondition} AND ${ovCondition})`;
       
           whereCondition.push(combinedCondition);
         });
@@ -856,7 +937,7 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
       if (!editKey.includes(inputBoxValue)) {
           // If the input value doesn't match 'editKey', execute the code here
           console.error("Value doesn't match 'editKey'!");
-          alert('Incorrect edit key.')
+          alert('Incorrect edit key.');
           return;
       } else {
           console.log("Value matches 'editKey'.");
@@ -1032,7 +1113,7 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
       myChart = new Chart(ctx, {
         type: 'scatter',
         options: {
-          aspectRatio: 1.8,
+          aspectRatio: 2,
           scales: {
             x: {
               min: 1980,
@@ -1407,9 +1488,9 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
 
           dataFlags.forEach(flag => {
             if (evaluateFlag(feature, flag)) {
-              const orFlagName = flag.flagName.replace('FL_', 'OV_');
-              const toggleValue = feature.attributes[orFlagName];
-              const switchId = `switch_${orFlagName}`;
+              const ovFlagName = flag.flagName.replace('FL_', 'OV_');
+              const toggleValue = feature.attributes[ovFlagName];
+              const switchId = `switch_${ovFlagName}`;
         
               tableHtml += `<tr>
                 <td>
@@ -1422,7 +1503,7 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
                 <td class="tableText">${flag.flagDescription}</td>
               </tr>`;
         
-              renderedFlags.push(orFlagName);
+              renderedFlags.push(ovFlagName);
             }
           });
         
@@ -1431,12 +1512,12 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
           }
           document.getElementById("flags").innerHTML = tableHtml;
         
-          renderedFlags.forEach(orFlagName => {
-            const switchId = `switch_${orFlagName}`;
+          renderedFlags.forEach(ovFlagName => {
+            const switchId = `switch_${ovFlagName}`;
             document.getElementById(switchId).addEventListener('calciteSwitchChange', (event) => {
               const newValue = event.target.checked ? 1 : 0;
         
-              updateFeature(feature.attributes.SEGID, orFlagName, newValue).then(_updateSuccess => {
+              updateFeature(feature.attributes.SEGID, ovFlagName, newValue).then(_updateSuccess => {
                 if (!_updateSuccess) {
                   event.target.checked = !newValue;
                 }
@@ -1462,8 +1543,6 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
     selectSegId.addEventListener('calciteSelectChange', updatePanelInfo);
     selectCoName.addEventListener('calciteSelectChange', updateSegments);
     selectYear.addEventListener('calciteSelectChange', updateMap);
-    document.getElementById('checkboxFlags').addEventListener('calciteCheckboxChange', updateSegments);
-
     
     function querySEGIDByOBJECTID(OBJECTID) {
       console.log('querySEGIDByOBJECTID');
@@ -1491,9 +1570,24 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
           var featureOBJECTID = result.graphic.attributes.OBJECTID;
     
           querySEGIDByOBJECTID(featureOBJECTID).then(function(SEGID) {
-            selectSegId.value = SEGID;
-            updatePanelInfo();
+            if (isValueInCalciteSelect(SEGID, selectSegId)) {
+              selectSegId.value = SEGID;
+              updatePanelInfo();
+            } else {
+              // Handle the case where the value doesn't exist in the dropdown
+              alert(`${SEGID} not found in the dropdown. There are too many segments to display all in dropdown. Please filter segments further.`);
+              }
           });
+            
+          function isValueInCalciteSelect(value, calciteSelectElement) {
+            const options = calciteSelectElement.querySelectorAll('calcite-option');
+            for (let option of options) {
+              if (option.value === value.toString()) {
+                return true;
+              }
+            }
+            return false;
+          }
         }
       });
     });

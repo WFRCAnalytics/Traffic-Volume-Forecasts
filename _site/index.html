@@ -38,15 +38,15 @@
                 </div>
                 <table width="100%">
                     <tr>
-                        <td width="35%">
+                        <td width="26%" valign="top">
+                            <label for="selectCoName">County</label>
                             <div class="select-container">
-                                <label for="selectCoName"><b>County:</b></label>
                                 <calcite-select id="selectCoName"></calcite-select>
                             </div>
                         </td>
-                        <td width="45%">
+                        <td width="30%" valign="top">
+                            <label for="slectSegId">Segment</label>
                             <div class="select-container">
-                                <label for="slectSegId"><b>Segment:</b></label>
                                 <calcite-select id="selectSegId"></calcite-select>
                                 <div id="selectPrevButton" style="display: inline;"></div>
                                 <div id="selectNextButton" style="display: inline;"></div>
@@ -56,14 +56,17 @@
                                 <calcite-select id="selectSource"></calcite-select>
                             </div>            
                         </td>
-                        <td>
+                        <td width="10%" valign="top">
+                            <label for="checkboxAutoZoom">&nbsp;</label>
                             <calcite-label layout="inline">
                                 <calcite-checkbox id="checkboxAutoZoom" checked></calcite-checkbox>
-                                Auto zoom
+                                Auto pan
                             </calcite-label>
+                        </td>
+                        <td width="34%" valign="top">
+                            <label for="comboboxFlags">Flags</label>
                             <calcite-label layout="inline">
-                                <calcite-checkbox id="checkboxFlags" checked></calcite-checkbox>
-                                Use map flag filter
+                                <calcite-combobox id="comboboxFlags" multiple placeholder="Flag filter"></calcite-combobox>
                             </calcite-label>
                         </td>
 
@@ -353,20 +356,11 @@
                     <h3>Forecasts</h3>
                     <calcite-label layout="inline">
                         <calcite-checkbox id="checkboxForecasts" value="forecasts" checked></calcite-checkbox>
-                        Show Layer
+                        Segments Layer
                     </calcite-label>
                     <calcite-label layout="inline">
                         <calcite-checkbox id="checkboxLabels" value="labels" checked></calcite-checkbox>
-                        Show Labels
-                    </calcite-label>
-                    <h3>Show Projects</h3>
-                    <calcite-label layout="inline">
-                        <calcite-checkbox id="checkboxRoadwayProjects" value="roadway-projects" checked></calcite-checkbox>
-                        Roadway Projects
-                    </calcite-label>
-                    <calcite-label layout="inline">
-                        <calcite-checkbox id="checkboxTransitProjects" value="transit-projects"></calcite-checkbox>
-                        Transit Projects
+                        Segments Labels
                     </calcite-label>
                     <br/>
                     <div class="select-container">
@@ -412,16 +406,18 @@
                         </calcite-label>
                     </calcite-radio-button-group>
                     
-                    <h3>Flags</h3>
-                    <calcite-combobox id="comboboxFlags" multiple placeholder="Flag filter"></calcite-combobox>
-
-                    <br/>
-                    <br/>
-
-                    <calcite-label layout="inline">
-                        <calcite-checkbox id="checkboxNoNotes" value="nonotes"></calcite-checkbox>
-                        No Notes
+                    <h3>Show Projects</h3>
+                    <calcite-label layout="inline" class="custom-checkbox-label">
+                        <calcite-checkbox id="checkboxRoadwayProjects" value="roadway-projects" checked></calcite-checkbox>
+                        Roadway
                     </calcite-label>
+                    <calcite-label layout="inline" class="custom-checkbox-label">
+                        <calcite-checkbox id="checkboxTransitProjects" value="transit-projects"></calcite-checkbox>
+                        Transit
+                    </calcite-label>
+
+                    <h3>Show Flags</h3>
+                    <div id="flagChecks"></div>
                 </div>
                 <div id="mapView"></div>
             </div>
