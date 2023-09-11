@@ -158,7 +158,7 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
         labelClass.labelExpressionInfo.expression = "Text(" + _expression + ", '#,###')";
         break;
       case 'final-forecast-change-2019':
-        _expression = "$feature.MF" + selectYear.value + " + $feature.ADJ" + selectYear.value + " - $feature.M2019";
+        _expression = "$feature.MF" + selectYear.value + " + $feature.ADJ" + selectYear.value + " - ($feature.M2019 + $feature.aadtAdjFactor)";
         rendererSegmentsVolumeCompare.valueExpression = _expression;
         rendererSegmentsVolumeCompare.valueExpressionTitle = /*selectYear.value + ' */'Final Forecast Change from 2019';
         layerSegments.renderer = rendererSegmentsVolumeCompare;
