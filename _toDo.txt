@@ -1,27 +1,26 @@
 BUGS
-Click on map when making edits... ask to save?
-fix dirty comments paste
-Round adjustment before applying edits or Round final forecast!
-
+Click on map when making edits...or go to different segment...ask to save
+Set empty adjustment to 0
 
 ADDITIONAL FEATURES
 Chart legend - custom table with main series more prominently features
-Add flags to map
 Flag countdowns!
 Add SE data: Development intensity (TAZ-->TOTHH+(1.8 TOTEMP))
 Auto apply changes (on lose focus)
-Add historic estimate adjustment field
-Show area type
+Add historic estimate adjustment field - Observed data adjustment
 Save last reviewed segment and edit key?
-preserve zoom level
 Add link to SE Map
 Info buttons on terms/options
 Should we forecast no-build and needs-based?
 Commas in years on hover in chart
-Observed data adjustment
 Boilerplate Notes?!
 Change map year as manual edits focus changes
 
+
+DAVIS SEGMENTS
+How do we adjust historic data without data?
+Should we add all federal aid routes to model?
+Lagoon off ramp segment?
 
 Weber Segments
 0037_009.0 - WHY IS 2032 SO HIGH!
@@ -78,6 +77,10 @@ DONE!--Maybe reviewed flag is when no text in notes?
 DONE!--High model adjustment factor
 DONE!--Add further review flag!
 DONE!--Separate into 'Reviewed Notes:' (NOTES_REV) and 'Further Review Notes' (NOTES_FREV)
+DONE!--Round adjustment before applying edits or Round final forecast!
+DONE!--Add flags to map
+DONE!--Show area type
+DONE!--preserve zoom level
 
 NO!--Get projects from RTP map, use the same symbology (talk to Bert or Sarah)
 NO!--Add model network with SEGIDs as layer??
