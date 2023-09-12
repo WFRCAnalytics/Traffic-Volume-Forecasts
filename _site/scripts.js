@@ -849,18 +849,36 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
     // run first time
     updateSegments();
 
+    // NEXT SEGMENT BUTTON
+
     // Create a new Calcite button
     const button = document.createElement('calcite-button');
     button.innerHTML = '>'; // Set the button text
 
     // Add an event listener to the button for the 'click' event
-    button.addEventListener('click', function() {
+    button.addEventListener('click', async function() {
       // Get the select element with ID 'selectSegId'
       const select = document.getElementById('selectSegId');
   
       if (select && select.children && select.selectedOption.nextElementSibling) {
+
+        // save changes if dirty
+        const buttonApply = document.getElementById('button-apply');
+        if (buttonApply.classList.contains('btn-dirty')) {
+          try {
+            // Wait for applyEdits to complete
+            await applyEdits();
+          } catch (error) {
+            console.error("Error applying edits:", error);
+            // Handle the error as appropriate for your application
+            return;
+          }
+        }
+
         // Increment the selectedIndex to select the next option
         selectSegId.selectedOption = select.selectedOption.nextElementSibling;
+
+        // update panel and chart
         updatePanelInfo();
       } else {
         //alert('No more items to select.'); // Alert if there's no next option or if select is not found
@@ -868,16 +886,34 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
     });
     document.getElementById('selectNextButton').appendChild(button);
   
+
+    // PREVIOUS SEGMENT BUTTON
+
     // Create a new Calcite button
     const buttonPrev = document.createElement('calcite-button');
     buttonPrev.innerHTML = '<'; // Set the buttonPrev text
 
     // Add an event listener to the buttonPrev for the 'click' event
-    buttonPrev.addEventListener('click', function() {
+    buttonPrev.addEventListener('click', async function() {
+
       // Get the select element with ID 'selectSegId'
       const select = document.getElementById('selectSegId');
   
       if (select && select.children && select.selectedOption.previousElementSibling) {
+        
+        // save changes if dirty
+        const buttonApply = document.getElementById('button-apply');
+        if (buttonApply.classList.contains('btn-dirty')) {
+          try {
+            // Wait for applyEdits to complete
+            await applyEdits();
+          } catch (error) {
+            console.error("Error applying edits:", error);
+            // Handle the error as appropriate for your application
+            return;
+          }
+        }
+
         // Increment the selectedIndex to select the next option
         selectSegId.selectedOption = select.selectedOption.previousElementSibling;
         updatePanelInfo();
@@ -928,162 +964,332 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
     });
     document.getElementById('selectPrevYearButton').appendChild(buttonPrevYear);
 
-    // Function to update the adjustments
+
+    // apply edits!
     function applyEdits() {
-      console.log('applyEdits');
-
-      const inputBoxValue = document.getElementById('edit-key').value;
-
-      if (!editKey.includes(inputBoxValue)) {
-          // If the input value doesn't match 'editKey', execute the code here
+      return new Promise(async (resolve, reject) => {
+        console.log('applyEdits');
+    
+        const inputBoxValue = document.getElementById('edit-key').value;
+    
+        if (!editKey.includes(inputBoxValue)) {
           console.error("Value doesn't match 'editKey'!");
           alert('Incorrect edit key.');
+          reject(new Error("Value doesn't match 'editKey'."));
           return;
-      } else {
+        } else {
           console.log("Value matches 'editKey'.");
-      }
+        }
     
-      // round adjustments
-
-
-      // Query to get the specific feature with SEGID=_curSegId
-      var query = new Query();
-      query.where = "SEGID='" + selectSegId.value + "'"; // Assuming SEGID is numeric
-      query.returnGeometry = false;
-      query.outFields = ['*']; // Get all fields
+        var query = new Query();
+        query.where = "SEGID='" + selectSegId.value + "'";
+        query.returnGeometry = false;
+        query.outFields = ['*'];
     
-      layerSegments.queryFeatures(query).then(function(results) {
-        console.log('queryFeatures');
-
-        if (results.features.length > 0) {
-          var featureToUpdate = results.features[0]; // Get the first feature that matches the query
-
-          // Define the custom rounding function
-          function customRounding(value) {
-            if (0 <= value && value < 100) {
-              return Math.round(value / 10) * 10;
-            } else if (100 <= value && value < 1000) {
-              return Math.round(value / 50) * 50;
-            } else if (1000 <= value && value < 10000) {
-              return Math.round(value / 100) * 100;
-            } else if (10000 <= value && value < 100000) {
-              return Math.round(value / 500) * 500;
-            } else if (value >= 100000) {
-              return Math.round(value / 1000) * 1000;
+        try {
+          const results = await layerSegments.queryFeatures(query);
+          console.log('queryFeatures');
+    
+          if (results.features.length > 0) {
+            var featureToUpdate = results.features[0]; 
+    
+            function customRounding(value) {
+              if (0 <= value && value < 100) {
+                return Math.round(value / 10) * 10;
+              } else if (100 <= value && value < 1000) {
+                return Math.round(value / 50) * 50;
+              } else if (1000 <= value && value < 10000) {
+                return Math.round(value / 100) * 100;
+              } else if (10000 <= value && value < 100000) {
+                return Math.round(value / 500) * 500;
+              } else if (value >= 100000) {
+                return Math.round(value / 1000) * 1000;
+              } else {
+                return value;
+              }
+            }
+    
+            function getRoundedAdjustment(year) {
+              const adjValueElement = document.getElementById('adj' + year + 'Value');
+              const currentValue = featureToUpdate.attributes['MF' + year];
+              const adjustmentValue = parseInt(adjValueElement.value);
+              const roundedValue = customRounding(currentValue + adjustmentValue);
+              const newAdj = roundedValue - currentValue;
+              adjValueElement.value = newAdj;
+              return newAdj;
+            }
+    
+            featureToUpdate.attributes.ADJ2023 = getRoundedAdjustment('2023');
+            featureToUpdate.attributes.ADJ2028 = getRoundedAdjustment('2028');
+            featureToUpdate.attributes.ADJ2032 = getRoundedAdjustment('2032');
+            featureToUpdate.attributes.ADJ2042 = getRoundedAdjustment('2042');
+            featureToUpdate.attributes.ADJ2050 = getRoundedAdjustment('2050');
+            featureToUpdate.attributes.NOTES = document.getElementById('notes').value.trim();
+            featureToUpdate.attributes.NOTES_FURREV = document.getElementById('notes_furrev').value.trim();
+    
+            dataFlags.forEach(flag => {
+              let evalString = flag.flagCriteria
+                .replace(/\[([^\]]+)\]/g, function(_, fieldName) {
+                  return `featureToUpdate.attributes.${fieldName}`;
+                })
+                .replace(/&/g, '&&')
+                .replace(/\|/g, '||');
+              
+              const _prvValue = featureToUpdate.attributes[flag.flagName]
+              const _newValue = eval(evalString) ? 1 : 0;
+              
+              if (_prvValue === 1 && _newValue === 0) {
+                featureToUpdate.attributes[flag.flagName.replace('FL_', 'OV_')] = 0;
+              }
+    
+              featureToUpdate.attributes[flag.flagName] = _newValue;
+            });
+    
+            inputIds.forEach(id => {
+              const inputElement = document.getElementById(id);
+              initialValues[id] = inputElement.value.trim();
+            });
+    
+            let promises = [];
+    
+            const updatePromise = layerSegments.applyEdits({ updateFeatures: [featureToUpdate] });
+            promises.push(updatePromise);
+    
+            var newFeature = {
+              attributes: {
+                SEGID: selectSegId.value
+              }
+            };
+    
+            newFeature.attributes.SEGID = selectSegId.value;
+            newFeature.attributes.EDITKEY = document.getElementById('edit-key').value;
+            newFeature.attributes.ADJ2023 = document.getElementById('adj2023Value').value;
+            newFeature.attributes.ADJ2028 = document.getElementById('adj2028Value').value;
+            newFeature.attributes.ADJ2032 = document.getElementById('adj2032Value').value;
+            newFeature.attributes.ADJ2042 = document.getElementById('adj2042Value').value;
+            newFeature.attributes.ADJ2050 = document.getElementById('adj2050Value').value;
+            newFeature.attributes.NOTES = document.getElementById('notes').value.trim();
+            newFeature.attributes.NOTES_FURREV = document.getElementById('notes_furrev').value.trim();
+            newFeature.attributes.TIMESTAMP = new Date();
+    
+            const logPromise = tableLog.applyEdits({ addFeatures: [newFeature] });
+            promises.push(logPromise);
+    
+            let resultsArray = await Promise.all(promises);
+    
+            const updateResults = resultsArray[0];
+            const logResults = resultsArray[1];
+  
+            if (logResults.addFeatureResults.length > 0) {
+              console.log('Log table record added successfully');
             } else {
-              return value;
+              reject(new Error('Log table error.'));
             }
-          }
+    
+            console.log("Successfully applied edits");
 
-          // Function to get rounded adjustment and update the input value
-          function getRoundedAdjustment(year) {
-            const adjValueElement = document.getElementById('adj' + year + 'Value');
-            const currentValue = featureToUpdate.attributes['MF' + year];
-            const adjustmentValue = parseInt(adjValueElement.value);
-            const roundedValue = customRounding(currentValue + adjustmentValue);
-            const newAdj = roundedValue - currentValue;
-            adjValueElement.value = newAdj;
-            return newAdj;
-          }
-
-          // Example usage for different years
-          featureToUpdate.attributes.ADJ2023 = getRoundedAdjustment('2023');
-          featureToUpdate.attributes.ADJ2028 = getRoundedAdjustment('2028');
-          featureToUpdate.attributes.ADJ2032 = getRoundedAdjustment('2032');
-          featureToUpdate.attributes.ADJ2042 = getRoundedAdjustment('2042');
-          featureToUpdate.attributes.ADJ2050 = getRoundedAdjustment('2050');
-          featureToUpdate.attributes.NOTES = document.getElementById('notes').value.trim();
-          featureToUpdate.attributes.NOTES_FURREV = document.getElementById('notes_furrev').value.trim();
-
-          dataFlags.forEach(flag => {
-            // Replace the field names with their values in the segment
-            let evalString = flag.flagCriteria
-              .replace(/\[([^\]]+)\]/g, function(_, fieldName) {
-                return `featureToUpdate.attributes.${fieldName}`;
-              })
-              .replace(/&/g, '&&')  // replace bitwise AND with logical AND
-              .replace(/\|/g, '||');  // replace bitwise OR with logical OR
-            
-            // previous value
-            const _prvValue = featureToUpdate.attributes[flag.flagName]
-            const _newValue = eval(evalString) ? 1 : 0;
-            
-            // if the new value equal 0 and the previous value equaled 1 then set override to zero
-            if (_prvValue===1 && _newValue===0) {
-              featureToUpdate.attributes[flag.flagName.replace('FL_', 'OV_')] = 0;
-            }
-
-            // Evaluate the modified criteria
-            featureToUpdate.attributes[flag.flagName] = _newValue;
-
-          });
-
-          inputIds.forEach(id => {
-            const inputElement = document.getElementById(id);
-            initialValues[id] = inputElement.value.trim();
-          });
-
-          // Apply the edits
-          layerSegments.applyEdits({
-            updateFeatures: [featureToUpdate]
-          }).then(function(results) {
-            if (results.updateFeatureResults.length > 0) {
+            if (updateResults.updateFeatureResults.length > 0) {
               console.log('Updated Successfully');
               const buttonApply = document.getElementById('button-apply');
               if (buttonApply.classList.contains('btn-dirty')) {
                 buttonApply.classList.remove('btn-dirty');
                 buttonApply.classList.add('btn-clean');
               }
-              
-              updatePanelInfo();
             }
-          }).catch(function(error) {
-            console.error('Error updating feature: ', error);
-            alert('UPDATE FEATURE ERROR.');
-          });
+            
+            resolve();
+    
+          } else {
+            console.log('No features found with SEGID=' + _curSegId);
+            reject(new Error('No features found with SEGID=' + _curSegId));
+          }
+    
+        } catch (error) {
+          console.error('Error in applyEdits or queryFeatures: ', error);
+          alert('There was an error.');
+          reject(error);
+        }
+      });
+    }
+    
+
+    
+    /*
+    // Function to update the adjustments
+    function applyEdits() {
+      return new Promise((resolve, reject) => {
+
+        console.log('applyEdits');
+
+        const inputBoxValue = document.getElementById('edit-key').value;
+
+        if (!editKey.includes(inputBoxValue)) {
+            // If the input value doesn't match 'editKey', execute the code here
+            console.error("Value doesn't match 'editKey'!");
+            alert('Incorrect edit key.');
+            return;
         } else {
-          console.log('No features found with SEGID=' + _curSegId);
+            console.log("Value matches 'editKey'.");
         }
-      }).catch(function(error) {
-        console.error('Error querying features: ', error);
+      
+        // round adjustments
+
+
+        // Query to get the specific feature with SEGID=_curSegId
+        var query = new Query();
+        query.where = "SEGID='" + selectSegId.value + "'"; // Assuming SEGID is numeric
+        query.returnGeometry = false;
+        query.outFields = ['*']; // Get all fields
+      
+        layerSegments.queryFeatures(query).then(function(results) {
+          console.log('queryFeatures');
+
+          if (results.features.length > 0) {
+            var featureToUpdate = results.features[0]; // Get the first feature that matches the query
+
+            // Define the custom rounding function
+            function customRounding(value) {
+              if (0 <= value && value < 100) {
+                return Math.round(value / 10) * 10;
+              } else if (100 <= value && value < 1000) {
+                return Math.round(value / 50) * 50;
+              } else if (1000 <= value && value < 10000) {
+                return Math.round(value / 100) * 100;
+              } else if (10000 <= value && value < 100000) {
+                return Math.round(value / 500) * 500;
+              } else if (value >= 100000) {
+                return Math.round(value / 1000) * 1000;
+              } else {
+                return value;
+              }
+            }
+
+            // Function to get rounded adjustment and update the input value
+            function getRoundedAdjustment(year) {
+              const adjValueElement = document.getElementById('adj' + year + 'Value');
+              const currentValue = featureToUpdate.attributes['MF' + year];
+              const adjustmentValue = parseInt(adjValueElement.value);
+              const roundedValue = customRounding(currentValue + adjustmentValue);
+              const newAdj = roundedValue - currentValue;
+              adjValueElement.value = newAdj;
+              return newAdj;
+            }
+
+            // Example usage for different years
+            featureToUpdate.attributes.ADJ2023 = getRoundedAdjustment('2023');
+            featureToUpdate.attributes.ADJ2028 = getRoundedAdjustment('2028');
+            featureToUpdate.attributes.ADJ2032 = getRoundedAdjustment('2032');
+            featureToUpdate.attributes.ADJ2042 = getRoundedAdjustment('2042');
+            featureToUpdate.attributes.ADJ2050 = getRoundedAdjustment('2050');
+            featureToUpdate.attributes.NOTES = document.getElementById('notes').value.trim();
+            featureToUpdate.attributes.NOTES_FURREV = document.getElementById('notes_furrev').value.trim();
+
+            dataFlags.forEach(flag => {
+              // Replace the field names with their values in the segment
+              let evalString = flag.flagCriteria
+                .replace(/\[([^\]]+)\]/g, function(_, fieldName) {
+                  return `featureToUpdate.attributes.${fieldName}`;
+                })
+                .replace(/&/g, '&&')  // replace bitwise AND with logical AND
+                .replace(/\|/g, '||');  // replace bitwise OR with logical OR
+              
+              // previous value
+              const _prvValue = featureToUpdate.attributes[flag.flagName]
+              const _newValue = eval(evalString) ? 1 : 0;
+              
+              // if the new value equal 0 and the previous value equaled 1 then set override to zero
+              if (_prvValue===1 && _newValue===0) {
+                featureToUpdate.attributes[flag.flagName.replace('FL_', 'OV_')] = 0;
+              }
+
+              // Evaluate the modified criteria
+              featureToUpdate.attributes[flag.flagName] = _newValue;
+
+            });
+
+            inputIds.forEach(id => {
+              const inputElement = document.getElementById(id);
+              initialValues[id] = inputElement.value.trim();
+            });
+
+            // Apply the edits
+            layerSegments.applyEdits({
+              updateFeatures: [featureToUpdate]
+            }).then(function(results) {
+              if (results.updateFeatureResults.length > 0) {
+                console.log('Updated Successfully');
+                const buttonApply = document.getElementById('button-apply');
+                if (buttonApply.classList.contains('btn-dirty')) {
+                  buttonApply.classList.remove('btn-dirty');
+                  buttonApply.classList.add('btn-clean');
+                }
+                
+                updatePanelInfo();
+              }
+            }).catch(function(error) {
+              console.error('Error updating feature: ', error);
+              alert('UPDATE FEATURE ERROR.');
+            });
+          } else {
+            console.log('No features found with SEGID=' + _curSegId);
+          }
+        }).then(function(applyEditsResults) {
+          if (applyEditsResults.addFeatureResults && applyEditsResults.addFeatureResults.length > 0) {
+            console.log('Log table record added successfully');
+            resolve(); // Resolve the outer promise here
+          } else {
+            reject(new Error('No features added')); // Reject if no features were added
+          }
+        }).catch(function(error) {
+          console.error('Error in applyEdits or queryFeatures: ', error);
+          alert('There was an error.');
+          reject(error); // Reject the outer promise if there's an error
+        });
+
+        // LOG FILE
+
+        // Create an empty Graphic to represent the new feature
+        var newFeature = {
+          attributes: {
+              SEGID: selectSegId.value
+          }
+        };
+
+        const mountainTime = new Date();
+        console.log(mountainTime);
+
+        // Populate the attributes
+        newFeature.attributes.SEGID        = selectSegId.value;
+        newFeature.attributes.EDITKEY      = document.getElementById('edit-key').value;
+        newFeature.attributes.ADJ2023      = document.getElementById('adj2023Value').value;
+        newFeature.attributes.ADJ2028      = document.getElementById('adj2028Value').value;
+        newFeature.attributes.ADJ2032      = document.getElementById('adj2032Value').value;
+        newFeature.attributes.ADJ2042      = document.getElementById('adj2042Value').value;
+        newFeature.attributes.ADJ2050      = document.getElementById('adj2050Value').value;
+        newFeature.attributes.NOTES        = document.getElementById('notes').value.trim();
+        newFeature.attributes.NOTES_FURREV = document.getElementById('notes_furrev').value.trim();
+        newFeature.attributes.TIMESTAMP = mountainTime;  // Directly assign mountainTime
+
+        tableLog.applyEdits({
+          addFeatures: [newFeature]
+        }).then(function(results) {
+          if (results.addFeatureResults.length > 0) {
+            console.log('Log table record added successfully');
+            resolve(); // Resolve the outer promise here
+          } else {
+            reject(new Error('Log table error.')); // Optional: You can reject if no features were added
+          }
+        }).catch(function(error) {
+          console.error('Error adding feature: ', error);
+          alert('Log table error.');
+          reject(error); // Reject the outer promise if there's an error
+        });
+        
+        // At points where you expect edits to be successful:
+        console.log("Successfully applied edits"); // Debug log
+        resolve();
       });
-
-      // LOG FILE
-
-      // Create an empty Graphic to represent the new feature
-      var newFeature = {
-        attributes: {
-            SEGID: selectSegId.value
-        }
-      };
-
-      const mountainTime = new Date();
-      console.log(mountainTime);
-
-      // Populate the attributes
-      newFeature.attributes.SEGID        = selectSegId.value;
-      newFeature.attributes.EDITKEY      = document.getElementById('edit-key').value;
-      newFeature.attributes.ADJ2023      = document.getElementById('adj2023Value').value;
-      newFeature.attributes.ADJ2028      = document.getElementById('adj2028Value').value;
-      newFeature.attributes.ADJ2032      = document.getElementById('adj2032Value').value;
-      newFeature.attributes.ADJ2042      = document.getElementById('adj2042Value').value;
-      newFeature.attributes.ADJ2050      = document.getElementById('adj2050Value').value;
-      newFeature.attributes.NOTES        = document.getElementById('notes').value.trim();
-      newFeature.attributes.NOTES_FURREV = document.getElementById('notes_furrev').value.trim();
-      newFeature.attributes.TIMESTAMP = mountainTime;  // Directly assign mountainTime
-
-      // Apply the edits to add the new feature
-      tableLog.applyEdits({
-        addFeatures: [newFeature]
-      }).then(function(results) {
-        if (results.addFeatureResults.length > 0) {
-            console.log('Added Successfully');
-        }
-      }).catch(function(error) {
-        console.error('Error adding feature: ', error);
-        alert('LOG FILE ERROR.');
-      });
-    };
+    }*/
 
     // Create a new Calcite button
     const buttonApply = document.createElement('button');
@@ -1197,7 +1403,7 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
         aadt2019Value = aadt2019Entry.AADT;
       } else {
         aadt2019Value = 0;
-        console.error("No AADT value found for the year 2019.");
+        console.log("No AADT value found for the year 2019.");
       }
       
       const filteredModForecasts = dataModVolAdj.filter(item => item.SEGID === _curSegId);
