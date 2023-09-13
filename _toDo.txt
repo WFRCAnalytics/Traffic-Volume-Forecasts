@@ -3,6 +3,7 @@ Click on map when making edits...or go to different segment...ask to save
 Set empty adjustment to 0
 
 ADDITIONAL FEATURES
+Legend on right - collapse? add hide button
 Chart legend - custom table with main series more prominently features
 Flag countdowns!
 Add SE data: Development intensity (TAZ-->TOTHH+(1.8 TOTEMP))

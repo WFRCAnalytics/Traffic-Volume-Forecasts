@@ -323,6 +323,7 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
     layerRoadwayProjectsPoints.refresh();
     layerTransitProjectsLines .refresh();
     layerTransitProjectsPoints.refresh();
+    layerFlags                .refresh();
 
   };
 
