@@ -155,7 +155,7 @@
                             </tr>
                             <tr>
                                 <td align="center">
-                                    <input type="text" id="adjHistValue" class="manualAdj right-align-input" placeholder="">
+                                    <input type="text" id="adjHistValue" class="manualAdj right-align-input" placeholder="0">
                                 </td>
                                 <td align="right">
                                     Manual Adjustments:
@@ -394,6 +394,10 @@
                         <div style="height: 5px;"></div>
                         <calcite-label layout="inline">
                             <calcite-radio-button name="rbgForecasts" value="manual-adjustments"></calcite-radio-button>
+                            Historic Adjustments
+                        </calcite-label>
+                        <calcite-label layout="inline">
+                            <calcite-radio-button name="rbgForecasts" value="manual-adjustments"></calcite-radio-button>
                             Manual Adjustments
                         </calcite-label>
                         <calcite-label layout="inline">
@@ -418,6 +422,11 @@
 
                     <h3>Show Flags</h3>
                     <div id="flagChecks"></div>
+                    <br/>
+                    <calcite-label layout="inline">
+                        <calcite-checkbox id="checkboxLegend" value="legend" checked></calcite-checkbox>
+                        Show Legend
+                    </calcite-label>
                 </div>
                 <div id="mapView"></div>
             </div>

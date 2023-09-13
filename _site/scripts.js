@@ -1,10 +1,6 @@
 let defaultPlanArea = "WFRC";
 let legend;
-let inputIds = [
-  'adj2019Value', 'adj2023Value', 'adj2028Value', 
-  'adj2032Value', 'adj2042Value', 'adj2050Value',
-  'notes', 'notes_furrev'
-];
+let inputIds = ['adj2019Value','adj2023Value','adj2028Value','adj2032Value','adj2042Value','adj2050Value','adjHistValue','notes','notes_furrev'];
 let years = ["2019", "2023", "2028", "2032", "2042", "2050"];
 let prefixes = ["adj", "f", "mf", "m", "diff", "dyvol", "lanes", "ft", "at"];
 let initialValues = [0,0,0,0,0,0,""];
@@ -224,7 +220,7 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
 
     switch (curDisplayForecast) {
       case 'final-forecast':
-        _expression = "$feature.MF" + selectYear.value + " + $feature.ADJ" + selectYear.value;
+        _expression = "$feature.MF" + selectYear.value + " + $feature.ADJ" + selectYear.value + " + $feature.ADJHIST";
         rendererSegmentsVolume.valueExpression = _expression;
         
         rendererSegmentsVolume.valueExpressionTitle = /*selectYear.value + ' */'Final Forecast';
@@ -232,14 +228,14 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
         labelClass.labelExpressionInfo.expression = "Text(" + _expression + ", '#,###')";
         break;
       case 'final-forecast-change-2019':
-        _expression = "$feature.MF" + selectYear.value + " + $feature.ADJ" + selectYear.value + " - ($feature.M2019 + $feature.aadtAdjFactor)";
+        _expression = "$feature.MF" + selectYear.value + " + $feature.ADJ" + selectYear.value + " - ($feature.M2019 + $feature.aadtAdjFactor)"; // don't include ADJHIST since it just cancels out
         rendererSegmentsVolumeCompare.valueExpression = _expression;
         rendererSegmentsVolumeCompare.valueExpressionTitle = /*selectYear.value + ' */'Final Forecast Change from 2019';
         layerSegments.renderer = rendererSegmentsVolumeCompare;
         labelClass.labelExpressionInfo.expression = "Text(" + _expression + ", '#,###')";
         break;
       case 'final-forecast-change-prev':
-        _expression = "$feature.MF" + selectYear.value + " + $feature.ADJ" + selectYear.value + " - $feature.MF" + _prevDisplayYear + " - $feature.ADJ" + _prevDisplayYear;
+        _expression = "$feature.MF" + selectYear.value + " + $feature.ADJ" + selectYear.value + " - $feature.MF" + _prevDisplayYear + " - $feature.ADJ" + _prevDisplayYear; // don't include ADJHIST since it just cancels out
         rendererSegmentsVolumeCompare.valueExpression = _expression;
         rendererSegmentsVolumeCompare.valueExpressionTitle = /*selectYear.value + ' */'Final Forecast Change from Previous Year' /* + _prevDisplayYear*/;
         layerSegments.renderer = rendererSegmentsVolumeCompare;
@@ -252,8 +248,15 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
         layerSegments.renderer = rendererSegmentsVolumeAdjust;
         labelClass.labelExpressionInfo.expression = "IIF(" + _expression + " == 0, '', Text(" + _expression + ", '#,###'))";
         break;
+      case 'historic-adjustments':
+        _expression = "$feature.ADJHIST";
+        rendererSegmentsVolumeAdjust.valueExpression = _expression;
+        rendererSegmentsVolumeAdjust.valueExpressionTitle = /*selectYear.value + ' */'Historic Adjustments';
+        layerSegments.renderer = rendererSegmentsVolumeAdjust;
+        labelClass.labelExpressionInfo.expression = "IIF(" + _expression + " == 0, '', Text(" + _expression + ", '#,###'))";
+        break;
       case 'model-forecast':
-        _expression = "$feature.MF" + selectYear.value;
+        _expression = "$feature.MF" + selectYear.value + " + $feature.ADJHIST";
         rendererSegmentsVolume.valueExpression = _expression;
         rendererSegmentsVolume.valueExpressionTitle = /*selectYear.value + ' */'Model Forecast';
         layerSegments.renderer = rendererSegmentsVolume;
@@ -508,7 +511,17 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
                   ] // Replace YOUR_LAYER with the layerSegments you want to include in the legend
     });
     view.ui.add(legend, "top-right");
-        
+    
+    document.getElementById('checkboxLegend').addEventListener('calciteCheckboxChange', function(event) {
+      if (event.target.checked) {
+        // Show the legend
+        view.ui.add(legend, "top-right");
+      } else {
+        // Hide the legend
+        view.ui.remove(legend);
+      }
+    });
+
     // add search widget
     var searchWidget = new Search({
       view: view
@@ -979,20 +992,22 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
           // Function to get rounded adjustment and update the input value
           function getRoundedAdjustment(year) {
             const adjValueElement = document.getElementById('adj' + year + 'Value');
+            const adjHistValue = parseInt(document.getElementById('adjHistValue').value || 0);
             const currentValue = featureToUpdate.attributes['MF' + year];
             const adjustmentValue = parseInt(adjValueElement.value);
-            const roundedValue = customRounding(currentValue + adjustmentValue);
-            const newAdj = roundedValue - currentValue;
+            const roundedValue = customRounding(currentValue + adjustmentValue + adjHistValue);
+            const newAdj = roundedValue - currentValue - adjHistValue;
             adjValueElement.value = newAdj;
             return newAdj;
           }
 
           // Example usage for different years
-          featureToUpdate.attributes.ADJ2023 = getRoundedAdjustment('2023');
-          featureToUpdate.attributes.ADJ2028 = getRoundedAdjustment('2028');
-          featureToUpdate.attributes.ADJ2032 = getRoundedAdjustment('2032');
-          featureToUpdate.attributes.ADJ2042 = getRoundedAdjustment('2042');
-          featureToUpdate.attributes.ADJ2050 = getRoundedAdjustment('2050');
+          featureToUpdate.attributes.ADJ2023 = getRoundedAdjustment('2023') || 0;
+          featureToUpdate.attributes.ADJ2028 = getRoundedAdjustment('2028') || 0;
+          featureToUpdate.attributes.ADJ2032 = getRoundedAdjustment('2032') || 0;
+          featureToUpdate.attributes.ADJ2042 = getRoundedAdjustment('2042') || 0;
+          featureToUpdate.attributes.ADJ2050 = getRoundedAdjustment('2050') || 0;
+          featureToUpdate.attributes.ADJHIST = parseInt(document.getElementById('adjHistValue').value);
           featureToUpdate.attributes.NOTES = document.getElementById('notes').value.trim();
           featureToUpdate.attributes.NOTES_FURREV = document.getElementById('notes_furrev').value.trim();
 
@@ -1064,11 +1079,12 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
       // Populate the attributes
       newFeature.attributes.SEGID        = selectSegId.value;
       newFeature.attributes.EDITKEY      = document.getElementById('edit-key').value;
-      newFeature.attributes.ADJ2023      = document.getElementById('adj2023Value').value;
-      newFeature.attributes.ADJ2028      = document.getElementById('adj2028Value').value;
-      newFeature.attributes.ADJ2032      = document.getElementById('adj2032Value').value;
-      newFeature.attributes.ADJ2042      = document.getElementById('adj2042Value').value;
-      newFeature.attributes.ADJ2050      = document.getElementById('adj2050Value').value;
+      newFeature.attributes.ADJ2023      = document.getElementById('adj2023Value').value || 0;
+      newFeature.attributes.ADJ2028      = document.getElementById('adj2028Value').value || 0;
+      newFeature.attributes.ADJ2032      = document.getElementById('adj2032Value').value || 0;
+      newFeature.attributes.ADJ2042      = document.getElementById('adj2042Value').value || 0;
+      newFeature.attributes.ADJ2050      = document.getElementById('adj2050Value').value || 0;
+      newFeature.attributes.ADJHIST      = document.getElementById('adjHistValue').value || 0;
       newFeature.attributes.NOTES        = document.getElementById('notes').value.trim();
       newFeature.attributes.NOTES_FURREV = document.getElementById('notes_furrev').value.trim();
       newFeature.attributes.TIMESTAMP = mountainTime;  // Directly assign mountainTime
@@ -1150,6 +1166,8 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
 
     // Function to update the chart with segment data
     async function updatePanelInfo() {
+      console.log('updatePanelInfo');
+
       // If there's an existing chart, destroy it
       if (!myChart) {
         createChart();
@@ -1198,7 +1216,7 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
         aadt2019Value = aadt2019Entry.AADT;
       } else {
         aadt2019Value = 0;
-        console.error("No AADT value found for the year 2019.");
+        console.log("No AADT value found for the year 2019.");
       }
       
       const filteredModForecasts = dataModVolAdj.filter(item => item.SEGID === _curSegId);
@@ -1236,14 +1254,20 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
           feature.attributes.ADJ2050
         ];
 
+        // Add the historic adjustments to each value in the list
+        adjustments_historic = feature.attributes.ADJHIST;
+        // If adjustments_historic is null or undefined, set it to 0
+        adjustments_historic = adjustments_historic || 0;
+        
         // Extract the X and Y values
-        const chartDataAadt         = filteredAadt        .map(item => ({ x: item.YEAR, y: item.AADT        })).sort((a, b) => a.x - b.x);
-        const chartDataModForecasts = filteredModForecasts.map(item => ({ x: item.YEAR, y: item.modForecast })).sort((a, b) => a.x - b.x);
-        const chartDataModAadt      = filteredModForecasts.map(item => ({ x: item.YEAR, y: item.modAadt     })).sort((a, b) => a.x - b.x);        
-        const chartDataModDyvol     = filteredModForecasts.map(item => ({ x: item.YEAR, y: item.DY_VOL      })).sort((a, b) => a.x - b.x);        
-        const chartDataModLanes     = filteredModForecasts.map(item => ({ x: item.YEAR, y: item.LANES       })).sort((a, b) => a.x - b.x);        
-        const chartDataModFt        = filteredModForecasts.map(item => ({ x: item.YEAR, y: item.FT          })).sort((a, b) => a.x - b.x);        
-        const chartDataModAt        = filteredModForecasts.map(item => ({ x: item.YEAR, y: item.ATYPENAME   })).sort((a, b) => a.x - b.x);        
+        const chartDataAadt         = filteredAadt        .map(item => ({ x: item.YEAR, y: item.AADT                              })).sort((a, b) => a.x - b.x);
+        const chartDataAadtAdj      = filteredAadt        .map(item => ({ x: item.YEAR, y: item.AADT        + adjustments_historic})).sort((a, b) => a.x - b.x);
+        const chartDataModForecasts = filteredModForecasts.map(item => ({ x: item.YEAR, y: item.modForecast + adjustments_historic})).sort((a, b) => a.x - b.x);
+        const chartDataModAadt      = filteredModForecasts.map(item => ({ x: item.YEAR, y: item.modAadt     + adjustments_historic})).sort((a, b) => a.x - b.x);
+        const chartDataModDyvol     = filteredModForecasts.map(item => ({ x: item.YEAR, y: item.DY_VOL                            })).sort((a, b) => a.x - b.x);
+        const chartDataModLanes     = filteredModForecasts.map(item => ({ x: item.YEAR, y: item.LANES                             })).sort((a, b) => a.x - b.x);
+        const chartDataModFt        = filteredModForecasts.map(item => ({ x: item.YEAR, y: item.FT                                })).sort((a, b) => a.x - b.x);
+        const chartDataModAt        = filteredModForecasts.map(item => ({ x: item.YEAR, y: item.ATYPENAME                         })).sort((a, b) => a.x - b.x);
         const chartDataForecasts    = chartDataModForecasts.map((item, index) => {
           // Add the corresponding adjustment value
           return { x: item.x, y: item.y + (adjustments[index] || 0) };
@@ -1261,7 +1285,7 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
         // Create datasets for each PROJGRP
         const linForecastDatasets = Object.entries(groupedLinForecasts).map(([key, group], index) => ({
           label: key, //'Linear Forecasts - ' + key,
-          data: group.map(item => ({ x: item.YEAR, y: item.linForecast })),
+          data: group.map(item => ({ x: item.YEAR, y: item.linForecast + adjustments_historic})),
           borderColor: colors[index % colors.length], // You can define an array of colors or use a function to generate them
           backgroundColor: colors[index % colors.length],
           pointRadius: 0,
@@ -1271,8 +1295,18 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
           borderWidth: borderWidth[index % borderWidth.length]
         }));
 
+        // If adjustments_historic is not zero, then include the adjusted dataset
+        const adjustedDataset = adjustments_historic !== 0 ? [{
+          label: 'UDOT Estimated AADT Adjusted',
+          data: chartDataAadtAdj,
+          borderColor: 'gray',
+          backgroundColor: 'gray',
+          pointRadius: 4
+        }] : [];
+
         // Create the chart
         myChart.data.datasets = [
+          ...adjustedDataset,
           {
             label: 'UDOT Estimated AADT',
             data: chartDataAadt,
@@ -1317,11 +1351,12 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
 
         // update values in manual adjustment boxes
         //document.getElementById("adj2019Value").value = feature.attributes.ADJ2023;
-        document.getElementById("adj2023Value").value = feature.attributes.ADJ2023;
-        document.getElementById("adj2028Value").value = feature.attributes.ADJ2028;
-        document.getElementById("adj2032Value").value = feature.attributes.ADJ2032;
-        document.getElementById("adj2042Value").value = feature.attributes.ADJ2042;
-        document.getElementById("adj2050Value").value = feature.attributes.ADJ2050;
+        document.getElementById("adj2023Value").value = feature.attributes.ADJ2023 || 0;
+        document.getElementById("adj2028Value").value = feature.attributes.ADJ2028 || 0;
+        document.getElementById("adj2032Value").value = feature.attributes.ADJ2032 || 0;
+        document.getElementById("adj2042Value").value = feature.attributes.ADJ2042 || 0;
+        document.getElementById("adj2050Value").value = feature.attributes.ADJ2050 || 0;
+        document.getElementById("adjHistValue").value = feature.attributes.ADJHIST || 0;
         document.getElementById("notes"       ).value = feature.attributes.NOTES.trim();
         document.getElementById("notes_furrev").value = feature.attributes.NOTES_FURREV.trim();
 

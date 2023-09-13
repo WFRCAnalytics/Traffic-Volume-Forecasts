@@ -1,14 +1,11 @@
 BUGS
 Click on map when making edits...or go to different segment...ask to save
-Set empty adjustment to 0
 
 ADDITIONAL FEATURES
-Legend on right - collapse? add hide button
 Chart legend - custom table with main series more prominently features
 Flag countdowns!
 Add SE data: Development intensity (TAZ-->TOTHH+(1.8 TOTEMP))
 Auto apply changes (on lose focus)
-Add historic estimate adjustment field - Observed data adjustment
 Save last reviewed segment and edit key?
 Add link to SE Map
 Info buttons on terms/options
@@ -82,6 +79,9 @@ DONE!--Round adjustment before applying edits or Round final forecast!
 DONE!--Add flags to map
 DONE!--Show area type
 DONE!--preserve zoom level
+DONE!--Add historic estimate adjustment field - Observed data adjustment
+DONE!--Set empty adjustment to 0
+DONE!--Legend on right - collapse? add hide button
 
 NO!--Get projects from RTP map, use the same symbology (talk to Bert or Sarah)
 NO!--Add model network with SEGIDs as layer??
