@@ -1,10 +1,10 @@
-let defaultPlanArea = "WFRC";
+let defaultForecastArea = "WFRC";
 let legend;
 let inputIds = ['adj2019Value','adj2023Value','adj2028Value','adj2032Value','adj2042Value','adj2050Value','adjHistValue','notes','notes_furrev'];
 let years = ["2019", "2023", "2028", "2032", "2042", "2050"];
 let prefixes = ["adj", "f", "mf", "m", "diff", "dyvol", "lanes", "ft", "at"];
 let initialValues = [0,0,0,0,0,0,""];
-let editKey = ['bill','suzie'];
+let editKey = ['bhereth','sswim','cday'];
 let tableLog;
 let tableLogUrl;
 let flagsSegList = [];
@@ -139,14 +139,14 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
     }
     
     // Determine the base definitionExpression based on selected options
-    if (document.getElementById('selectPlanArea').value !== 'Entire State') {
+    if (document.getElementById('selectForecastArea').value !== 'Entire State') {
       // A single plan area and a single county
       if (document.getElementById('selectCoName').value !== 'All Counties') {
-        layerSegments.definitionExpression = "CO_NAME = '" + document.getElementById('selectCoName').value + "' AND PLANAREA = '" + document.getElementById('selectPlanArea').value + "'";
+        layerSegments.definitionExpression = "CO_NAME = '" + document.getElementById('selectCoName').value + "' AND F_AREA = '" + document.getElementById('selectForecastArea').value + "'";
       }
       // A single plan area but all counties
       else {
-        layerSegments.definitionExpression = "PLANAREA = '" + document.getElementById('selectPlanArea').value + "'";
+        layerSegments.definitionExpression = "F_AREA = '" + document.getElementById('selectForecastArea').value + "'";
       }
     } else {
       // the entire state but a single county
@@ -620,20 +620,20 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
     const dataFlags = await responseFlags.json();
 
     // Get the calcite-segmented-control element
-    const selectPlanArea = document.getElementById('selectPlanArea');
+    const selectForecastArea = document.getElementById('selectForecastArea');
     const selectCoName = document.getElementById('selectCoName');
     const selectSegId = document.getElementById('selectSegId');
 
     // PLAN AREA
 
-    // Extract the unique PLANAREA values
-    const uniquePlanAreas = [...new Set(dataSegments.map(item => item.PLANAREA))].sort();
+    // Extract the unique F_AREA values
+    const uniqueForecastAreas = [...new Set(dataSegments.map(item => item.F_AREA))].sort();
 
 
     // Remove all existing child elements
-    if (selectPlanArea.firstChild) {
-      while (selectPlanArea.firstChild) {
-        selectPlanArea.removeChild(selectPlanArea.firstChild);
+    if (selectForecastArea.firstChild) {
+      while (selectForecastArea.firstChild) {
+        selectForecastArea.removeChild(selectForecastArea.firstChild);
       }
     }
 
@@ -641,10 +641,10 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
     const newItem = document.createElement('calcite-segmented-control-item');
     newItem.textContent = 'Entire State';
     newItem.value = 'Entire State';
-    selectPlanArea.appendChild(newItem);
+    selectForecastArea.appendChild(newItem);
 
-    // Append the items for the unique PLANAREA values
-    uniquePlanAreas.forEach(planArea => {
+    // Append the items for the unique F_AREA values
+    uniqueForecastAreas.forEach(planArea => {
       const item = document.createElement('calcite-segmented-control-item');
       item.value = planArea;
       if (planArea==" " || planArea=="") {
@@ -652,10 +652,10 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
       } else {
         item.textContent = planArea;
       }
-      selectPlanArea.appendChild(item);
+      selectForecastArea.appendChild(item);
     });
 
-    selectPlanArea.value = defaultPlanArea;
+    selectForecastArea.value = defaultForecastArea;
 
 
     // COUNTY
@@ -665,13 +665,13 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
     function updateCoNames() {
       console.log ('updateCoNames');
 
-      // Filter dataSegments by PLANAREA and then extract the CO_NAME values
+      // Filter dataSegments by F_AREA and then extract the CO_NAME values
       var coNames;
 
-      if (document.getElementById('selectPlanArea').value === 'Entire State') {
+      if (document.getElementById('selectForecastArea').value === 'Entire State') {
         coNames = dataSegments.map(item => item.CO_NAME);
       } else {
-        coNames = dataSegments.filter(item => item.PLANAREA === document.getElementById('selectPlanArea').value).map(item => item.CO_NAME);
+        coNames = dataSegments.filter(item => item.F_AREA === document.getElementById('selectForecastArea').value).map(item => item.CO_NAME);
       }
       
       // Create a Set from the coNames array to remove duplicates
@@ -795,8 +795,8 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
       // Building where condition based on user inputs
       let whereCondition = [];
     
-      if (document.getElementById('selectPlanArea').value !== 'Entire State') {
-        whereCondition.push(`PLANAREA = '${document.getElementById('selectPlanArea').value}'`);
+      if (document.getElementById('selectForecastArea').value !== 'Entire State') {
+        whereCondition.push(`F_AREA = '${document.getElementById('selectForecastArea').value}'`);
     
         if (document.getElementById('selectCoName').value !== 'All Counties') {
           whereCondition.push(`CO_NAME = '${document.getElementById('selectCoName').value}'`);
@@ -1575,7 +1575,7 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
     updatePanelInfo();
 
     // Update the chart when the selectors are changed
-    selectPlanArea.addEventListener('calciteSegmentedControlChange', updateCoNames);
+    selectForecastArea.addEventListener('calciteSegmentedControlChange', updateCoNames);
     selectSegId.addEventListener('calciteSelectChange', updatePanelInfo);
     selectCoName.addEventListener('calciteSelectChange', updateSegments);
     selectYear.addEventListener('calciteSelectChange', updateMap);
