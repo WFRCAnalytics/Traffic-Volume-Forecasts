@@ -4,24 +4,59 @@ let inputIds = ['adj2019Value','adj2023Value','adj2028Value','adj2032Value','adj
 let years = ["2019", "2023", "2028", "2032", "2042", "2050"];
 let prefixes = ["adj", "f", "mf", "m", "diff", "dyvol", "lanes", "ft", "at"];
 let initialValues = [0,0,0,0,0,0,""];
-let editKey = ['bhereth','sswim','cday'];
+let editKeys  = [["Cache" ,"%5fRvKPfUkUb7Yat"],
+                 ["Dixie" ,"tptt%r-N-sXjUvP5"],
+                 ["Dixie" ,"KLTH^q1Z|H22DhFz"],
+                 ["Iron"  ,"ZsC2h@sj4bH=Mzdu"],
+                 ["Iron"  ,"m4uMhLPEX_!g$Psq"],
+                 ["Iron"  ,"4Fj$AQjbIZ&B^_Jq"],
+                 ["MAG"   ,"4ED&EfumaY2wNTBn"],
+                 ["MAG"   ,"u@@X7fiPYjwDYNzo"],
+                 ["Summit","p6b6O^z1KcUS^2gq"],
+                 ["Summit","4ED&EfumaY2wNTBn"],
+                 ["Summit","u@@X7fiPYjwDYNzo"],
+                 ["WFRC"  ,"&%$ZqAJy^549^|Em"],
+                 ["WFRC"  ,"6R$xH#e^9i#8*fwR"],
+                 ["WFRC"  ,"3FHDmW-$w2D4UlJO"],
+                 ["UDOT"  ,"m4uMhLPEX_!g$Psq"],
+                 ["UDOT"  ,"1O#Sq#xt=RtXiQ%X"]];
 let tableLog;
 let tableLogUrl;
 let flagsSegList = [];
 let flagsMap = [];
 let layerSegments;
 let layerFlags;
+let layerSegmentsUrl;
+let layerProjectsLinesUrl;
+let layerProjectsPointsUrl;
 let layerRoadwayProjectsLines;
 let layerRoadwayProjectsPoints;
 let layerTransitProjectsLines;
 let layerTransitProjectsPoints;
-let layerSegmentsUrl;
-let layerProjectsLinesUrl;
-let layerProjectsPointsUrl;
 let filterRoadwayProjectsLinesFilter;
 let filterRoadwayProjectsPointsFilter;
 let filterTransitProjectsLinesFilter;
 let filterTransitProjectsPointsFilter;
+let layerUnifiedPlanProjectsLinesUrl;
+let layerUnifiedPlanProjectsPointsUrl;
+let layerUnifiedPlanRoadwayProjectsLines;
+let layerUnifiedPlanRoadwayProjectsPoints;
+let layerUnifiedPlanTransitProjectsLines;
+let layerUnifiedPlanTransitProjectsPoints;
+let filterUnifiedPlanRoadwayProjectsLinesFilter;
+let filterUnifiedPlanRoadwayProjectsPointsFilter;
+let filterUnifiedPlanTransitProjectsLinesFilter;
+let filterUnifiedPlanTransitProjectsPointsFilter;
+let layerMAGProjectsLinesUrl;
+let layerMAGProjectsPointsUrl;
+let layerMAGRoadwayProjectsLines;
+let layerMAGRoadwayProjectsPoints;
+let layerMAGTransitProjectsLines;
+let layerMAGTransitProjectsPoints;
+let filterMAGRoadwayProjectsLinesFilter;
+let filterMAGRoadwayProjectsPointsFilter;
+let filterMAGTransitProjectsLinesFilter;
+let filterMAGTransitProjectsPointsFilter;
 let rendererSegmentsVolume;
 let rendererSegmentsVolumeCompare;
 let rendererSegmentsVolumeAdjust;
@@ -295,38 +330,78 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
     if (document.getElementById('checkboxRoadwayProjects').checked==true) {
       layerRoadwayProjectsLines .visible = true;
       layerRoadwayProjectsPoints.visible = true;
+      layerUnifiedPlanRoadwayProjectsLines .visible = true;
+      layerUnifiedPlanRoadwayProjectsPoints.visible = true;
+      layerMAGRoadwayProjectsLines .visible = true;
+      layerMAGRoadwayProjectsPoints.visible = true;
     } else {
       layerRoadwayProjectsLines .visible = false;
-      layerRoadwayProjectsPoints.visible = false;  
+      layerRoadwayProjectsPoints.visible = false;
+      layerUnifiedPlanRoadwayProjectsLines .visible = false;
+      layerUnifiedPlanRoadwayProjectsPoints.visible = false;
+      layerMAGRoadwayProjectsLines .visible = false;
+      layerMAGRoadwayProjectsPoints.visible = false;
     }
 
     // transit projects
     if (document.getElementById('checkboxTransitProjects').checked==true) {
       layerTransitProjectsLines .visible = true;
-      layerTransitProjectsPoints.visible = true;  
+      layerTransitProjectsPoints.visible = true;
+      layerUnifiedPlanTransitProjectsLines .visible = true;
+      layerUnifiedPlanTransitProjectsPoints.visible = true;
+      layerMAGTransitProjectsLines .visible = true;
+      layerMAGTransitProjectsPoints.visible = true;
     } else {
       layerTransitProjectsLines .visible = false;
-      layerTransitProjectsPoints.visible = false;  
+      layerTransitProjectsPoints.visible = false;
+      layerUnifiedPlanTransitProjectsLines .visible = false;
+      layerUnifiedPlanTransitProjectsPoints.visible = false;
+      layerMAGTransitProjectsLines .visible = false;
+      layerMAGTransitProjectsPoints.visible = false;
     }
 
     if (_phase!="") {
-      layerRoadwayProjectsLines .definitionExpression = filterRoadwayProjectsLinesFilter  + " AND phase = '" + _phase + "'";
-      layerRoadwayProjectsPoints.definitionExpression = filterRoadwayProjectsPointsFilter + " AND phase = '" + _phase + "'";
-      layerTransitProjectsLines .definitionExpression = filterTransitProjectsLinesFilter  + " AND phase = '" + _phase + "'";
-      layerTransitProjectsPoints.definitionExpression = filterTransitProjectsPointsFilter + " AND phase = '" + _phase + "'";
+      layerRoadwayProjectsLines            .definitionExpression = filterRoadwayProjectsLinesFilter             + " AND phase = '" + _phase + "'";
+      layerRoadwayProjectsPoints           .definitionExpression = filterRoadwayProjectsPointsFilter            + " AND phase = '" + _phase + "'";
+      layerTransitProjectsLines            .definitionExpression = filterTransitProjectsLinesFilter             + " AND phase = '" + _phase + "'";
+      layerTransitProjectsPoints           .definitionExpression = filterTransitProjectsPointsFilter            + " AND phase = '" + _phase + "'";
+      layerUnifiedPlanRoadwayProjectsLines .definitionExpression = filterUnifiedPlanRoadwayProjectsLinesFilter  + " AND Phase = '" + _phase + "'";
+      layerUnifiedPlanRoadwayProjectsPoints.definitionExpression = filterUnifiedPlanRoadwayProjectsPointsFilter + " AND Phase = '" + _phase + "'";
+      layerUnifiedPlanTransitProjectsLines .definitionExpression = filterUnifiedPlanTransitProjectsLinesFilter  + " AND Phase = '" + _phase + "'";
+      layerUnifiedPlanTransitProjectsPoints.definitionExpression = filterUnifiedPlanTransitProjectsPointsFilter + " AND Phase = '" + _phase + "'";
+      layerMAGRoadwayProjectsLines         .definitionExpression = filterMAGRoadwayProjectsLinesFilter          + " AND phase = '" + _phase + "'";
+      layerMAGRoadwayProjectsPoints        .definitionExpression = filterMAGRoadwayProjectsPointsFilter         + " AND phase = '" + _phase + "'";
+      layerMAGTransitProjectsLines         .definitionExpression = filterMAGTransitProjectsLinesFilter          + " AND phase = '" + _phase + "'";
+      layerMAGTransitProjectsPoints        .definitionExpression = filterMAGTransitProjectsPointsFilter         + " AND phase = '" + _phase + "'";
     } else {
-      layerRoadwayProjectsLines .visible = false;
-      layerRoadwayProjectsPoints.visible = false;
-      layerTransitProjectsLines .visible = false;
-      layerTransitProjectsPoints.visible = false;
+      layerRoadwayProjectsLines            .visible = false;
+      layerRoadwayProjectsPoints           .visible = false;
+      layerTransitProjectsLines            .visible = false;
+      layerTransitProjectsPoints           .visible = false;
+      layerUnifiedPlanRoadwayProjectsLines .visible = false;
+      layerUnifiedPlanRoadwayProjectsPoints.visible = false;
+      layerUnifiedPlanTransitProjectsLines .visible = false;
+      layerUnifiedPlanTransitProjectsPoints.visible = false;
+      layerMAGRoadwayProjectsLines         .visible = false;
+      layerMAGRoadwayProjectsPoints        .visible = false;
+      layerMAGTransitProjectsLines         .visible = false;
+      layerMAGTransitProjectsPoints        .visible = false;
     }
     
-    layerSegments             .refresh();
-    layerRoadwayProjectsLines .refresh();
-    layerRoadwayProjectsPoints.refresh();
-    layerTransitProjectsLines .refresh();
-    layerTransitProjectsPoints.refresh();
-    layerFlags                .refresh();
+    layerSegments                        .refresh();
+    layerRoadwayProjectsLines            .refresh();
+    layerRoadwayProjectsPoints           .refresh();
+    layerTransitProjectsLines            .refresh();
+    layerTransitProjectsPoints           .refresh();
+    layerUnifiedPlanRoadwayProjectsLines .refresh();
+    layerUnifiedPlanRoadwayProjectsPoints.refresh();
+    layerUnifiedPlanTransitProjectsLines .refresh();
+    layerUnifiedPlanTransitProjectsPoints.refresh();
+    layerMAGRoadwayProjectsLines         .refresh();
+    layerMAGRoadwayProjectsPoints        .refresh();
+    layerMAGTransitProjectsLines         .refresh();
+    layerMAGTransitProjectsPoints        .refresh();
+    layerFlags                           .refresh();
 
   };
 
@@ -375,7 +450,7 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
     view = new MapView({
       map: map,
       center: [-111.8910, 40.7608], // Longitude, latitude
-      zoom: 10, // Zoom level
+      zoom: 11, // Zoom level
       container: "mapView" // Div element
     });
   
@@ -473,6 +548,78 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
     map.add(layerTransitProjectsPoints);
     map.add(layerRoadwayProjectsLines);
     map.add(layerRoadwayProjectsPoints);
+
+
+    // Unified plan projects
+    
+    layerUnifiedPlanRoadwayProjectsLines = new FeatureLayer({
+      url: layerUnifiedPlanProjectsLinesUrl,
+      renderer: rendererRoadwayLines,
+      visible: false,
+      definitionExpression: filterUnifiedPlanRoadwayProjectsLinesFilter
+    });
+
+    layerUnifiedPlanRoadwayProjectsPoints = new FeatureLayer({
+      url: layerUnifiedPlanProjectsPointsUrl,
+      renderer: rendererRoadwayPoints,
+      visible: false,
+      definitionExpression: filterUnifiedPlanRoadwayProjectsPointsFilter
+    });
+
+    layerUnifiedPlanTransitProjectsLines = new FeatureLayer({
+      url: layerUnifiedPlanProjectsLinesUrl,
+      renderer: rendererTransitLines,
+      visible: false,
+      definitionExpression: filterUnifiedPlanTransitProjectsLinesFilter
+    });
+
+    layerUnifiedPlanTransitProjectsPoints = new FeatureLayer({
+      url: layerUnifiedPlanProjectsPointsUrl,
+      renderer: rendererTransitPoints,
+      visible: false,
+      definitionExpression: filterUnifiedPlanTransitProjectsPointsFilter
+    });
+
+    map.add(layerUnifiedPlanTransitProjectsLines);
+    map.add(layerUnifiedPlanTransitProjectsPoints);
+    map.add(layerUnifiedPlanRoadwayProjectsLines);
+    map.add(layerUnifiedPlanRoadwayProjectsPoints);
+
+    // MAG plan projects
+        
+    layerMAGRoadwayProjectsLines = new FeatureLayer({
+      url: layerMAGProjectsLinesUrl,
+      renderer: rendererRoadwayLines,
+      visible: false,
+      definitionExpression: filterMAGRoadwayProjectsLinesFilter
+    });
+
+    layerMAGRoadwayProjectsPoints = new FeatureLayer({
+      url: layerMAGProjectsPointsUrl,
+      renderer: rendererRoadwayPoints,
+      visible: false,
+      definitionExpression: filterMAGRoadwayProjectsPointsFilter
+    });
+
+    layerMAGTransitProjectsLines = new FeatureLayer({
+      url: layerMAGProjectsLinesUrl,
+      renderer: rendererTransitLines,
+      visible: false,
+      definitionExpression: filterMAGTransitProjectsLinesFilter
+    });
+
+    layerMAGTransitProjectsPoints = new FeatureLayer({
+      url: layerMAGProjectsPointsUrl,
+      renderer: rendererTransitPoints,
+      visible: false,
+      definitionExpression: filterMAGTransitProjectsPointsFilter
+    });
+
+    map.add(layerMAGTransitProjectsLines);
+    map.add(layerMAGTransitProjectsPoints);
+    map.add(layerMAGRoadwayProjectsLines);
+    map.add(layerMAGRoadwayProjectsPoints);
+
     map.add(layerFlags);
     map.add(layerSegments);
 
@@ -540,14 +687,27 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
     .then(config => {
 
       // Extract the layerSegments value
-      layerSegmentsUrl                  = config[0].layerSegmentsUrl                 ;
-      layerProjectsLinesUrl             = config[0].layerProjectsLinesUrl            ;
-      layerProjectsPointsUrl            = config[0].layerProjectsPointsUrl           ;
-      tableLogUrl                       = config[0].tableLogUrl                      ;
-      filterRoadwayProjectsLinesFilter  = config[0].filterRoadwayProjectsLinesFilter ;
-      filterTransitProjectsLinesFilter  = config[0].filterTransitProjectsLinesFilter ;
-      filterRoadwayProjectsPointsFilter = config[0].filterRoadwayProjectsPointsFilter;
-      filterTransitProjectsPointsFilter = config[0].filterTransitProjectsPointsFilter;
+      layerSegmentsUrl                             = config[0].layerSegmentsUrl                            ;
+      tableLogUrl                                  = config[0].tableLogUrl                                 ;
+      layerProjectsLinesUrl                        = config[0].layerProjectsLinesUrl                       ;
+      layerProjectsPointsUrl                       = config[0].layerProjectsPointsUrl                      ;
+      filterRoadwayProjectsLinesFilter             = config[0].filterRoadwayProjectsLinesFilter            ;
+      filterTransitProjectsLinesFilter             = config[0].filterTransitProjectsLinesFilter            ;
+      filterRoadwayProjectsPointsFilter            = config[0].filterRoadwayProjectsPointsFilter           ;
+      filterTransitProjectsPointsFilter            = config[0].filterTransitProjectsPointsFilter           ;
+      layerUnifiedPlanProjectsLinesUrl             = config[0].layerUnifiedPlanProjectsLinesUrl            ;
+      layerUnifiedPlanProjectsPointsUrl            = config[0].layerUnifiedPlanProjectsPointsUrl           ;
+      filterUnifiedPlanRoadwayProjectsLinesFilter  = config[0].filterUnifiedPlanRoadwayProjectsLinesFilter ;
+      filterUnifiedPlanTransitProjectsLinesFilter  = config[0].filterUnifiedPlanTransitProjectsLinesFilter ;
+      filterUnifiedPlanRoadwayProjectsPointsFilter = config[0].filterUnifiedPlanRoadwayProjectsPointsFilter;
+      filterUnifiedPlanTransitProjectsPointsFilter = config[0].filterUnifiedPlanTransitProjectsPointsFilter;
+      layerMAGProjectsLinesUrl                     = config[0].layerMAGProjectsLinesUrl                    ;
+      layerMAGProjectsPointsUrl                    = config[0].layerMAGProjectsPointsUrl                   ;
+      filterMAGRoadwayProjectsLinesFilter          = config[0].filterMAGRoadwayProjectsLinesFilter         ;
+      filterMAGTransitProjectsLinesFilter          = config[0].filterMAGTransitProjectsLinesFilter         ;
+      filterMAGRoadwayProjectsPointsFilter         = config[0].filterMAGRoadwayProjectsPointsFilter        ;
+      filterMAGTransitProjectsPointsFilter         = config[0].filterMAGTransitProjectsPointsFilter        ;
+
 
       // Create a new ClassBreaksRenderer using the fetched configuration     
       rendererSegmentsVolume        = new ClassBreaksRenderer(config[0].rendererSegmentsVolume       );
@@ -596,6 +756,27 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
 
     // Update the current highlight graphic reference
     currentHighlightGraphic = highlightGraphic;
+
+    
+    if (document.getElementById('checkboxAutoZoom').checked==true) {
+      // Get current zoom level
+      var currentZoom = view.zoom;
+
+      console.log('zoom to segment ' + feature.attributes['SEGID']);
+
+      view.goTo({
+        target: feature.geometry,
+        zoom: currentZoom // Use the current zoom level
+      }, {
+        duration: 2000,
+        easing: "in-out-cubic"
+      }).catch(function(error) {
+        if (error.name != "AbortError") {
+            console.error(error);
+        };
+      });
+    }
+
   }
 
   async function loadAppData() {
@@ -644,19 +825,50 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
     selectForecastArea.appendChild(newItem);
 
     // Append the items for the unique F_AREA values
-    uniqueForecastAreas.forEach(planArea => {
+    uniqueForecastAreas.forEach(forecastArea => {
       const item = document.createElement('calcite-segmented-control-item');
-      item.value = planArea;
-      if (planArea==" " || planArea=="") {
+      item.value = forecastArea;
+      if (forecastArea==" " || forecastArea=="") {
         item.textContent = "{Blank}";
       } else {
-        item.textContent = planArea;
+        item.textContent = forecastArea;
       }
       selectForecastArea.appendChild(item);
     });
 
-    selectForecastArea.value = defaultForecastArea;
+    // Storing a string in local storage
+    function storeStringInLocalStorage(key, value) {
+      try {
+          localStorage.setItem(key, value);
+      } catch (e) {
+          console.error('Failed to store the string:', e);
+      }
+    }
 
+    // Retrieving a string from local storage
+    function retrieveStringFromLocalStorage(key) {
+      try {
+          const value = localStorage.getItem(key);
+          if (value !== null) {
+              console.log('Retrieved string:', value);
+              return value;
+          } else {
+              console.log('No string found with the given key.');
+              return null;
+          }
+      } catch (e) {
+          console.error('Failed to retrieve the string:', e);
+          return null;
+      }
+    }
+
+    const _prevSelectedForecastArea = retrieveStringFromLocalStorage('selectedForecastArea');
+
+    if (_prevSelectedForecastArea) {
+      selectForecastArea.value = _prevSelectedForecastArea;
+    } else {
+      selectForecastArea.value = defaultForecastArea;
+    }
 
     // COUNTY
 
@@ -664,6 +876,10 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
 
     function updateCoNames() {
       console.log ('updateCoNames');
+
+      var selectForecastArea = document.getElementById('selectForecastArea');
+
+      storeStringInLocalStorage('selectedForecastArea', selectForecastArea.value);
 
       // Filter dataSegments by F_AREA and then extract the CO_NAME values
       var coNames;
@@ -704,7 +920,7 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
       });
       
       if (selectSegId) {
-        updateSegments();  
+        updateSegments();
       }
     }
     // run first time
@@ -861,7 +1077,7 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
     }
 
     // run first time
-    updateSegments();
+    //updateSegments();
 
     // Create a new Calcite button
     const button = document.createElement('calcite-button');
@@ -948,17 +1164,18 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
 
       const inputBoxValue = document.getElementById('edit-key').value;
 
-      if (!editKey.includes(inputBoxValue)) {
-          // If the input value doesn't match 'editKey', execute the code here
-          console.error("Value doesn't match 'editKey'!");
+      function getKeysByFilter(filterValue) {
+        return editKeys
+          .filter(row => row[0] === filterValue)  // filter by first column
+          .map(row => row[1]);                   // extract second column
+      }
+      
+      if (!getKeysByFilter(document.getElementById('selectForecastArea').value).includes(inputBoxValue)) {
+          // If the input value doesn't match 'editKeys', execute the code here
+          console.error("Incorrect editKey!");
           alert('Incorrect edit key.');
           return;
-      } else {
-          console.log("Value matches 'editKey'.");
       }
-    
-      // round adjustments
-
 
       // Query to get the specific feature with SEGID=_curSegId
       var query = new Query();
@@ -1334,18 +1551,6 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
         // Refresh the chart
         myChart.update();
 
-        if (document.getElementById('checkboxAutoZoom').checked==true) {
-          // Get current zoom level
-          var currentZoom = view.zoom;
-
-          view.goTo({
-            target: feature.geometry,
-            zoom: currentZoom // Use the current zoom level
-          }, {
-            duration: 2000,
-            easing: "in-out-cubic"
-          });
-        }
 
         onSelectFeature(feature);
 
@@ -1572,7 +1777,7 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
     //  updatePanelInfo();
     //});
 
-    updatePanelInfo();
+    //updatePanelInfo();
 
     // Update the chart when the selectors are changed
     selectForecastArea.addEventListener('calciteSegmentedControlChange', updateCoNames);
