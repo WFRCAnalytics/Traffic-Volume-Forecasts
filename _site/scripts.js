@@ -991,7 +991,7 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
       console.log(flagsSegList); // Logs the selected flags
     }
     
-    populateComboboxFlags();    
+    populateComboboxFlags();
 
     // To disable the combobox
     //document.getElementById('comboboxFlags').disabled = true;
@@ -1686,12 +1686,19 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
         
           const inputBoxValue = document.getElementById('edit-key').value;
         
-          if (!editKey.includes(inputBoxValue)) {
-            console.error("Value doesn't match 'editKey'!");
-            alert('Incorrect edit key.');
-            return Promise.resolve(false);
+          function getKeysByFilter(filterValue) {
+            return editKeys
+              .filter(row => row[0] === filterValue)  // filter by first column
+              .map(row => row[1]);                   // extract second column
           }
-        
+          
+          if (!getKeysByFilter(document.getElementById('selectForecastArea').value).includes(inputBoxValue)) {
+              // If the input value doesn't match 'editKeys', execute the code here
+              console.error("Incorrect editKey!");
+              alert('Incorrect edit key.');
+              return Promise.resolve(false);
+          }
+
           // Step 1: Query the layer for the specific feature by SEGID
           let query = layerSegments.createQuery();
           query.where = `SEGID = '${featureID}'`;
