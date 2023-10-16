@@ -1465,12 +1465,12 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
       
         // Extract the values of the fields and put them into a single list
         adjustments = [
-          feature.attributes.ADJ2019,
-          feature.attributes.ADJ2023,
-          feature.attributes.ADJ2028,
-          feature.attributes.ADJ2032,
-          feature.attributes.ADJ2042,
-          feature.attributes.ADJ2050
+          {"year": 2019, "adj": feature.attributes.ADJ2019},
+          {"year": 2023, "adj": feature.attributes.ADJ2023},
+          {"year": 2028, "adj": feature.attributes.ADJ2028},
+          {"year": 2032, "adj": feature.attributes.ADJ2032},
+          {"year": 2042, "adj": feature.attributes.ADJ2042},
+          {"year": 2050, "adj": feature.attributes.ADJ2050}
         ];
 
         // Add the historic adjustments to each value in the list
@@ -1487,11 +1487,28 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
         const chartDataModLanes     = filteredModForecasts.map(item => ({ x: item.YEAR, y: item.LANES                             })).sort((a, b) => a.x - b.x);
         const chartDataModFt        = filteredModForecasts.map(item => ({ x: item.YEAR, y: item.FT                                })).sort((a, b) => a.x - b.x);
         const chartDataModAt        = filteredModForecasts.map(item => ({ x: item.YEAR, y: item.ATYPENAME                         })).sort((a, b) => a.x - b.x);
-        const chartDataForecasts    = chartDataModForecasts.map((item, index) => {
-          // Add the corresponding adjustment value
-          return { x: item.x, y: item.y + (adjustments[index] || 0) };
-        }).sort((a, b) => a.x - b.x);
 
+        // Create a map of adjustments for faster lookup
+        const adjustmentMap = new Map(adjustments.map((adj) => [adj.year, adj.adj]));
+
+        // Clone chartDataModForecasts to chartDataForecasts
+        const chartDataForecasts = chartDataModForecasts.map((dataPoint) => ({ ...dataPoint }));
+
+        // Apply adjustments to chartDataForecasts if the year is in adjustments
+        chartDataForecasts.forEach((dataPoint) => {
+          const year = dataPoint.x;
+          const foundAdjustment = adjustments.find((adjustment) => adjustment.year === year);
+
+          if (foundAdjustment) {
+            // Apply adjustment
+            const adj = foundAdjustment.adj;
+            dataPoint.y += adj;
+          } else {
+            // Year not found in adjustments
+            // Handle the case when the year is not in the adjustments array
+          }
+        });
+                
         const _yearsOfData = chartDataModAt.map(item => item.x);
 
         // Group the filteredLinForecasts by PROJGRP
@@ -1609,9 +1626,9 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
               value = "";
             }
 
-            if (map.data=="chartDataForecasts" && year==2019) {
-              value = aadt2019Value.toLocaleString('en-US');
-            }
+            //if (map.data=="chartDataForecasts" && year==2019) {
+            //  value = aadt2019Value.toLocaleString('en-US');
+            //}
 
             if (element) {
               if (element.tagName === 'INPUT') {
@@ -1633,10 +1650,7 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
               element.innerHTML = "";
             } else {
               // Ensure both the current and previous elements in the array are defined
-              if (year===2023) { // for 2023
-                const difference = chartDataForecasts[index].y - aadt2019Value;
-                element.innerHTML = difference.toLocaleString('en-US');
-              } else if (chartDataForecasts[index] && chartDataForecasts[index - 1]) {
+              if (chartDataForecasts[index] && chartDataForecasts[index - 1]) {
                 const difference = chartDataForecasts[index].y - chartDataForecasts[index - 1].y;
                 element.innerHTML = difference.toLocaleString('en-US');
               } else {
