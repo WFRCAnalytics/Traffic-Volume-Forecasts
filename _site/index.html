@@ -1,435 +1,453 @@
 <html>
-    <head>
-        <meta charset="utf-8" />
-        <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no" />
-        <title>The ART of Forecasting - Adjust & Review Tool for Traffic Volume and Transit Ridership Forecasts</title>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no" />
+    <title>The ART of Forecasting - Adjust & Review Tool for Traffic Volume and Transit Ridership Forecasts</title>
 
-        <link rel="stylesheet" href="https://js.arcgis.com/4.27/esri/themes/light/main.css">
-        <link rel="stylesheet" type="text/css" href="https://js.arcgis.com/calcite-components/1.4.3/calcite.css" />
-        <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet'>
+    <link rel="stylesheet" href="https://js.arcgis.com/4.27/esri/themes/light/main.css">
+    <link rel="stylesheet" type="text/css" href="https://js.arcgis.com/calcite-components/1.4.3/calcite.css" />
+    <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet'>
 
-        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-        <script src="https://js.arcgis.com/4.27/"></script>
-        <script type="module" src="https://js.arcgis.com/calcite-components/1.4.3/calcite.esm.js"></script>
-        <link rel="stylesheet" href="styles.css">
-        <script src="scripts.js"></script>
-    </head>
-    <body>
-        <header>
-            <h1>The ART of Forecasting - <u>A</u>djust & <u>R</u>eview <u>T</u>ool for Traffic Volume and Transit Ridership Forecasts</span>
-        </header>
-        <div id="mainContent">
-            <div id="mainContentChart">
-                <div class="container">
-                    <calcite-segmented-control id="selectForecastArea" scale="l" width="full">
-                    </calcite-segmented-control>
-                </div>
-
-                <div id="selectMode" class="container"  style="display: none;">
-                    <calcite-segmented-control scale="l" width="full">
-                        <calcite-segmented-control-item icon-start="car" value="Traffic" checked>
-                            Traffic
-                        </calcite-segmented-control-item>
-                        <calcite-segmented-control-item icon-start="tour" value="Transit">
-                            Transit
-                        </calcite-segmented-control-item>
-                    </calcite-segmented-control>
-                </div>
-                <table width="100%">
-                    <tr>
-                        <td width="26%" valign="top">
-                            <label for="selectCoName">County</label>
-                            <div class="select-container">
-                                <calcite-select id="selectCoName"></calcite-select>
-                            </div>
-                        </td>
-                        <td width="30%" valign="top">
-                            <label for="slectSegId">Segment</label>
-                            <div class="select-container">
-                                <calcite-select id="selectSegId"></calcite-select>
-                                <div id="selectPrevButton" style="display: inline;"></div>
-                                <div id="selectNextButton" style="display: inline;"></div>
-                            </div>
-                            <div class="select-container" style="display: none;">
-                                <label for="selectSource"><b>Observed Data Source:</b></label>
-                                <calcite-select id="selectSource"></calcite-select>
-                            </div>            
-                        </td>
-                        <td width="10%" valign="top">
-                            <label for="checkboxAutoZoom">&nbsp;</label>
-                            <calcite-label layout="inline">
-                                <calcite-checkbox id="checkboxAutoZoom" checked></calcite-checkbox>
-                                Auto pan
-                            </calcite-label>
-                        </td>
-                        <td width="34%" valign="top">
-                            <label for="comboboxFlags">Flags</label>
-                            <calcite-label layout="inline">
-                                <calcite-combobox id="comboboxFlags" multiple placeholder="Flag filter"></calcite-combobox>
-                            </calcite-label>
-                        </td>
-
-                    </tr>
-                </table>
-                <div id="segdetail">
-                    <div class="chart-container">
-                        <canvas id="chartType"></canvas>
-                    </div>
-                    <div>
-                        <table width="100%">
-                            <tr>
-                                <td width="90px;" >
-                                    &nbsp;
-                                </td>
-                                <td>
-                                    &nbsp;
-                                </td>
-                                <td width="60px;" align="center">
-                                    2019
-                                </td>
-                                <td width="60px;" align="center">
-                                    2023
-                                </td>
-                                <td width="60px;" align="center">
-                                    2028
-                                </td>
-                                <td width="60px;" align="center">
-                                    2032
-                                </td>
-                                <td width="60px;" align="center">
-                                    2042
-                                </td>
-                                <td width="60px;" align="center">
-                                    2050
-                                </td>
-                            </tr>
-                            <tr>
-                                <td align="center" rowspan="2">
-                                    Historic Adjustment
-                                </td>
-                                <td align="right">
-                                    Final Forecast Change:
-                                </td>
-                                <td>
-                                    <div id="diff2019Value" class="tableText" align="right"></div>
-                                </td>
-                                <td>
-                                    <div id="diff2023Value" class="tableText" align="right"></div>
-                                </td>
-                                <td>
-                                    <div id="diff2028Value" class="tableText" align="right"></div>
-                                </td>
-                                <td>
-                                    <div id="diff2032Value" class="tableText" align="right"></div>
-                                </td>
-                                <td>
-                                    <div id="diff2042Value" class="tableText" align="right"></div>
-                                </td>
-                                <td>
-                                    <div id="diff2050Value" class="tableText" align="right"></div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td align="right">
-                                    Final Forecast:
-                                </td>
-                                <td>
-                                    <div id="f2019Value" class="tableText" align="right"></div>
-                                </td>
-                                <td>
-                                    <div id="f2023Value" class="tableText tableFinal" align="right"></div>
-                                </td>
-                                <td>
-                                    <div id="f2028Value" class="tableText tableFinal" align="right"></div>
-                                </td>
-                                <td>
-                                    <div id="f2032Value" class="tableText tableFinal" align="right"></div>
-                                </td>
-                                <td>
-                                    <div id="f2042Value" class="tableText tableFinal" align="right"></div>
-                                </td>
-                                <td>
-                                    <div id="f2050Value" class="tableText tableFinal" align="right"></div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td align="center">
-                                    <input type="text" id="adjHistValue" class="manualAdj right-align-input" placeholder="0">
-                                </td>
-                                <td align="right">
-                                    Manual Adjustments:
-                                </td>
-                                <td>
-                                    <input type="text" id="adj2019Value" class="manualAdj right-align-input" placeholder="" hidden>
-                                </td>
-                                <td>
-                                    <input type="text" id="adj2023Value" class="manualAdj right-align-input" placeholder="">
-                                </td>
-                                <td>
-                                    <input type="text" id="adj2028Value" class="manualAdj right-align-input" placeholder="">
-                                </td>
-                                <td>
-                                    <input type="text" id="adj2032Value" class="manualAdj right-align-input" placeholder="">
-                                </td>
-                                <td>
-                                    <input type="text" id="adj2042Value" class="manualAdj right-align-input" placeholder="">
-                                </td>
-                                <td>
-                                    <input type="text" id="adj2050Value" class="manualAdj right-align-input" placeholder="">
-                                </td>
-                            </tr>
-                            <tr>
-                                <td colspan="2" align="right">
-                                    Model Forecast:
-                                </td>
-                                <td>
-                                    <div id="mf2019Value" class="tableText" align="right"></div>
-                                </td>
-                                <td>
-                                    <div id="mf2023Value" class="tableText tableModel" align="right"></div>
-                                </td>
-                                <td>
-                                    <div id="mf2028Value" class="tableText tableModel" align="right"></div>
-                                </td>
-                                <td>
-                                    <div id="mf2032Value" class="tableText tableModel" align="right"></div>
-                                </td>
-                                <td>
-                                    <div id="mf2042Value" class="tableText tableModel" align="right"></div>
-                                </td>
-                                <td>
-                                    <div id="mf2050Value" class="tableText tableModel" align="right"></div>
-                                </td>
-                            </tr>
-                            <tr class="light-grey-table">
-                                <td colspan="2" align="right">
-                                    Model AADT:
-                                </td>
-                                <td>
-                                    <div id="m2019Value" class="tableText" align="right"></div>
-                                </td>
-                                <td>
-                                    <div id="m2023Value" class="tableText" align="right"></div>
-                                </td>
-                                <td>
-                                    <div id="m2028Value" class="tableText" align="right"></div>
-                                </td>
-                                <td>
-                                    <div id="m2032Value" class="tableText" align="right"></div>
-                                </td>
-                                <td>
-                                    <div id="m2042Value" class="tableText" align="right"></div>
-                                </td>
-                                <td>
-                                    <div id="m2050Value" class="tableText" align="right"></div>
-                                </td>
-                            </tr>
-                            <tr class="light-grey-table">
-                                <td colspan="2" align="right">
-                                    Model AWDT:
-                                </td>
-                                <td>
-                                    <div id="dyvol2019Value" class="tableText" align="right"></div>
-                                </td>
-                                <td>
-                                    <div id="dyvol2023Value" class="tableText" align="right"></div>
-                                </td>
-                                <td>
-                                    <div id="dyvol2028Value" class="tableText" align="right"></div>
-                                </td>
-                                <td>
-                                    <div id="dyvol2032Value" class="tableText" align="right"></div>
-                                </td>
-                                <td>
-                                    <div id="dyvol2042Value" class="tableText" align="right"></div>
-                                </td>
-                                <td>
-                                    <div id="dyvol2050Value" class="tableText" align="right"></div>
-                                </td>
-                            </tr>
-                            <tr class="light-grey-table">
-                                <td colspan="2" align="right">
-                                    Model Lanes:
-                                </td>
-                                <td>
-                                    <div id="lanes2019Value" class="tableText" align="right"></div>
-                                </td>
-                                <td>
-                                    <div id="lanes2023Value" class="tableText" align="right"></div>
-                                </td>
-                                <td>
-                                    <div id="lanes2028Value" class="tableText" align="right"></div>
-                                </td>
-                                <td>
-                                    <div id="lanes2032Value" class="tableText" align="right"></div>
-                                </td>
-                                <td>
-                                    <div id="lanes2042Value" class="tableText" align="right"></div>
-                                </td>
-                                <td>
-                                    <div id="lanes2050Value" class="tableText" align="right"></div>
-                                </td>
-                            </tr>
-                            <tr class="light-grey-table">
-                                <td colspan="2" align="right">
-                                    Model Functional Type:
-                                </td>
-                                <td>
-                                    <div id="ft2019Value" class="tableText" align="right"></div>
-                                </td>
-                                <td>
-                                    <div id="ft2023Value" class="tableText" align="right"></div>
-                                </td>
-                                <td>
-                                    <div id="ft2028Value" class="tableText" align="right"></div>
-                                </td>
-                                <td>
-                                    <div id="ft2032Value" class="tableText" align="right"></div>
-                                </td>
-                                <td>
-                                    <div id="ft2042Value" class="tableText" align="right"></div>
-                                </td>
-                                <td>
-                                    <div id="ft2050Value" class="tableText" align="right"></div>
-                                </td>
-                            </tr>
-                            <tr class="light-grey-table">
-                                <td colspan="2" align="right">
-                                    Model Area Type:
-                                </td>
-                                <td>
-                                    <div id="at2019Value" class="tableTextSmall" align="right"></div>
-                                </td>
-                                <td>
-                                    <div id="at2023Value" class="tableTextSmall" align="right"></div>
-                                </td>
-                                <td>
-                                    <div id="at2028Value" class="tableTextSmall" align="right"></div>
-                                </td>
-                                <td>
-                                    <div id="at2032Value" class="tableTextSmall" align="right"></div>
-                                </td>
-                                <td>
-                                    <div id="at2042Value" class="tableTextSmall" align="right"></div>
-                                </td>
-                                <td>
-                                    <div id="at2050Value" class="tableTextSmall" align="right"></div>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td colspan="2" rowspan="2" valign="top">
-                                    <div id="flags"></div>
-                                </td>
-                                <td>
-                                    <div class="tableTextSmall">Review Complete Notes:</div>
-                                </td>
-                                <td colspan="6">
-                                    <textarea class="top-align-input" id="notes" style="width: 100%; height: 40px;"></textarea>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div class="tableTextSmall">Further Review Notes:</div>
-                                </td>
-                                <td colspan="6">
-                                    <textarea class="top-align-input" id="notes_furrev" style="width: 100%; height:40px;"></textarea>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td colspan="5" align="right">
-                                    <div class="input-group">
-                                        <input type="text" id="edit-key" placeholder="Enter edit key" class="input">
-                                    </div>
-                                </td>
-                                <td colspan="2" align="right">
-                                    <div id="apply-edits"></div><!--<button onclick="updateFeature()">Save Changes</button>-->
-                                </td>
-                            </tr>
-                        </table>
-                        <!--<a href="https://unifiedplan.org/utah-household-job-map/" target="_blank">Utah Statewide Household and Job Forecast Map</a>-->
-                    </div>
-                </div>
-            </div>
-            <div id="mainContentMap">
-                <div id="sidebar">
-                    <h3>Forecasts</h3>
-                    <calcite-label layout="inline">
-                        <calcite-checkbox id="checkboxForecasts" value="forecasts" checked></calcite-checkbox>
-                        Segments Layer
-                    </calcite-label>
-                    <calcite-label layout="inline">
-                        <calcite-checkbox id="checkboxLabels" value="labels" checked></calcite-checkbox>
-                        Segments Labels
-                    </calcite-label>
-                    <br/>
-                    <div class="select-container">
-                        <div class="h3-no-margin">Year:&nbsp;</div>
-                        <calcite-select id="selectYear" name="rbgYears">
-                            <calcite-option value="2019">2019</calcite-option>
-                            <calcite-option value="2023">2023</calcite-option>
-                            <calcite-option value="2028">2028</calcite-option>
-                            <calcite-option value="2032">2032</calcite-option>
-                            <calcite-option value="2042">2042</calcite-option>
-                            <calcite-option value="2050" selected>2050</calcite-option>
-                        </calcite-select>
-                        <div id="selectPrevYearButton" style="display: inline;"></div>
-                        <div id="selectNextYearButton" style="display: inline;"></div>
-                    </div>
-
-                    <h3>Forecasts</h3>
-                    <calcite-radio-button-group name="rbgForecasts" id="rbgForecasts" layout="vertical">
-                        <calcite-label layout="inline">
-                            <calcite-radio-button name="rbgForecasts" value="final-forecast" checked></calcite-radio-button>
-                            Final Forecast
-                        </calcite-label>
-                        <calcite-label layout="inline">
-                            <calcite-radio-button name="rbgForecasts" value="final-forecast-change-prev"></calcite-radio-button>
-                            Final Forecast Change from Previous Year
-                        </calcite-label>
-                        <calcite-label layout="inline">
-                            <calcite-radio-button name="rbgForecasts" value="final-forecast-change-2019"></calcite-radio-button>
-                            Final Forecast Change from 2019
-                        </calcite-label>
-                        <div style="height: 5px;"></div>
-                        <calcite-label layout="inline">
-                            <calcite-radio-button name="rbgForecasts" value="manual-adjustments"></calcite-radio-button>
-                            Historic Adjustments
-                        </calcite-label>
-                        <calcite-label layout="inline">
-                            <calcite-radio-button name="rbgForecasts" value="manual-adjustments"></calcite-radio-button>
-                            Manual Adjustments
-                        </calcite-label>
-                        <calcite-label layout="inline">
-                            <calcite-radio-button name="rbgForecasts" value="model-forecast" class="grey-text"></calcite-radio-button>
-                            Model Forecast
-                        </calcite-label>
-                        <calcite-label layout="inline">
-                            <calcite-radio-button name="rbgForecasts" value="model-nobaseyearadj"></calcite-radio-button>
-                            Model AADT
-                        </calcite-label>
-                    </calcite-radio-button-group>
-                    
-                    <h3>Show Projects</h3>
-                    <calcite-label layout="inline" class="custom-checkbox-label">
-                        <calcite-checkbox id="checkboxRoadwayProjects" value="roadway-projects" checked></calcite-checkbox>
-                        Roadway
-                    </calcite-label>
-                    <calcite-label layout="inline" class="custom-checkbox-label">
-                        <calcite-checkbox id="checkboxTransitProjects" value="transit-projects"></calcite-checkbox>
-                        Transit
-                    </calcite-label>
-
-                    <h3>Show Flags</h3>
-                    <div id="flagChecks"></div>
-                    <br/>
-                    <calcite-label layout="inline">
-                        <calcite-checkbox id="checkboxLegend" value="legend" checked></calcite-checkbox>
-                        Show Legend
-                    </calcite-label>
-                </div>
-                <div id="mapView"></div>
-            </div>
+    <script src="https://js.arcgis.com/4.27/"></script>
+    <script type="module" src="https://js.arcgis.com/calcite-components/1.4.3/calcite.esm.js"></script>
+    <link rel="stylesheet" href="styles.css">
+    <script src="scripts.js"></script>
+  </head>
+  <body>
+    <header>
+      <h1>The ART of Forecasting - <u>A</u>djust & <u>R</u>eview <u>T</u>ool for Traffic Volume and Transit Ridership Forecasts</span>
+    </header>
+    <div id="mainContent">
+      <div id="mainContentChart">
+        <div class="container">
+          <calcite-segmented-control id="selectForecastArea" scale="l" width="full">
+          </calcite-segmented-control>
         </div>
-    </body>
+
+        <div id="selectMode" class="container"  style="display: none;">
+          <calcite-segmented-control scale="l" width="full">
+            <calcite-segmented-control-item icon-start="car" value="Traffic" checked>
+              Traffic
+            </calcite-segmented-control-item>
+            <calcite-segmented-control-item icon-start="tour" value="Transit">
+              Transit
+            </calcite-segmented-control-item>
+          </calcite-segmented-control>
+        </div>
+        <table width="100%">
+          <tr>
+            <td width="26%" valign="top">
+              <label for="selectCoName">County</label>
+              <div class="select-container">
+                <calcite-select id="selectCoName"></calcite-select>
+              </div>
+            </td>
+            <td width="30%" valign="top">
+              <label for="slectSegId">Segment</label>
+              <div class="select-container">
+                <calcite-select id="selectSegId"></calcite-select>
+                <div id="selectPrevButton" style="display: inline;"></div>
+                <div id="selectNextButton" style="display: inline;"></div>
+              </div>
+              <div class="select-container" style="display: none;">
+                <label for="selectSource"><b>Observed Data Source:</b></label>
+                <calcite-select id="selectSource"></calcite-select>
+              </div>      
+            </td>
+            <td width="10%" valign="top">
+              <label for="checkboxAutoZoom">&nbsp;</label>
+              <calcite-label layout="inline">
+                <calcite-checkbox id="checkboxAutoZoom" checked></calcite-checkbox>
+                Auto pan
+              </calcite-label>
+            </td>
+            <td width="34%" valign="top">
+              <label for="comboboxFlags">Flags</label>
+              <calcite-label layout="inline">
+                <calcite-combobox id="comboboxFlags" multiple placeholder="Flag filter"></calcite-combobox>
+              </calcite-label>
+            </td>
+
+          </tr>
+        </table>
+        <div id="segdetail">
+          <div class="chart-container">
+            <canvas id="chartType"></canvas>
+          </div>
+          <div>
+            <table width="100%">
+              <tr>
+                <td width="90px;" >
+                  &nbsp;
+                </td>
+                <td>
+                  &nbsp;
+                </td>
+                <td width="60px;" align="center">
+                  2019
+                </td>
+                <td width="60px;" align="center">
+                  2023
+                </td>
+                <td width="60px;" align="center">
+                  2028
+                </td>
+                <td width="60px;" align="center">
+                  2032
+                </td>
+                <td width="60px;" align="center">
+                  2042
+                </td>
+                <td width="60px;" align="center">
+                  2050
+                </td>
+              </tr>
+              <tr>
+                <td align="center" rowspan="2">
+                  Historic Adjustment
+                </td>
+                <td align="right">
+                  Final Forecast Change:
+                </td>
+                <td>
+                  <div id="diff2019Value" class="tableText" align="right"></div>
+                </td>
+                <td>
+                  <div id="diff2023Value" class="tableText" align="right"></div>
+                </td>
+                <td>
+                  <div id="diff2028Value" class="tableText" align="right"></div>
+                </td>
+                <td>
+                  <div id="diff2032Value" class="tableText" align="right"></div>
+                </td>
+                <td>
+                  <div id="diff2042Value" class="tableText" align="right"></div>
+                </td>
+                <td>
+                  <div id="diff2050Value" class="tableText" align="right"></div>
+                </td>
+              </tr>
+              <tr>
+                <td align="right">
+                  Final Forecast:
+                </td>
+                <td>
+                  <div id="f2019Value" class="tableText" align="right"></div>
+                </td>
+                <td>
+                  <div id="f2023Value" class="tableText tableFinal" align="right"></div>
+                </td>
+                <td>
+                  <div id="f2028Value" class="tableText tableFinal" align="right"></div>
+                </td>
+                <td>
+                  <div id="f2032Value" class="tableText tableFinal" align="right"></div>
+                </td>
+                <td>
+                  <div id="f2042Value" class="tableText tableFinal" align="right"></div>
+                </td>
+                <td>
+                  <div id="f2050Value" class="tableText tableFinal" align="right"></div>
+                </td>
+              </tr>
+              <tr>
+                <td align="center">
+                  <input type="text" id="adjHistValue" class="manualAdj right-align-input" placeholder="0">
+                </td>
+                <td align="right">
+                  Manual Adjustments:
+                </td>
+                <td>
+                  <input type="text" id="adj2019Value" class="manualAdj right-align-input" placeholder="" hidden>
+                </td>
+                <td>
+                  <input type="text" id="adj2023Value" class="manualAdj right-align-input" placeholder="">
+                </td>
+                <td>
+                  <input type="text" id="adj2028Value" class="manualAdj right-align-input" placeholder="">
+                </td>
+                <td>
+                  <input type="text" id="adj2032Value" class="manualAdj right-align-input" placeholder="">
+                </td>
+                <td>
+                  <input type="text" id="adj2042Value" class="manualAdj right-align-input" placeholder="">
+                </td>
+                <td>
+                  <input type="text" id="adj2050Value" class="manualAdj right-align-input" placeholder="">
+                </td>
+              </tr>
+              <tr>
+                <td colspan="2" align="right">
+                  Model Forecast:
+                </td>
+                <td>
+                  <div id="mf2019Value" class="tableText" align="right"></div>
+                </td>
+                <td>
+                  <div id="mf2023Value" class="tableText tableModel" align="right"></div>
+                </td>
+                <td>
+                  <div id="mf2028Value" class="tableText tableModel" align="right"></div>
+                </td>
+                <td>
+                  <div id="mf2032Value" class="tableText tableModel" align="right"></div>
+                </td>
+                <td>
+                  <div id="mf2042Value" class="tableText tableModel" align="right"></div>
+                </td>
+                <td>
+                  <div id="mf2050Value" class="tableText tableModel" align="right"></div>
+                </td>
+              </tr>
+              <tr class="light-grey-table">
+                <td colspan="2" align="right">
+                  <button id="matchModelButton">Match Forecast to: </button>&nbsp;&nbsp;&nbsp;Model AADT:
+                </td>
+                <td>
+                  <div id="m2019Value" class="tableText" align="right"></div>
+                </td>
+                <td>
+                  <div id="m2023Value" class="tableText" align="right"></div>
+                </td>
+                <td>
+                  <div id="m2028Value" class="tableText" align="right"></div>
+                </td>
+                <td>
+                  <div id="m2032Value" class="tableText" align="right"></div>
+                </td>
+                <td>
+                  <div id="m2042Value" class="tableText" align="right"></div>
+                </td>
+                <td>
+                  <div id="m2050Value" class="tableText" align="right"></div>
+                </td>
+              </tr>
+              <tr class="light-grey-table">
+                <td colspan="2" align="right">
+                  Model AWDT:
+                </td>
+                <td>
+                  <div id="dyvol2019Value" class="tableText" align="right"></div>
+                </td>
+                <td>
+                  <div id="dyvol2023Value" class="tableText" align="right"></div>
+                </td>
+                <td>
+                  <div id="dyvol2028Value" class="tableText" align="right"></div>
+                </td>
+                <td>
+                  <div id="dyvol2032Value" class="tableText" align="right"></div>
+                </td>
+                <td>
+                  <div id="dyvol2042Value" class="tableText" align="right"></div>
+                </td>
+                <td>
+                  <div id="dyvol2050Value" class="tableText" align="right"></div>
+                </td>
+              </tr>
+              <tr class="light-grey-table">
+                <td colspan="2" align="right">
+                  Model Lanes:
+                </td>
+                <td>
+                  <div id="lanes2019Value" class="tableText" align="right"></div>
+                </td>
+                <td>
+                  <div id="lanes2023Value" class="tableText" align="right"></div>
+                </td>
+                <td>
+                  <div id="lanes2028Value" class="tableText" align="right"></div>
+                </td>
+                <td>
+                  <div id="lanes2032Value" class="tableText" align="right"></div>
+                </td>
+                <td>
+                  <div id="lanes2042Value" class="tableText" align="right"></div>
+                </td>
+                <td>
+                  <div id="lanes2050Value" class="tableText" align="right"></div>
+                </td>
+              </tr>
+              <tr class="light-grey-table">
+                <td colspan="2" align="right">
+                  Model Functional Type:
+                </td>
+                <td>
+                  <div id="ft2019Value" class="tableText" align="right"></div>
+                </td>
+                <td>
+                  <div id="ft2023Value" class="tableText" align="right"></div>
+                </td>
+                <td>
+                  <div id="ft2028Value" class="tableText" align="right"></div>
+                </td>
+                <td>
+                  <div id="ft2032Value" class="tableText" align="right"></div>
+                </td>
+                <td>
+                  <div id="ft2042Value" class="tableText" align="right"></div>
+                </td>
+                <td>
+                  <div id="ft2050Value" class="tableText" align="right"></div>
+                </td>
+              </tr>
+              <tr class="light-grey-table">
+                <td colspan="2" align="right">
+                  Model Area Type:
+                </td>
+                <td>
+                  <div id="at2019Value" class="tableTextSmall" align="right"></div>
+                </td>
+                <td>
+                  <div id="at2023Value" class="tableTextSmall" align="right"></div>
+                </td>
+                <td>
+                  <div id="at2028Value" class="tableTextSmall" align="right"></div>
+                </td>
+                <td>
+                  <div id="at2032Value" class="tableTextSmall" align="right"></div>
+                </td>
+                <td>
+                  <div id="at2042Value" class="tableTextSmall" align="right"></div>
+                </td>
+                <td>
+                  <div id="at2050Value" class="tableTextSmall" align="right"></div>
+                </td>
+              </tr>
+              <tr>
+                <td colspan="2" rowspan="3" valign="top">
+                  <div id="flags"></div>
+                </td>
+                <td>
+                  <div class="tableTextSmall">Review Complete Notes:</div>
+                </td>
+                <td colspan="6">
+                  <textarea class="top-align-input" id="notes" style="width: 100%; height: 40px;"></textarea>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="tableTextSmall">Further Review Notes:</div>
+                </td>
+                <td colspan="6">
+                  <textarea class="top-align-input" id="notes_furrev" style="width: 100%; height:40px;"></textarea>
+                </td>
+              </tr>
+              <tr>
+                <td>
+                  <div class="tableTextSmall">Segment:</div>
+                </td>
+                <td colspan="6">
+                  <textarea class="top-align-input" id="notes_seg" style="width: 100%; height:20px;"></textarea>
+                </td>
+              </tr>
+              <tr>
+                <td colspan="5" align="right">
+                  <div class="input-group">
+                    <input type="text" id="edit-key" placeholder="Enter edit key" class="input">
+                  </div>
+                </td>
+                <td colspan="2" align="right">
+                  <div id="apply-edits"></div><!--<button onclick="updateFeature()">Save Changes</button>-->
+                </td>
+              </tr>
+            </table>
+            <!--<a href="https://unifiedplan.org/utah-household-job-map/" target="_blank">Utah Statewide Household and Job Forecast Map</a>-->
+          </div>
+        </div>
+      </div>
+      <div id="mainContentMap">
+        <div id="sidebar">
+          <br/>
+          <div class="select-container">
+            <div class="h3-no-margin">Year:&nbsp;</div>
+            <calcite-select id="selectYear" name="rbgYears" style="width: 120px;">
+              <calcite-option value="2019">2019</calcite-option>
+              <calcite-option value="2023">2023</calcite-option>
+              <calcite-option value="2028">2028</calcite-option>
+              <calcite-option value="2032">2032</calcite-option>
+              <calcite-option value="2042">2042</calcite-option>
+              <calcite-option value="2050" selected>2050</calcite-option>
+            </calcite-select>
+            <div id="selectPrevYearButton" style="display: inline;"></div>
+            <div id="selectNextYearButton" style="display: inline;"></div>
+          </div>
+          <h3>Forecasts</h3>
+          <calcite-radio-button-group name="rbgForecasts" id="rbgForecasts" layout="vertical">
+            <calcite-label layout="inline">
+              <calcite-radio-button name="rbgForecasts" value="final-forecast" checked></calcite-radio-button>
+              Final Forecast
+            </calcite-label>
+            <calcite-label layout="inline">
+              <calcite-radio-button name="rbgForecasts" value="final-forecast-change-prev"></calcite-radio-button>
+              Final Forecast Change from Previous Year
+            </calcite-label>
+            <calcite-label layout="inline">
+              <calcite-radio-button name="rbgForecasts" value="final-forecast-change-2019"></calcite-radio-button>
+              Final Forecast Change from 2019
+            </calcite-label>
+            <div style="height: 5px;"></div>
+            <calcite-label layout="inline">
+              <calcite-radio-button name="rbgForecasts" value="manual-adjustments"></calcite-radio-button>
+              Historic Adjustments
+            </calcite-label>
+            <calcite-label layout="inline">
+              <calcite-radio-button name="rbgForecasts" value="manual-adjustments"></calcite-radio-button>
+              Manual Adjustments
+            </calcite-label>
+            <calcite-label layout="inline">
+              <calcite-radio-button name="rbgForecasts" value="model-forecast" class="grey-text"></calcite-radio-button>
+              Model Forecast
+            </calcite-label>
+            <calcite-label layout="inline">
+              <calcite-radio-button name="rbgForecasts" value="model-nobaseyearadj"></calcite-radio-button>
+              Model AADT
+            </calcite-label>
+          </calcite-radio-button-group>
+          <br/>
+          <calcite-label layout="inline">
+            <calcite-checkbox id="checkboxForecasts" value="forecasts" checked></calcite-checkbox>
+            Show Segments
+          </calcite-label>
+          <calcite-label layout="inline">
+            <calcite-checkbox id="checkboxLabels" value="labels" checked></calcite-checkbox>
+            Show Labels
+          </calcite-label>
+          <h3>Show Projects</h3>
+          <calcite-label layout="inline" class="custom-checkbox-label">
+            <calcite-checkbox id="checkboxRoadwayProjects" value="roadway-projects" checked></calcite-checkbox>
+            Roadway
+          </calcite-label>
+          <calcite-label layout="inline" class="custom-checkbox-label">
+            <calcite-checkbox id="checkboxTransitProjects" value="transit-projects"></calcite-checkbox>
+            Transit
+          </calcite-label>
+
+          <h3>Show Flags</h3>
+          <div id="flagChecks"></div>
+          <br/>
+          <div class="select-container">
+            <div class="h3-no-margin">SE:&nbsp;</div>
+            <calcite-select id="selectSe" name="rbgForecasts" style="width: 150px;">
+              <calcite-option value="none"  >None    </calcite-option>
+              <calcite-option value="hh"  >Households</calcite-option>
+              <calcite-option value="pop"   >Population</calcite-option>
+              <calcite-option value="typemp">Employment</calcite-option>
+            </calcite-select>
+            <div id="selectPrevYearButton" style="display: inline;"></div>
+            <div id="selectNextYearButton" style="display: inline;"></div>
+          </div>
+          <br/>
+          <calcite-label layout="inline">
+            <calcite-checkbox id="checkboxLegend" value="legend" checked></calcite-checkbox>
+            Show Legend
+          </calcite-label>
+        </div>
+        <div id="mapView"></div>
+      </div>
+    </div>
+  </body>
 </html>

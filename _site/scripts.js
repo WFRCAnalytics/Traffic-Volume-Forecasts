@@ -1,6 +1,6 @@
 let defaultForecastArea = "WFRC";
 let legend;
-let inputIds = ['adj2019Value','adj2023Value','adj2028Value','adj2032Value','adj2042Value','adj2050Value','adjHistValue','notes','notes_furrev'];
+let inputIds = ['adj2019Value','adj2023Value','adj2028Value','adj2032Value','adj2042Value','adj2050Value','adjHistValue','notes','notes_furrev','notes_seg'];
 let years = ["2019", "2023", "2028", "2032", "2042", "2050"];
 let prefixes = ["adj", "f", "mf", "m", "diff", "dyvol", "lanes", "ft", "at"];
 let initialValues = [0,0,0,0,0,0,""];
@@ -49,6 +49,12 @@ let filterUnifiedPlanRoadwayProjectsLinesFilter;
 let filterUnifiedPlanRoadwayProjectsPointsFilter;
 let filterUnifiedPlanTransitProjectsLinesFilter;
 let filterUnifiedPlanTransitProjectsPointsFilter;
+let layerSeHhUrl;
+let layerSePopUrl;
+let layerSeTypempUrl;
+let layerSeHh;
+let layerSePop;
+let layerSeTypemp;
 let layerMAGProjectsLinesUrl;
 let layerMAGProjectsPointsUrl;
 let layerMAGRoadwayProjectsLines;
@@ -67,6 +73,10 @@ let rendererRoadwayLines;
 let rendererTransitPoints;
 let rendererTransitLines;
 let rendererSegmentsFlags;
+let rendererSeChange;
+let rendererSeHh;
+let rendererSePop;
+let rendererSeTypemp;
 let curDisplayForecast = 'final-forecast';
 let defaultSource = 'AADTHistory.xlsx';
 let myChart; // Keep track of the current chart
@@ -106,6 +116,46 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
 
   esriConfig.apiKey = "AAPK5f27bfeca6bb49728b7e12a3bfb8f423zlKckukFK95EWyRa-ie_X31rRIrqzGNoqBH3t3Chvz2aUbTKiDvCPyhvMJumf7Wk";
 
+  function matchModelAADT() {
+
+    function removeCommas(str) {
+      return str.replace(/,/g, '');
+    }
+    
+    function calculateValue(idPrefix) {
+        var mValue = document.getElementById("m" + idPrefix + "Value").innerHTML;
+        var mfValue = document.getElementById("mf" + idPrefix + "Value").innerHTML;
+    
+        // Remove commas from the innerHTML strings
+        mValue = removeCommas(mValue);
+        mfValue = removeCommas(mfValue);
+    
+        // Convert the cleaned strings to numbers and perform the calculation
+        var result = parseFloat(mValue) - parseFloat(mfValue);
+    
+        // Fallback to 0 if the result is NaN
+        result = isNaN(result) ? 0 : result;
+    
+        // Update the value
+        document.getElementById("adj" + idPrefix + "Value").value = result;
+        
+        const buttonApply = document.getElementById('button-apply');
+        if (buttonApply.classList.contains('btn-clean')) {
+          buttonApply.classList.remove('btn-clean');
+          buttonApply.classList.add('btn-dirty');
+        }
+    }
+    
+    // Apply the function to each set of elements
+    calculateValue("2023");
+    calculateValue("2028");
+    calculateValue("2032");
+    calculateValue("2042");
+    calculateValue("2050");
+    
+    
+  }
+
   // updateMap
   function updateMap() {
     console.log('updateMap');
@@ -126,6 +176,21 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
       }
     };
 
+    
+    // Define the label class outside your updateMap function, using a placeholder for the expression
+    var labelClassSe = {
+      symbol: {
+        type: "text",
+        color: "black",
+        haloColor: "white",
+        haloSize: "1px",
+        font: { size: 8, family: "sans-serif" }
+      },
+      labelExpressionInfo: {
+        expression: "" // Placeholder; will be updated in the function
+      }
+    };
+
     // Define the label class outside your updateMap function, using a placeholder for the expression
     var labelClassOff = {
       symbol: {
@@ -133,7 +198,7 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
         color: "black",
         haloColor: "white",
         haloSize: "1px",
-        font: { size: 10, family: "sans-serif" }
+        font: { size: 11, family: "sans-serif" }
       },
       labelExpressionInfo: {
         expression: "" // Placeholder; will be updated in the function
@@ -164,6 +229,26 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
       _prevDisplayYear = 2019;
     }
     
+    const selectSe = document.getElementById('selectSe').value;
+
+    if (selectSe=='hh') {
+      layerSeHh.visible = true;
+      layerSePop.visible = false;
+      layerSeTypemp.visible = false;
+    } else if (selectSe=='pop') {
+      layerSeHh.visible = false;
+      layerSePop.visible = true;
+      layerSeTypemp.visible = false;
+    } else if (selectSe=='typemp') {
+      layerSeHh.visible = false;
+      layerSePop.visible = false;
+      layerSeTypemp.visible = true;
+    } else {
+      layerSeHh.visible = false;
+      layerSePop.visible = false;
+      layerSeTypemp.visible = false;
+    }
+
     function buildDefinitionExpression(baseExpression, flagsExpression) {
       if (baseExpression && flagsExpression) {
         return `${baseExpression} AND (${flagsExpression})`;
@@ -254,15 +339,20 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
       layerFlags.visible = false;
     }
 
-
     switch (curDisplayForecast) {
       case 'final-forecast':
         _expression = "$feature.MF" + selectYear.value + " + $feature.ADJ" + selectYear.value + " + $feature.ADJHIST";
         rendererSegmentsVolume.valueExpression = _expression;
-        
         rendererSegmentsVolume.valueExpressionTitle = /*selectYear.value + ' */'Final Forecast';
         layerSegments.renderer = rendererSegmentsVolume;
         labelClass.labelExpressionInfo.expression = "Text(" + _expression + ", '#,###')";
+        layerSeHh    .renderer.valueExpression = "$feature.N_" + selectYear.value;
+        layerSePop   .renderer.valueExpression = "$feature.N_" + selectYear.value;
+        layerSeTypemp.renderer.valueExpression = "$feature.N_" + selectYear.value;
+        labelClassSe.labelExpressionInfo.expression = "Text($feature.N_" + selectYear.value + ", '#,###')";
+        layerSeHh    .renderer = rendererSeHh;
+        layerSePop   .renderer = rendererSePop;
+        layerSeTypemp.renderer = rendererSeTypemp;
         break;
       case 'final-forecast-change-2019':
         _expression = "$feature.MF" + selectYear.value + " + $feature.ADJ" + selectYear.value + " - ($feature.M2019 + $feature.aadtAdjFactor)"; // don't include ADJHIST since it just cancels out
@@ -270,6 +360,13 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
         rendererSegmentsVolumeCompare.valueExpressionTitle = /*selectYear.value + ' */'Final Forecast Change from 2019';
         layerSegments.renderer = rendererSegmentsVolumeCompare;
         labelClass.labelExpressionInfo.expression = "Text(" + _expression + ", '#,###')";
+        layerSeHh    .renderer.valueExpression = "$feature.N_" + selectYear.value + " - $feature.N_2019";
+        layerSePop   .renderer.valueExpression = "$feature.N_" + selectYear.value + " - $feature.N_2019";
+        layerSeTypemp.renderer.valueExpression = "$feature.N_" + selectYear.value + " - $feature.N_2019";
+        labelClassSe.labelExpressionInfo.expression = "Text($feature.N_" + selectYear.value + " - $feature.N_2019, '#,###')";
+        layerSeHh    .renderer = rendererSeChange;
+        layerSePop   .renderer = rendererSeChange;
+        layerSeTypemp.renderer = rendererSeChange;
         break;
       case 'final-forecast-change-prev':
         _expression = "$feature.MF" + selectYear.value + " + $feature.ADJ" + selectYear.value + " - $feature.MF" + _prevDisplayYear + " - $feature.ADJ" + _prevDisplayYear; // don't include ADJHIST since it just cancels out
@@ -277,6 +374,13 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
         rendererSegmentsVolumeCompare.valueExpressionTitle = /*selectYear.value + ' */'Final Forecast Change from Previous Year' /* + _prevDisplayYear*/;
         layerSegments.renderer = rendererSegmentsVolumeCompare;
         labelClass.labelExpressionInfo.expression = "Text(" + _expression + ", '#,###')";
+        layerSeHh    .renderer.valueExpression = "$feature.N_" + selectYear.value + " - $feature.N_" + _prevDisplayYear;
+        layerSePop   .renderer.valueExpression = "$feature.N_" + selectYear.value + " - $feature.N_" + _prevDisplayYear;
+        layerSeTypemp.renderer.valueExpression = "$feature.N_" + selectYear.value + " - $feature.N_" + _prevDisplayYear;
+        labelClassSe.labelExpressionInfo.expression = "Text($feature.N_" + selectYear.value + " - $feature.N_" + _prevDisplayYear + ", '#,###')";
+        layerSeHh    .renderer = rendererSeChange;
+        layerSePop   .renderer = rendererSeChange;
+        layerSeTypemp.renderer = rendererSeChange;
         break;
       case 'manual-adjustments':
         _expression = "$feature.ADJ" + selectYear.value;
@@ -284,6 +388,13 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
         rendererSegmentsVolumeAdjust.valueExpressionTitle = /*selectYear.value + ' */'Manual Adjustments';
         layerSegments.renderer = rendererSegmentsVolumeAdjust;
         labelClass.labelExpressionInfo.expression = "IIF(" + _expression + " == 0, '', Text(" + _expression + ", '#,###'))";
+        layerSeHh    .renderer.valueExpression = "";
+        layerSePop   .renderer.valueExpression = "";
+        layerSeTypemp.renderer.valueExpression = "";
+        labelClassSe.labelExpressionInfo.expression = "IIF(" + _expression + " == 0, '', Text(" + _expression + ", '#,###'))";
+        layerSeHh    .renderer = rendererSeHh;
+        layerSePop   .renderer = rendererSePop;
+        layerSeTypemp.renderer = rendererSeTypemp;
         break;
       case 'historic-adjustments':
         _expression = "$feature.ADJHIST";
@@ -291,6 +402,10 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
         rendererSegmentsVolumeAdjust.valueExpressionTitle = /*selectYear.value + ' */'Historic Adjustments';
         layerSegments.renderer = rendererSegmentsVolumeAdjust;
         labelClass.labelExpressionInfo.expression = "IIF(" + _expression + " == 0, '', Text(" + _expression + ", '#,###'))";
+        labelClassSe.labelExpressionInfo.expression = "";
+        layerSeHh    .renderer = rendererSeHh;
+        layerSePop   .renderer = rendererSePop;
+        layerSeTypemp.renderer = rendererSeTypemp;
         break;
       case 'model-forecast':
         _expression = "$feature.MF" + selectYear.value + " + $feature.ADJHIST";
@@ -298,6 +413,13 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
         rendererSegmentsVolume.valueExpressionTitle = /*selectYear.value + ' */'Model Forecast';
         layerSegments.renderer = rendererSegmentsVolume;
         labelClass.labelExpressionInfo.expression = "Text(" + _expression + ", '#,###')";
+        layerSeHh    .renderer.valueExpression = "$feature.N_" + selectYear.value;
+        layerSePop   .renderer.valueExpression = "$feature.N_" + selectYear.value;
+        layerSeTypemp.renderer.valueExpression = "$feature.N_" + selectYear.value;
+        labelClassSe.labelExpressionInfo.expression = "IIF($feature.N_" + selectYear.value + ", '#,###'))";
+        layerSeHh    .renderer = rendererSeHh;
+        layerSePop   .renderer = rendererSePop;
+        layerSeTypemp.renderer = rendererSeTypemp;
         break;
       case 'model-nobaseyearadj':
         _expression = "$feature.M" + selectYear.value;
@@ -305,14 +427,28 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
         rendererSegmentsVolume.valueExpressionTitle = /*selectYear.value + ' */'Model No Base Year Adj';
         layerSegments.renderer = rendererSegmentsVolume;
         labelClass.labelExpressionInfo.expression = "Text(" + _expression + ", '#,###')";
+        layerSeHh    .renderer.valueExpression = "$feature.N_" + selectYear.value;
+        layerSePop   .renderer.valueExpression = "$feature.N_" + selectYear.value;
+        layerSeTypemp.renderer.valueExpression = "$feature.N_" + selectYear.value;
+        labelClassSe.labelExpressionInfo.expression = "IIF($feature.N_" + selectYear.value + ", '#,###'))";
+        layerSeHh    .renderer = rendererSeHh;
+        layerSePop   .renderer = rendererSePop;
+        layerSeTypemp.renderer = rendererSeTypemp;
         break;
     }
 
     // labels
     if (document.getElementById('checkboxLabels').checked==true) {
       layerSegments.labelingInfo = [labelClass];
+      layerSeHh    .labelingInfo = [labelClassSe];
+      layerSePop   .labelingInfo = [labelClassSe];
+      layerSeTypemp.labelingInfo = [labelClassSe];
+
     } else {
       layerSegments.labelingInfo = [labelClassOff];
+      layerSeHh    .labelingInfo = [labelClassOff];
+      layerSePop   .labelingInfo = [labelClassOff];
+      layerSeTypemp.labelingInfo = [labelClassOff];
     }
 
     //if (document.getElementById('checkboxNoNotes').checked==true) {
@@ -327,6 +463,7 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
     } else {
       layerSegments.visible = false;
     }
+    
 
     // roadway projects
     if (document.getElementById('checkboxRoadwayProjects').checked==true) {
@@ -455,7 +592,7 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
       zoom: 11, // Zoom level
       container: "mapView" // Div element
     });
-  
+
     const geojsonCities = new GeoJSONLayer({
       url: "data/city.geojson",
       renderer: {
@@ -551,7 +688,6 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
     map.add(layerRoadwayProjectsLines);
     map.add(layerRoadwayProjectsPoints);
 
-
     // Unified plan projects
     
     layerUnifiedPlanRoadwayProjectsLines = new FeatureLayer({
@@ -622,6 +758,69 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
     map.add(layerMAGRoadwayProjectsLines);
     map.add(layerMAGRoadwayProjectsPoints);
 
+    layerSeHh = new FeatureLayer({
+      url: layerSeHhUrl,
+      title: "Households"
+    });
+    
+    rendererSeHh = new ClassBreaksRenderer({
+      valueExpression: "$feature.N_2050",
+      classBreakInfos: [
+        { minValue:     0, maxValue:       50, symbol: { type: "simple-fill", color: [255, 255, 255, 0.50], outline: { color: [255, 255, 255], width: 0.5 } }, label: "0 to 49 households"        },
+        { minValue:    50, maxValue:      500, symbol: { type: "simple-fill", color: [191, 191, 226, 0.50], outline: { color: [255, 255, 255], width: 1.1 } }, label: "50 to 499 households"      },
+        { minValue:   500, maxValue:     1000, symbol: { type: "simple-fill", color: [127, 127, 197, 0.50], outline: { color: [255, 255, 255], width: 1.7 } }, label: "500 to 999 households"     },
+        { minValue:  1000, maxValue:     2000, symbol: { type: "simple-fill", color: [ 63,  63, 168, 0.50], outline: { color: [255, 255, 255], width: 2.3 } }, label: "1,000 to 1,999 households" },
+        { minValue:  2000, maxValue: Infinity, symbol: { type: "simple-fill", color: [  0,   0, 139, 0.50], outline: { color: [255, 255, 255], width: 3.9 } }, label: "More than 2,000 households"}
+      ]
+    });
+  
+    layerSePop = new FeatureLayer({
+      url: layerSePopUrl,
+      title: "Population"
+    });
+
+    rendererSePop = new ClassBreaksRenderer({
+      valueExpression: "$feature.N_2050",
+      classBreakInfos: [
+        { minValue:     0, maxValue:      100, symbol: { type: "simple-fill", color: [255, 255, 255, 0.50], outline: { color: [255, 255, 255], width: 0.5 } }, label: "0 to 99 people"            },
+        { minValue:   100, maxValue:     1000, symbol: { type: "simple-fill", color: [223, 191, 223, 0.50], outline: { color: [255, 255, 255], width: 1.1 } }, label: "100 to 999 people"         },
+        { minValue:  1000, maxValue:     2000, symbol: { type: "simple-fill", color: [191, 127, 191, 0.50], outline: { color: [255, 255, 255], width: 1.7 } }, label: "1,000 to 1,999 people"     },
+        { minValue:  2000, maxValue:     4000, symbol: { type: "simple-fill", color: [159,  63, 159, 0.50], outline: { color: [255, 255, 255], width: 2.3 } }, label: "2,000 to 3,999 people"     },
+        { minValue:  4000, maxValue: Infinity, symbol: { type: "simple-fill", color: [128,   0, 128, 0.50], outline: { color: [255, 255, 255], width: 3.9 } }, label: "More than 4,000 households"}
+      ]
+    });
+
+    layerSeTypemp = new FeatureLayer({
+      url: layerSeTypempUrl,
+      title: "Typical Employment"
+    });
+    
+    rendererSeTypemp = new ClassBreaksRenderer({
+      valueExpression: "$feature.N_2050",
+      classBreakInfos: [
+        { minValue:    0, maxValue:      100, symbol: { type: "simple-fill", color: [255, 255, 255, 0.50], outline: { color: [255, 255, 255], width: 0.5 } }, label: "0 to 99 jobs"        },
+        { minValue:  100, maxValue:     1000, symbol: { type: "simple-fill", color: [242, 212, 191, 0.50], outline: { color: [255, 255, 255], width: 1.1 } }, label: "100 to 999 jobs"     },
+        { minValue: 1000, maxValue:     3000, symbol: { type: "simple-fill", color: [229, 170, 127, 0.50], outline: { color: [255, 255, 255], width: 1.7 } }, label: "1,000 to 2,999 jobs" },
+        { minValue: 3000, maxValue:     6000, symbol: { type: "simple-fill", color: [216, 127,  63, 0.50], outline: { color: [255, 255, 255], width: 2.3 } }, label: "2,000 to 5,999 jobs" },
+        { minValue: 6000, maxValue: Infinity, symbol: { type: "simple-fill", color: [204,  85,   0, 0.50], outline: { color: [255, 255, 255], width: 3.9 } }, label: "More than 6,000 jobs"}
+      ]
+    });
+
+    rendererSeChange = new ClassBreaksRenderer({
+      valueExpression: "$feature.N_2050 - $feature.N_2042",
+      classBreakInfos: [
+        { minValue: -100000, maxValue:  0.00001, symbol: { type: "simple-fill", color: [173, 216, 230, 0.65], outline: { color: [255, 255, 255], width: 0.5 } }, label: "Decrease"      },
+        { minValue: 0.00001, maxValue:      100, symbol: { type: "simple-fill", color: [255, 153, 153, 0.65], outline: { color: [255, 255, 255], width: 1.1 } }, label: "+1 to +99"     },
+        { minValue:     100, maxValue:      300, symbol: { type: "simple-fill", color: [255, 102, 102, 0.65], outline: { color: [255, 255, 255], width: 1.7 } }, label: "+100 to +299"  },
+        { minValue:     300, maxValue:      900, symbol: { type: "simple-fill", color: [204,   0,   0, 0.65], outline: { color: [255, 255, 255], width: 2.3 } }, label: "+300 to +899"  },
+        { minValue:     900, maxValue: Infinity, symbol: { type: "simple-fill", color: [139,   0,   0, 0.65], outline: { color: [255, 255, 255], width: 3.9 } }, label: "More than +900"}
+      ]
+    });
+
+    map.add(layerSeHh);
+    map.add(layerSePop);
+    map.add(layerSeTypemp);
+
     map.add(layerFlags);
     map.add(layerSegments);
 
@@ -653,10 +852,13 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
     legend = new Legend({
       view: view,
       layerInfos: [
-                    { layer: layerSegments, title: 'Segments' },
-                    { layer: layerRoadwayProjectsLines, title: '' },
-                    { layer: layerTransitProjectsLines, title: '' },
-                    { layer: layerFlags, title: 'Flagged Segments' }
+                    { layer: layerSegments            , title: 'Segments'           },
+                    { layer: layerRoadwayProjectsLines, title: ''                   },
+                    { layer: layerTransitProjectsLines, title: ''                   },
+                    { layer: layerFlags               , title: 'Flagged Segments'   },
+                    { layer: layerSeHh                , title: 'Households'         },
+                    { layer: layerSePop               , title: 'Population'         },
+                    { layer: layerSeTypemp            , title: 'Typical Employment' }
                   ] // Replace YOUR_LAYER with the layerSegments you want to include in the legend
     });
     view.ui.add(legend, "top-right");
@@ -687,45 +889,48 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
   fetch('config.json')
     .then(response => response.json())
     .then(config => {
+      
+      // Use or log the layerSegments value
+      console.log('config.json');
 
       // Extract the layerSegments value
-      layerSegmentsUrl                             = config[0].layerSegmentsUrl                            ;
-      tableLogUrl                                  = config[0].tableLogUrl                                 ;
-      layerProjectsLinesUrl                        = config[0].layerProjectsLinesUrl                       ;
-      layerProjectsPointsUrl                       = config[0].layerProjectsPointsUrl                      ;
-      filterRoadwayProjectsLinesFilter             = config[0].filterRoadwayProjectsLinesFilter            ;
-      filterTransitProjectsLinesFilter             = config[0].filterTransitProjectsLinesFilter            ;
-      filterRoadwayProjectsPointsFilter            = config[0].filterRoadwayProjectsPointsFilter           ;
-      filterTransitProjectsPointsFilter            = config[0].filterTransitProjectsPointsFilter           ;
-      layerUnifiedPlanProjectsLinesUrl             = config[0].layerUnifiedPlanProjectsLinesUrl            ;
-      layerUnifiedPlanProjectsPointsUrl            = config[0].layerUnifiedPlanProjectsPointsUrl           ;
-      filterUnifiedPlanRoadwayProjectsLinesFilter  = config[0].filterUnifiedPlanRoadwayProjectsLinesFilter ;
-      filterUnifiedPlanTransitProjectsLinesFilter  = config[0].filterUnifiedPlanTransitProjectsLinesFilter ;
-      filterUnifiedPlanRoadwayProjectsPointsFilter = config[0].filterUnifiedPlanRoadwayProjectsPointsFilter;
-      filterUnifiedPlanTransitProjectsPointsFilter = config[0].filterUnifiedPlanTransitProjectsPointsFilter;
-      layerMAGProjectsLinesUrl                     = config[0].layerMAGProjectsLinesUrl                    ;
-      layerMAGProjectsPointsUrl                    = config[0].layerMAGProjectsPointsUrl                   ;
-      filterMAGRoadwayProjectsLinesFilter          = config[0].filterMAGRoadwayProjectsLinesFilter         ;
-      filterMAGTransitProjectsLinesFilter          = config[0].filterMAGTransitProjectsLinesFilter         ;
-      filterMAGRoadwayProjectsPointsFilter         = config[0].filterMAGRoadwayProjectsPointsFilter        ;
-      filterMAGTransitProjectsPointsFilter         = config[0].filterMAGTransitProjectsPointsFilter        ;
-
+      layerSegmentsUrl                             = config["layerSegmentsUrl"                            ];
+      tableLogUrl                                  = config["tableLogUrl"                                 ];
+      layerProjectsLinesUrl                        = config["layerProjectsLinesUrl"                       ];
+      layerProjectsPointsUrl                       = config["layerProjectsPointsUrl"                      ];
+      filterRoadwayProjectsLinesFilter             = config["filterRoadwayProjectsLinesFilter"            ];
+      filterTransitProjectsLinesFilter             = config["filterTransitProjectsLinesFilter"            ];
+      filterRoadwayProjectsPointsFilter            = config["filterRoadwayProjectsPointsFilter"           ];
+      filterTransitProjectsPointsFilter            = config["filterTransitProjectsPointsFilter"           ];
+      layerUnifiedPlanProjectsLinesUrl             = config["layerUnifiedPlanProjectsLinesUrl"            ];
+      layerUnifiedPlanProjectsPointsUrl            = config["layerUnifiedPlanProjectsPointsUrl"           ];
+      filterUnifiedPlanRoadwayProjectsLinesFilter  = config["filterUnifiedPlanRoadwayProjectsLinesFilter" ];
+      filterUnifiedPlanTransitProjectsLinesFilter  = config["filterUnifiedPlanTransitProjectsLinesFilter" ];
+      filterUnifiedPlanRoadwayProjectsPointsFilter = config["filterUnifiedPlanRoadwayProjectsPointsFilter"];
+      filterUnifiedPlanTransitProjectsPointsFilter = config["filterUnifiedPlanTransitProjectsPointsFilter"];
+      layerMAGProjectsLinesUrl                     = config["layerMAGProjectsLinesUrl"                    ];
+      layerMAGProjectsPointsUrl                    = config["layerMAGProjectsPointsUrl"                   ];
+      filterMAGRoadwayProjectsLinesFilter          = config["filterMAGRoadwayProjectsLinesFilter"         ];
+      filterMAGTransitProjectsLinesFilter          = config["filterMAGTransitProjectsLinesFilter"         ];
+      filterMAGRoadwayProjectsPointsFilter         = config["filterMAGRoadwayProjectsPointsFilter"        ];
+      filterMAGTransitProjectsPointsFilter         = config["filterMAGTransitProjectsPointsFilter"        ];
+      layerSeHhUrl                                 = config["layerSeHhUrl"                                ];
+      layerSePopUrl                                = config["layerSePopUrl"                               ];
+      layerSeTypempUrl                             = config["layerSeTypempUrl"                            ];
 
       // Create a new ClassBreaksRenderer using the fetched configuration     
-      rendererSegmentsVolume        = new ClassBreaksRenderer(config[0].rendererSegmentsVolume       );
-      rendererSegmentsVolumeCompare = new ClassBreaksRenderer(config[0].rendererSegmentsVolumeCompare);
-      rendererSegmentsVolumeAdjust  = new ClassBreaksRenderer(config[0].rendererSegmentsVolumeAdjust );
-      rendererRoadwayPoints         = new SimpleRenderer     (config[0].rendererRoadwayPoints        );
-      rendererRoadwayLines          = new SimpleRenderer     (config[0].rendererRoadwayLines         );
-      rendererTransitPoints         = new SimpleRenderer     (config[0].rendererTransitPoints        );
-      rendererTransitLines          = new SimpleRenderer     (config[0].rendererTransitLines         );
-      rendererSegmentsFlags         = new SimpleRenderer     (config[0].rendererSegmentsFlags        );
+      rendererSegmentsVolume        = new ClassBreaksRenderer(config["rendererSegmentsVolume"       ]);
+      rendererSegmentsVolumeCompare = new ClassBreaksRenderer(config["rendererSegmentsVolumeCompare"]);
+      rendererSegmentsVolumeAdjust  = new ClassBreaksRenderer(config["rendererSegmentsVolumeAdjust" ]);
+      rendererRoadwayPoints         = new SimpleRenderer     (config["rendererRoadwayPoints"        ]);
+      rendererRoadwayLines          = new SimpleRenderer     (config["rendererRoadwayLines"         ]);
+      rendererTransitPoints         = new SimpleRenderer     (config["rendererTransitPoints"        ]);
+      rendererTransitLines          = new SimpleRenderer     (config["rendererTransitLines"         ]);
+      rendererSegmentsFlags         = new SimpleRenderer     (config["rendererSegmentsFlags"        ]);
 
       // create map
       createMapView();
 
-      // Use or log the layerSegments value
-      console.log('config.json');
     })
     .catch(error => {
       console.error('Error fetching the file:', error);
@@ -1229,6 +1434,7 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
           featureToUpdate.attributes.ADJHIST = parseInt(document.getElementById('adjHistValue').value);
           featureToUpdate.attributes.NOTES = document.getElementById('notes').value.trim();
           featureToUpdate.attributes.NOTES_FURREV = document.getElementById('notes_furrev').value.trim();
+          featureToUpdate.attributes.NOTES_SEG = document.getElementById('notes_seg').value.trim();
 
           dataFlags.forEach(flag => {
             // Replace the field names with their values in the segment
@@ -1306,6 +1512,7 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
       newFeature.attributes.ADJHIST      = document.getElementById('adjHistValue').value || 0;
       newFeature.attributes.NOTES        = document.getElementById('notes').value.trim();
       newFeature.attributes.NOTES_FURREV = document.getElementById('notes_furrev').value.trim();
+      newFeature.attributes.NOTES_SEG    = document.getElementById('notes_seg').value.trim();
       newFeature.attributes.TIMESTAMP = mountainTime;  // Directly assign mountainTime
 
       // Apply the edits to add the new feature
@@ -1583,6 +1790,7 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
         document.getElementById("adjHistValue").value = feature.attributes.ADJHIST || 0;
         document.getElementById("notes"       ).value = feature.attributes.NOTES.trim();
         document.getElementById("notes_furrev").value = feature.attributes.NOTES_FURREV.trim();
+        document.getElementById("notes_seg"   ).value = feature.attributes.NOTES_SEG.trim();
 
         // Define all data arrays in a localized dictionary
         const dataArrays = {
@@ -1672,6 +1880,13 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
           notesFurRevElement.value = feature.attributes.NOTES_FURREV.trim();
         }
        
+
+        // Special case for notes
+        const notesSegElement = document.getElementById("notes_seg");
+        if (notesSegElement) {
+          notesSegElement.value = feature.attributes.NOTES_SEG.trim();
+        }
+
         inputIds.forEach(id => {
             const inputElement = document.getElementById(id);
             initialValues[id] = inputElement.value;
@@ -1807,7 +2022,10 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
     selectSegId.addEventListener('calciteSelectChange', updatePanelInfo);
     selectCoName.addEventListener('calciteSelectChange', updateSegments);
     selectYear.addEventListener('calciteSelectChange', updateMap);
+    selectSe.addEventListener('calciteSelectChange', updateMap);
     
+    document.getElementById('matchModelButton').addEventListener('click', matchModelAADT);
+
     function querySEGIDByOBJECTID(OBJECTID) {
       console.log('querySEGIDByOBJECTID');
 

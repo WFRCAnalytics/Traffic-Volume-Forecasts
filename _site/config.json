@@ -1,5 +1,4 @@
-[
-  {
+{
     "layerSegmentsUrl"      : "https://services1.arcgis.com/taguadKoI1XFwivx/arcgis/rest/services/Forecasts_gdb/FeatureServer/0",
     "layerProjectsLinesUrl" : "https://services1.arcgis.com/taguadKoI1XFwivx/arcgis/rest/services/Final_2023_RTP_Projects/FeatureServer/1",
     "layerProjectsPointsUrl": "https://services1.arcgis.com/taguadKoI1XFwivx/arcgis/rest/services/Final_2023_RTP_Projects/FeatureServer/0",
@@ -22,6 +21,10 @@
     "filterMAGRoadwayProjectsPointsFilter" : "mode = 'Highway' AND improvement_type IN('Upgrade Interchange','New Interchange','Grade-Separated Crossing')",
     "filterMAGTransitProjectsLinesFilter"  : "mode = 'Transit'",
     "filterMAGTransitProjectsPointsFilter" : "mode = 'Transit'",
+    
+    "layerSeHhUrl"     : "https://services1.arcgis.com/taguadKoI1XFwivx/arcgis/rest/services/STATEWIDE_TAZ_gdb/FeatureServer/0",
+    "layerSePopUrl"    : "https://services1.arcgis.com/taguadKoI1XFwivx/arcgis/rest/services/STATEWIDE_TAZ_gdb/FeatureServer/1",
+    "layerSeTypempUrl" : "https://services1.arcgis.com/taguadKoI1XFwivx/arcgis/rest/services/STATEWIDE_TAZ_gdb/FeatureServer/6",
 
     "rendererSegmentsVolume": {
       "classBreakInfos": [
@@ -78,5 +81,4 @@
     "rendererTransitLines": {
       "symbol": { "type": "simple-line"  , "color": [  0,  0,255, 0.20], "width": 20 }, "label": "Unified Plan Transit Projects - Only Displaying for Year Selected"
     }
-  }
-]
+}
