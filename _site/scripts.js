@@ -29,42 +29,31 @@ let flagsMap = [];
 let layerSegments;
 let layerFlags;
 let layerSegmentsUrl;
+
 let layerProjectsLinesUrl;
 let layerProjectsPointsUrl;
+
+let layerProjectsLines;
+let layerProjectsPoints;
+
 let layerRoadwayProjectsLines;
 let layerRoadwayProjectsPoints;
+
 let layerTransitProjectsLines;
 let layerTransitProjectsPoints;
+
 let filterRoadwayProjectsLinesFilter;
 let filterRoadwayProjectsPointsFilter;
 let filterTransitProjectsLinesFilter;
 let filterTransitProjectsPointsFilter;
-let layerUnifiedPlanProjectsLinesUrl;
-let layerUnifiedPlanProjectsPointsUrl;
-let layerUnifiedPlanRoadwayProjectsLines;
-let layerUnifiedPlanRoadwayProjectsPoints;
-let layerUnifiedPlanTransitProjectsLines;
-let layerUnifiedPlanTransitProjectsPoints;
-let filterUnifiedPlanRoadwayProjectsLinesFilter;
-let filterUnifiedPlanRoadwayProjectsPointsFilter;
-let filterUnifiedPlanTransitProjectsLinesFilter;
-let filterUnifiedPlanTransitProjectsPointsFilter;
+
 let layerSeHhUrl;
 let layerSePopUrl;
 let layerSeTypempUrl;
 let layerSeHh;
 let layerSePop;
 let layerSeTypemp;
-let layerMAGProjectsLinesUrl;
-let layerMAGProjectsPointsUrl;
-let layerMAGRoadwayProjectsLines;
-let layerMAGRoadwayProjectsPoints;
-let layerMAGTransitProjectsLines;
-let layerMAGTransitProjectsPoints;
-let filterMAGRoadwayProjectsLinesFilter;
-let filterMAGRoadwayProjectsPointsFilter;
-let filterMAGTransitProjectsLinesFilter;
-let filterMAGTransitProjectsPointsFilter;
+
 let rendererSegmentsVolume;
 let rendererSegmentsVolumeCompare;
 let rendererSegmentsVolumeAdjust;
@@ -77,6 +66,7 @@ let rendererSeChange;
 let rendererSeHh;
 let rendererSePop;
 let rendererSeTypemp;
+
 let curDisplayForecast = 'final-forecast';
 let defaultSource = 'AADTHistory.xlsx';
 let myChart; // Keep track of the current chart
@@ -469,62 +459,40 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
     if (document.getElementById('checkboxRoadwayProjects').checked==true) {
       layerRoadwayProjectsLines .visible = true;
       layerRoadwayProjectsPoints.visible = true;
-      layerUnifiedPlanRoadwayProjectsLines .visible = true;
-      layerUnifiedPlanRoadwayProjectsPoints.visible = true;
-      layerMAGRoadwayProjectsLines .visible = true;
-      layerMAGRoadwayProjectsPoints.visible = true;
     } else {
       layerRoadwayProjectsLines .visible = false;
       layerRoadwayProjectsPoints.visible = false;
-      layerUnifiedPlanRoadwayProjectsLines .visible = false;
-      layerUnifiedPlanRoadwayProjectsPoints.visible = false;
-      layerMAGRoadwayProjectsLines .visible = false;
-      layerMAGRoadwayProjectsPoints.visible = false;
     }
 
     // transit projects
     if (document.getElementById('checkboxTransitProjects').checked==true) {
       layerTransitProjectsLines .visible = true;
       layerTransitProjectsPoints.visible = true;
-      layerUnifiedPlanTransitProjectsLines .visible = true;
-      layerUnifiedPlanTransitProjectsPoints.visible = true;
-      layerMAGTransitProjectsLines .visible = true;
-      layerMAGTransitProjectsPoints.visible = true;
     } else {
       layerTransitProjectsLines .visible = false;
       layerTransitProjectsPoints.visible = false;
-      layerUnifiedPlanTransitProjectsLines .visible = false;
-      layerUnifiedPlanTransitProjectsPoints.visible = false;
-      layerMAGTransitProjectsLines .visible = false;
-      layerMAGTransitProjectsPoints.visible = false;
     }
 
+    // transit projects
+    if (document.getElementById('checkboxProjectDetails').checked==true) {
+      layerProjectsLines .visible = true;
+      layerProjectsPoints.visible = true;
+    } else {
+      layerProjectsLines .visible = false;
+      layerProjectsPoints.visible = false;
+    }
+    
+
     if (_phase!="") {
-      layerRoadwayProjectsLines            .definitionExpression = filterRoadwayProjectsLinesFilter             + " AND phase = '" + _phase + "'";
-      layerRoadwayProjectsPoints           .definitionExpression = filterRoadwayProjectsPointsFilter            + " AND phase = '" + _phase + "'";
-      layerTransitProjectsLines            .definitionExpression = filterTransitProjectsLinesFilter             + " AND phase = '" + _phase + "'";
-      layerTransitProjectsPoints           .definitionExpression = filterTransitProjectsPointsFilter            + " AND phase = '" + _phase + "'";
-      layerUnifiedPlanRoadwayProjectsLines .definitionExpression = filterUnifiedPlanRoadwayProjectsLinesFilter  + " AND Phase = '" + _phase + "'";
-      layerUnifiedPlanRoadwayProjectsPoints.definitionExpression = filterUnifiedPlanRoadwayProjectsPointsFilter + " AND Phase = '" + _phase + "'";
-      layerUnifiedPlanTransitProjectsLines .definitionExpression = filterUnifiedPlanTransitProjectsLinesFilter  + " AND Phase = '" + _phase + "'";
-      layerUnifiedPlanTransitProjectsPoints.definitionExpression = filterUnifiedPlanTransitProjectsPointsFilter + " AND Phase = '" + _phase + "'";
-      layerMAGRoadwayProjectsLines         .definitionExpression = filterMAGRoadwayProjectsLinesFilter          + " AND phase = '" + _phase + "'";
-      layerMAGRoadwayProjectsPoints        .definitionExpression = filterMAGRoadwayProjectsPointsFilter         + " AND phase = '" + _phase + "'";
-      layerMAGTransitProjectsLines         .definitionExpression = filterMAGTransitProjectsLinesFilter          + " AND phase = '" + _phase + "'";
-      layerMAGTransitProjectsPoints        .definitionExpression = filterMAGTransitProjectsPointsFilter         + " AND phase = '" + _phase + "'";
+      layerRoadwayProjectsLines            .definitionExpression = filterRoadwayProjectsLinesFilter             + " AND Phase = '" + _phase + "'";
+      layerRoadwayProjectsPoints           .definitionExpression = filterRoadwayProjectsPointsFilter            + " AND Phase = '" + _phase + "'";
+      layerTransitProjectsLines            .definitionExpression = filterTransitProjectsLinesFilter             + " AND Phase = '" + _phase + "'";
+      layerTransitProjectsPoints           .definitionExpression = filterTransitProjectsPointsFilter            + " AND Phase = '" + _phase + "'";
     } else {
       layerRoadwayProjectsLines            .visible = false;
       layerRoadwayProjectsPoints           .visible = false;
       layerTransitProjectsLines            .visible = false;
       layerTransitProjectsPoints           .visible = false;
-      layerUnifiedPlanRoadwayProjectsLines .visible = false;
-      layerUnifiedPlanRoadwayProjectsPoints.visible = false;
-      layerUnifiedPlanTransitProjectsLines .visible = false;
-      layerUnifiedPlanTransitProjectsPoints.visible = false;
-      layerMAGRoadwayProjectsLines         .visible = false;
-      layerMAGRoadwayProjectsPoints        .visible = false;
-      layerMAGTransitProjectsLines         .visible = false;
-      layerMAGTransitProjectsPoints        .visible = false;
     }
     
     layerSegments                        .refresh();
@@ -532,14 +500,6 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
     layerRoadwayProjectsPoints           .refresh();
     layerTransitProjectsLines            .refresh();
     layerTransitProjectsPoints           .refresh();
-    layerUnifiedPlanRoadwayProjectsLines .refresh();
-    layerUnifiedPlanRoadwayProjectsPoints.refresh();
-    layerUnifiedPlanTransitProjectsLines .refresh();
-    layerUnifiedPlanTransitProjectsPoints.refresh();
-    layerMAGRoadwayProjectsLines         .refresh();
-    layerMAGRoadwayProjectsPoints        .refresh();
-    layerMAGTransitProjectsLines         .refresh();
-    layerMAGTransitProjectsPoints        .refresh();
     layerFlags                           .refresh();
 
   };
@@ -572,6 +532,7 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
       addUpdateListener('checkboxRoadwayProjects');
       addUpdateListener('checkboxTransitProjects');
       addUpdateListener('checkboxLabels');
+      addUpdateListener('checkboxProjectDetails');
       //addUpdateListener('checkboxNoNotes');
 
       updateMap();
@@ -683,80 +644,94 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
       definitionExpression: filterTransitProjectsPointsFilter
     });
 
+    // for full project details
+
+    // Renderer for the polyline layer
+    const polylineRenderer = new UniqueValueRenderer({
+      //defaultSymbol: {type: "simple-line", color: "#cccccc", width: "1px" }, // Default symbol
+      //defaultLabel: "Other",
+      field: "Phase",
+      uniqueValueInfos: [
+          { value: "1"       , symbol: {type: "simple-line", color: "#d73027", width: "3px" }},
+          { value: "2"       , symbol: {type: "simple-line", color: "#0093bf", width: "3px" }},
+          { value: "3"       , symbol: {type: "simple-line", color: "#4d33a7", width: "3px" }},
+          { value: "Unfunded", symbol: {type: "simple-line", color: "#ffa484", width: "3px" }}
+      ]
+    });
+    
+    const projectPopupTemplate = new PopupTemplate({
+      title: "{Project_Name}", // Use a field value for the title
+      content: [{
+        type: "fields",
+        fieldInfos: [
+          {
+            fieldName: "Plan_ID",
+            label: "Plan ID"
+          },
+          {
+            fieldName: "Phase",
+            label: "Phase"
+          },
+          {
+            fieldName: "Phase_Needed",
+            label: "Phase Needed"
+          },
+          {
+            fieldName: "improvement_type",
+            label: "Improvement Type"
+          },
+          {
+            fieldName: "Jurisdiction",
+            label: "Jurisdiction"
+          },
+          {
+            fieldName: "UniqueID",
+            label: "Unique ID"
+          }
+        ]
+      }]
+    });
+
+
+    // Renderer for the point layer
+    const pointRenderer = new UniqueValueRenderer({
+      //defaultSymbol: { type: "simple-marker", color: "#cccccc", outline: { color: "#cccccc", width: 2}}, // Default symbol
+      //defaultLabel: "Other",
+      field: "Phase",
+      uniqueValueInfos: [
+          { value: "1"       , symbol:  { type: "simple-marker", color: "#d73027", outline: { color: "#d73027", width: 1}}},
+          { value: "2"       , symbol:  { type: "simple-marker", color: "#0093bf", outline: { color: "#0093bf", width: 1}}},
+          { value: "3"       , symbol:  { type: "simple-marker", color: "#4d33a7", outline: { color: "#4d33a7", width: 1}}},
+          { value: "Unfunded", symbol:  { type: "simple-marker", color: "#ffa484", outline: { color: "#ffa484", width: 1}}}
+      ]
+    });
+
+    
+    layerProjectsLines = new FeatureLayer({
+      url: layerProjectsLinesUrl,
+      renderer: polylineRenderer,
+      popupTemplate: projectPopupTemplate,
+      visible: false
+    });
+
+    layerProjectsPoints = new FeatureLayer({
+      url: layerProjectsPointsUrl,
+      renderer: pointRenderer,
+      popupTemplate: projectPopupTemplate,
+      visible: false
+    });
+
+    
+
+    map.add(layerProjectsLines);
+    map.add(layerProjectsPoints);
     map.add(layerTransitProjectsLines);
     map.add(layerTransitProjectsPoints);
     map.add(layerRoadwayProjectsLines);
     map.add(layerRoadwayProjectsPoints);
 
-    // Unified plan projects
-    
-    layerUnifiedPlanRoadwayProjectsLines = new FeatureLayer({
-      url: layerUnifiedPlanProjectsLinesUrl,
-      renderer: rendererRoadwayLines,
-      visible: false,
-      definitionExpression: filterUnifiedPlanRoadwayProjectsLinesFilter
-    });
 
-    layerUnifiedPlanRoadwayProjectsPoints = new FeatureLayer({
-      url: layerUnifiedPlanProjectsPointsUrl,
-      renderer: rendererRoadwayPoints,
-      visible: false,
-      definitionExpression: filterUnifiedPlanRoadwayProjectsPointsFilter
-    });
-
-    layerUnifiedPlanTransitProjectsLines = new FeatureLayer({
-      url: layerUnifiedPlanProjectsLinesUrl,
-      renderer: rendererTransitLines,
-      visible: false,
-      definitionExpression: filterUnifiedPlanTransitProjectsLinesFilter
-    });
-
-    layerUnifiedPlanTransitProjectsPoints = new FeatureLayer({
-      url: layerUnifiedPlanProjectsPointsUrl,
-      renderer: rendererTransitPoints,
-      visible: false,
-      definitionExpression: filterUnifiedPlanTransitProjectsPointsFilter
-    });
-
-    map.add(layerUnifiedPlanTransitProjectsLines);
-    map.add(layerUnifiedPlanTransitProjectsPoints);
-    map.add(layerUnifiedPlanRoadwayProjectsLines);
-    map.add(layerUnifiedPlanRoadwayProjectsPoints);
-
-    // MAG plan projects
-        
-    layerMAGRoadwayProjectsLines = new FeatureLayer({
-      url: layerMAGProjectsLinesUrl,
-      renderer: rendererRoadwayLines,
-      visible: false,
-      definitionExpression: filterMAGRoadwayProjectsLinesFilter
-    });
-
-    layerMAGRoadwayProjectsPoints = new FeatureLayer({
-      url: layerMAGProjectsPointsUrl,
-      renderer: rendererRoadwayPoints,
-      visible: false,
-      definitionExpression: filterMAGRoadwayProjectsPointsFilter
-    });
-
-    layerMAGTransitProjectsLines = new FeatureLayer({
-      url: layerMAGProjectsLinesUrl,
-      renderer: rendererTransitLines,
-      visible: false,
-      definitionExpression: filterMAGTransitProjectsLinesFilter
-    });
-
-    layerMAGTransitProjectsPoints = new FeatureLayer({
-      url: layerMAGProjectsPointsUrl,
-      renderer: rendererTransitPoints,
-      visible: false,
-      definitionExpression: filterMAGTransitProjectsPointsFilter
-    });
-
-    map.add(layerMAGTransitProjectsLines);
-    map.add(layerMAGTransitProjectsPoints);
-    map.add(layerMAGRoadwayProjectsLines);
-    map.add(layerMAGRoadwayProjectsPoints);
+    // SOCIOECONOMICS LAYERS
 
     layerSeHh = new FeatureLayer({
       url: layerSeHhUrl,
@@ -852,13 +827,15 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
     legend = new Legend({
       view: view,
       layerInfos: [
-                    { layer: layerSegments            , title: 'Segments'           },
-                    { layer: layerRoadwayProjectsLines, title: ''                   },
-                    { layer: layerTransitProjectsLines, title: ''                   },
-                    { layer: layerFlags               , title: 'Flagged Segments'   },
-                    { layer: layerSeHh                , title: 'Households'         },
-                    { layer: layerSePop               , title: 'Population'         },
-                    { layer: layerSeTypemp            , title: 'Typical Employment' }
+                    { layer: layerSegments            , title: 'Segments'               },
+                    { layer: layerRoadwayProjectsLines, title: ''                       },
+                    { layer: layerTransitProjectsLines, title: ''                       },
+                    { layer: layerProjectsPoints      , title: 'Point Projects Detailed'},
+                    { layer: layerProjectsLines       , title: 'Line Projects Detailed' },
+                    { layer: layerFlags               , title: 'Flagged Segments'       },
+                    { layer: layerSeHh                , title: 'Households'             },
+                    { layer: layerSePop               , title: 'Population'             },
+                    { layer: layerSeTypemp            , title: 'Typical Employment'     }
                   ] // Replace YOUR_LAYER with the layerSegments you want to include in the legend
     });
     view.ui.add(legend, "top-right");
@@ -902,18 +879,6 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
       filterTransitProjectsLinesFilter             = config["filterTransitProjectsLinesFilter"            ];
       filterRoadwayProjectsPointsFilter            = config["filterRoadwayProjectsPointsFilter"           ];
       filterTransitProjectsPointsFilter            = config["filterTransitProjectsPointsFilter"           ];
-      layerUnifiedPlanProjectsLinesUrl             = config["layerUnifiedPlanProjectsLinesUrl"            ];
-      layerUnifiedPlanProjectsPointsUrl            = config["layerUnifiedPlanProjectsPointsUrl"           ];
-      filterUnifiedPlanRoadwayProjectsLinesFilter  = config["filterUnifiedPlanRoadwayProjectsLinesFilter" ];
-      filterUnifiedPlanTransitProjectsLinesFilter  = config["filterUnifiedPlanTransitProjectsLinesFilter" ];
-      filterUnifiedPlanRoadwayProjectsPointsFilter = config["filterUnifiedPlanRoadwayProjectsPointsFilter"];
-      filterUnifiedPlanTransitProjectsPointsFilter = config["filterUnifiedPlanTransitProjectsPointsFilter"];
-      layerMAGProjectsLinesUrl                     = config["layerMAGProjectsLinesUrl"                    ];
-      layerMAGProjectsPointsUrl                    = config["layerMAGProjectsPointsUrl"                   ];
-      filterMAGRoadwayProjectsLinesFilter          = config["filterMAGRoadwayProjectsLinesFilter"         ];
-      filterMAGTransitProjectsLinesFilter          = config["filterMAGTransitProjectsLinesFilter"         ];
-      filterMAGRoadwayProjectsPointsFilter         = config["filterMAGRoadwayProjectsPointsFilter"        ];
-      filterMAGTransitProjectsPointsFilter         = config["filterMAGTransitProjectsPointsFilter"        ];
       layerSeHhUrl                                 = config["layerSeHhUrl"                                ];
       layerSePopUrl                                = config["layerSePopUrl"                               ];
       layerSeTypempUrl                             = config["layerSeTypempUrl"                            ];

@@ -204,7 +204,7 @@
               </tr>
               <tr class="light-grey-table">
                 <td colspan="2" align="right">
-                  <button id="matchModelButton">Match Forecast to: </button>&nbsp;&nbsp;&nbsp;Model AADT:
+                  <button id="matchModelButton">Match Final Forecast to: </button>&nbsp;&nbsp;&nbsp;Model AADT:
                 </td>
                 <td>
                   <div id="m2019Value" class="tableText" align="right"></div>
@@ -408,24 +408,45 @@
             </calcite-label>
           </calcite-radio-button-group>
           <br/>
-          <calcite-label layout="inline">
-            <calcite-checkbox id="checkboxForecasts" value="forecasts" checked></calcite-checkbox>
-            Show Segments
-          </calcite-label>
-          <calcite-label layout="inline">
-            <calcite-checkbox id="checkboxLabels" value="labels" checked></calcite-checkbox>
-            Show Labels
-          </calcite-label>
-          <h3>Show Projects</h3>
-          <calcite-label layout="inline" class="custom-checkbox-label">
-            <calcite-checkbox id="checkboxRoadwayProjects" value="roadway-projects" checked></calcite-checkbox>
-            Roadway
-          </calcite-label>
-          <calcite-label layout="inline" class="custom-checkbox-label">
-            <calcite-checkbox id="checkboxTransitProjects" value="transit-projects"></calcite-checkbox>
-            Transit
-          </calcite-label>
-
+          <h3>Show Segments/Projects</h3>
+          <table>
+            <tr>
+              <td>
+                <calcite-label layout="inline">
+                  <calcite-checkbox id="checkboxForecasts" value="forecasts" checked></calcite-checkbox>
+                  Segments
+                </calcite-label>
+              </td>
+              <td>
+                <calcite-label layout="inline">
+                  <calcite-checkbox id="checkboxLabels" value="labels" checked></calcite-checkbox>
+                  Labels
+                </calcite-label>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <calcite-label layout="inline" class="custom-checkbox-label">
+                  <calcite-checkbox id="checkboxRoadwayProjects" value="roadway-projects" checked></calcite-checkbox>
+                  Roadway
+                </calcite-label>
+              </td>
+              <td>
+                <calcite-label layout="inline" class="custom-checkbox-label">
+                  <calcite-checkbox id="checkboxTransitProjects" value="transit-projects"></calcite-checkbox>
+                  Transit
+                </calcite-label>
+              </td>
+            </tr>
+            <tr>
+              <td colspan="2">
+                <calcite-label layout="inline" class="custom-checkbox-label">
+                  <calcite-checkbox id="checkboxProjectDetails" value="roadway-projects"></calcite-checkbox>
+                  Detailed Project Info
+                </calcite-label>
+              </td>
+            </tr>
+          </table>
           <h3>Show Flags</h3>
           <div id="flagChecks"></div>
           <br/>
