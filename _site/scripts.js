@@ -1663,8 +1663,18 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
         // Create a map of adjustments for faster lookup
         const adjustmentMap = new Map(adjustments.map((adj) => [adj.year, adj.adj]));
 
-        // Clone chartDataModForecasts to chartDataForecasts
+        // Your existing code
         const chartDataForecasts = chartDataModForecasts.map((dataPoint) => ({ ...dataPoint }));
+
+        // Years to be added
+        const yearsToAdd = [2023, 2028, 2032, 2042, 2050];
+
+        // Add missing years with dataPoint.y = 0
+        yearsToAdd.forEach(yearToAdd => {
+          if (!chartDataForecasts.some(dataPoint => dataPoint.x === yearToAdd)) {
+            chartDataForecasts.push({ x: yearToAdd, y: 0 });
+          }
+        });
 
         // Apply adjustments to chartDataForecasts if the year is in adjustments
         chartDataForecasts.forEach((dataPoint) => {
@@ -1677,7 +1687,9 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
             dataPoint.y += adj;
           } else {
             // Year not found in adjustments
-            // Handle the case when the year is not in the adjustments array
+            // Assuming 'adj' is a known value or should be set to a default like 0
+            const adj = 0; // Set to an appropriate default if needed
+            dataPoint.y = adj;
           }
         });
                 
