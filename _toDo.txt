@@ -1,10 +1,8 @@
 BUGS
-Click on map when making edits...or go to different segment...ask to save
 
 ADDITIONAL FEATURES
 Chart legend - custom table with main series more prominently features
 Flag countdowns!
-Add SE data: Development intensity (TAZ-->TOTHH+(1.8 TOTEMP))
 Auto apply changes (on lose focus)
 Save last reviewed segment and edit key?
 Add link to SE Map
@@ -13,6 +11,8 @@ Should we forecast no-build and needs-based?
 Commas in years on hover in chart
 Boilerplate Notes?!
 Change map year as manual edits focus changes
+Click on map when making edits...or go to different segment...ask to save
+
 
 
 DAVIS SEGMENTS
@@ -82,6 +82,7 @@ DONE!--preserve zoom level
 DONE!--Add historic estimate adjustment field - Observed data adjustment
 DONE!--Set empty adjustment to 0
 DONE!--Legend on right - collapse? add hide button
+DONE!--Got unified plan projects--NO!--Get projects from RTP map, use the same symbology (talk to Bert or Sarah)
+DONE!--Add SE data... but not Development intensity (TAZ-->TOTHH+(1.8 TOTEMP))
 
-NO!--Get projects from RTP map, use the same symbology (talk to Bert or Sarah)
 NO!--Add model network with SEGIDs as layer??
