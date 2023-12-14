@@ -1,6 +1,9 @@
 BUGS
 
 ADDITIONAL FEATURES
+
+AUTOSAVE FOR COMMENTS!!!!!
+
 Chart legend - custom table with main series more prominently features
 Flag countdowns!
 Auto apply changes (on lose focus)
@@ -12,8 +15,6 @@ Commas in years on hover in chart
 Boilerplate Notes?!
 Change map year as manual edits focus changes
 Click on map when making edits...or go to different segment...ask to save
-
-
 
 DAVIS SEGMENTS
 How do we adjust historic data without data?
