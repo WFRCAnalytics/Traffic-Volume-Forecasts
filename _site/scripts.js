@@ -20,6 +20,7 @@ let editKeys  = [["Cache" ,"%5fRvKPfUkUb7Yat"],
                  ["WFRC"  ,"&%$ZqAJy^549^|Em"],
                  ["WFRC"  ,"6R$xH#e^9i#8*fwR"],
                  ["WFRC"  ,"3FHDmW-$w2D4UlJO"],
+                 ["WFRC"  ,"&WCbmF7l1$RQdE*t"],
                  ["UDOT"  ,"m4uMhLPEX_!g$Psq"],
                  ["UDOT"  ,"1O#Sq#xt=RtXiQ%X"]];
 let tableLog;
