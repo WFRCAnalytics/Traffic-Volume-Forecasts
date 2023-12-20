@@ -2,3 +2,5 @@ intermediate/*
 *.DS_Store
 *.lock
 agol_unpw.py
+backup/Forecasts_backup.gdb/*
+results/Forecasts.gdb/*
