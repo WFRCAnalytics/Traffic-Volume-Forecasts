@@ -1,0 +1,46 @@
+@import 'vars'
+@import 'LayerSelectorItem'
+
+.layer-selector
+    position absolute
+    z-index 1
+    margin 20px
+    box-shadow 0 1px 5px rgba(0,0,0,0.4)
+    background #fff
+    border-radius 5px
+    pointer-events auto
+    max-width $max-width
+    &-width
+        width 8em
+    &-toggle
+        background-image: url('layers.png')
+        background-image linear-gradient(transparent, transparent), url(layers.min.svg)
+        width $size
+        height $size
+        background-position 50% 50%
+        background-repeat no-repeat
+        display block
+        position relative
+    &-layers
+        min-height $size
+        min-width $size
+        padding 10px 5px
+        white-space nowrap
+    &-separator
+        display block
+        height 1px
+        border 0
+        border-top 1px solid #eee
+        padding 0
+        margin-top 0.5em
+        margin-bottom 0.5em
+    &-top
+        top 0
+    &-right
+        right 0
+    &-bottom
+        bottom 0
+    &-left
+        left 0
+    &-hidden
+        display none

@@ -1,0 +1,24 @@
+{
+  "name": "URLParams",
+  "label": "URL Params",
+  "2D": true,
+  "3D": false,
+  "platform": "HTML",
+  "version": "1.6.1",
+  "wabVersion": "2.9",
+  "author": "Scott Davis <stdavis@utah.gov>",
+  "description": "A widget that allows the application to be configured via parameters passed in the URL.",
+  "copyright": "",
+  "license": "MIT",
+  "properties": {
+    "inPanel": false,
+    "hasLocale": false,
+    "hasStyle": false,
+    "hasUIFile": false,
+    "hasSettingPage": false,
+    "hasSettingUIFile": false,
+    "hasSettingLocale": false,
+    "hasSettingStyle": false,
+    "supportMultiInstance": false
+  }
+}

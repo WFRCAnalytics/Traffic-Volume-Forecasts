@@ -1,0 +1,27 @@
+{
+  "quadWord": "chance-source-liquid-nelson",
+  "baseLayers": [
+    "Lite",
+    "Terrain",
+    "Imagery",
+    {
+      "id": "Imagery_BW",
+      "Factory": "WebTiledLayer",
+      "url": "https://discover.agrc.utah.gov/login/path/chance-source-liquid-nelson/tiles/utah/${level}/${col}/${row}",
+      "opacity": 0.5,
+      "title": "Imagery (gray)"
+    }
+  ],
+  "overlays": [
+    "Overlay",
+    {
+      "id": "Land Ownership",
+      "Factory": "FeatureLayer",
+      "url": "https://gis.trustlands.utah.gov/server/rest/services/Ownership/UT_SITLA_Ownership_LandOwnership_WM/FeatureServer/0",
+      "opacity": 0.5
+    },
+    "Address Points"
+  ],
+  "top": true,
+  "right": false
+}

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   width="26"
+   height="26"
+   viewBox="0 0 26 26"
+   id="layer-selector-svg"
+   version="1.1">
+  <g transform="translate(0,-1026)">
+    <rect
+       style="fill:none;
+       stroke:#555;
+       stroke-width:3;
+       stroke-linecap:butt;
+       stroke-linejoin:miter;
+       stroke-miterlimit:9;
+       stroke-dasharray:none;
+       stroke-opacity:1"
+       width="10"
+       height="10"
+       x="1715"
+       y="1701"
+       transform="matrix(0.95341822,0.30165162,-0.95341822,0.30165162,0,0)" />
+    <path
+       transform="matrix(0.95341822,0.30165162,-0.95341822,0.30165162,0,0)"
+       style="fill:none;
+       stroke:#555;
+       stroke-width:3;
+       stroke-linejoin:miter;
+       stroke-miterlimit:9"
+       d="m 1734,1709 0,11.2 -11.2,0" />
+   <path
+      transform="matrix(0.95341822,0.30165162,-0.95341822,0.30165162,0,0)"
+      style="fill:none;
+      stroke:#555;
+      stroke-width:3;
+      stroke-linejoin:miter;
+      stroke-miterlimit:9"
+      d="m 1744,1719 0,11.2 -11.2,0" />
+  </g>
+</svg>

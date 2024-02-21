@@ -1,0 +1,122 @@
+[
+  {
+    "value": -1,
+    "label": "select"
+  },
+  {
+    "value": 1,
+    "label": "Beaver"
+  },
+  {
+    "value": 3,
+    "label": "Box Elder"
+  },
+  {
+    "value": 5,
+    "label": "Cache"
+  },
+  {
+    "value": 7,
+    "label": "Carbon"
+  },
+  {
+    "value": 9,
+    "label": "Daggett"
+  },
+  {
+    "value": 11,
+    "label": "Davis"
+  },
+  {
+    "value": 13,
+    "label": "Duchesne"
+  },
+  {
+    "value": 15,
+    "label": "Emery"
+  },
+  {
+    "value": 17,
+    "label": "Garfield"
+  },
+  {
+    "value": 19,
+    "label": "Grand"
+  },
+  {
+    "value": 21,
+    "label": "Iron"
+  },
+  {
+    "value": 23,
+    "label": "Juab"
+  },
+  {
+    "value": 25,
+    "label": "Kane"
+  },
+  {
+    "value": 27,
+    "label": "Millard"
+  },
+  {
+    "value": 29,
+    "label": "Morgan"
+  },
+  {
+    "value": 31,
+    "label": "Piute"
+  },
+  {
+    "value": 33,
+    "label": "Rich"
+  },
+  {
+    "value": 35,
+    "label": "Salt Lake"
+  },
+  {
+    "value": 37,
+    "label": "San Juan"
+  },
+  {
+    "value": 39,
+    "label": "Sanpete"
+  },
+  {
+    "value": 41,
+    "label": "Sevier"
+  },
+  {
+    "value": 43,
+    "label": "Summit"
+  },
+  {
+    "value": 45,
+    "label": "Tooele"
+  },
+  {
+    "value": 47,
+    "label": "Uintah"
+  },
+  {
+    "value": 49,
+    "label": "Utah"
+  },
+  {
+    "value": 51,
+    "label": "Wasatch"
+  },
+  {
+    "value": 53,
+    "label": "Washington"
+  },
+  {
+    "value": 55,
+    "label": "Wayne"
+  },
+  {
+    "value": 57,
+    "label": "Weber"
+  }
+]

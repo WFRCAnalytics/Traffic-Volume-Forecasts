@@ -1,0 +1,33 @@
+@import 'vars'
+
+.layer-selector-item
+    margin 0 8px
+    &s
+        max-width $max-width - 50
+        overflow hidden
+        text-overflow ellipsis
+        display inline-block
+    &-input
+        box-sizing border-box
+        padding 0
+        margin 4px 0 0
+        outline thin dotted
+        outline 5px auto -webkit-focus-ring-color
+        outline-offset -2px
+        position relative
+        display block
+    &.radio
+    &.checkbox
+        position relative
+        margin-top 0px
+        margin-bottom 0px
+        input[type=checkbox]
+        input[type=radio]
+            position absolute
+            margin-left -20px
+        label
+            min-height 20px
+            padding-left 20px
+            margin-bottom 0
+            font-weight 400
+            cursor pointer

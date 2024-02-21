@@ -1,0 +1,1497 @@
+[
+  {
+    "value": "Beaver",
+    "label": "Beaver",
+    "co_fips": 1
+  },
+  {
+    "value": "Beaver County Other",
+    "label": "Beaver County Other",
+    "co_fips": 1
+  },
+  {
+    "value": "Milford",
+    "label": "Milford",
+    "co_fips": 1
+  },
+  {
+    "value": "Minersville",
+    "label": "Minersville",
+    "co_fips": 1
+  },
+  {
+    "value": "Bear River City",
+    "label": "Bear River City",
+    "co_fips": 3
+  },
+  {
+    "value": "Box Elder County Other",
+    "label": "Box Elder County Other",
+    "co_fips": 3
+  },
+  {
+    "value": "Box Elder County-North",
+    "label": "Box Elder County-North",
+    "co_fips": 3
+  },
+  {
+    "value": "Box Elder County-South",
+    "label": "Box Elder County-South",
+    "co_fips": 3
+  },
+  {
+    "value": "Brigham City",
+    "label": "Brigham City",
+    "co_fips": 3
+  },
+  {
+    "value": "Corinne",
+    "label": "Corinne",
+    "co_fips": 3
+  },
+  {
+    "value": "Deweyville",
+    "label": "Deweyville",
+    "co_fips": 3
+  },
+  {
+    "value": "Elwood",
+    "label": "Elwood",
+    "co_fips": 3
+  },
+  {
+    "value": "Fielding",
+    "label": "Fielding",
+    "co_fips": 3
+  },
+  {
+    "value": "Garland",
+    "label": "Garland",
+    "co_fips": 3
+  },
+  {
+    "value": "Honeyville",
+    "label": "Honeyville",
+    "co_fips": 3
+  },
+  {
+    "value": "Howell",
+    "label": "Howell",
+    "co_fips": 3
+  },
+  {
+    "value": "Mantua",
+    "label": "Mantua",
+    "co_fips": 3
+  },
+  {
+    "value": "Perry",
+    "label": "Perry",
+    "co_fips": 3
+  },
+  {
+    "value": "Plymouth",
+    "label": "Plymouth",
+    "co_fips": 3
+  },
+  {
+    "value": "Portage",
+    "label": "Portage",
+    "co_fips": 3
+  },
+  {
+    "value": "Snowville",
+    "label": "Snowville",
+    "co_fips": 3
+  },
+  {
+    "value": "Tremonton",
+    "label": "Tremonton",
+    "co_fips": 3
+  },
+  {
+    "value": "Willard",
+    "label": "Willard",
+    "co_fips": 3
+  },
+  {
+    "value": "Amalga",
+    "label": "Amalga",
+    "co_fips": 5
+  },
+  {
+    "value": "Cache County Other",
+    "label": "Cache County Other",
+    "co_fips": 5
+  },
+  {
+    "value": "Clarkston",
+    "label": "Clarkston",
+    "co_fips": 5
+  },
+  {
+    "value": "Cornish",
+    "label": "Cornish",
+    "co_fips": 5
+  },
+  {
+    "value": "Hyde Park",
+    "label": "Hyde Park",
+    "co_fips": 5
+  },
+  {
+    "value": "Hyrum",
+    "label": "Hyrum",
+    "co_fips": 5
+  },
+  {
+    "value": "Lewiston",
+    "label": "Lewiston",
+    "co_fips": 5
+  },
+  {
+    "value": "Logan",
+    "label": "Logan",
+    "co_fips": 5
+  },
+  {
+    "value": "Mendon",
+    "label": "Mendon",
+    "co_fips": 5
+  },
+  {
+    "value": "Millville",
+    "label": "Millville",
+    "co_fips": 5
+  },
+  {
+    "value": "Newton",
+    "label": "Newton",
+    "co_fips": 5
+  },
+  {
+    "value": "Nibley",
+    "label": "Nibley",
+    "co_fips": 5
+  },
+  {
+    "value": "North Logan",
+    "label": "North Logan",
+    "co_fips": 5
+  },
+  {
+    "value": "Paradise",
+    "label": "Paradise",
+    "co_fips": 5
+  },
+  {
+    "value": "Providence",
+    "label": "Providence",
+    "co_fips": 5
+  },
+  {
+    "value": "Richmond",
+    "label": "Richmond",
+    "co_fips": 5
+  },
+  {
+    "value": "River Heights",
+    "label": "River Heights",
+    "co_fips": 5
+  },
+  {
+    "value": "Smithfield",
+    "label": "Smithfield",
+    "co_fips": 5
+  },
+  {
+    "value": "Trenton",
+    "label": "Trenton",
+    "co_fips": 5
+  },
+  {
+    "value": "Wellsville",
+    "label": "Wellsville",
+    "co_fips": 5
+  },
+  {
+    "value": "Carbon County Other",
+    "label": "Carbon County Other",
+    "co_fips": 7
+  },
+  {
+    "value": "East Carbon",
+    "label": "East Carbon",
+    "co_fips": 7
+  },
+  {
+    "value": "Helper",
+    "label": "Helper",
+    "co_fips": 7
+  },
+  {
+    "value": "Price",
+    "label": "Price",
+    "co_fips": 7
+  },
+  {
+    "value": "Scofield",
+    "label": "Scofield",
+    "co_fips": 7
+  },
+  {
+    "value": "Wellington",
+    "label": "Wellington",
+    "co_fips": 7
+  },
+  {
+    "value": "Daggett County Other",
+    "label": "Daggett County Other",
+    "co_fips": 9
+  },
+  {
+    "value": "Manilla",
+    "label": "Manilla",
+    "co_fips": 9
+  },
+  {
+    "value": "Bountiful",
+    "label": "Bountiful",
+    "co_fips": 11
+  },
+  {
+    "value": "Centerville",
+    "label": "Centerville",
+    "co_fips": 11
+  },
+  {
+    "value": "Clearfield",
+    "label": "Clearfield",
+    "co_fips": 11
+  },
+  {
+    "value": "Clinton",
+    "label": "Clinton",
+    "co_fips": 11
+  },
+  {
+    "value": "Davis County Other",
+    "label": "Davis County Other",
+    "co_fips": 11
+  },
+  {
+    "value": "Davis County-East",
+    "label": "Davis County-East",
+    "co_fips": 11
+  },
+  {
+    "value": "Davis County-West",
+    "label": "Davis County-West",
+    "co_fips": 11
+  },
+  {
+    "value": "Farmington",
+    "label": "Farmington",
+    "co_fips": 11
+  },
+  {
+    "value": "Fruit Heights",
+    "label": "Fruit Heights",
+    "co_fips": 11
+  },
+  {
+    "value": "Hafb",
+    "label": "Hafb",
+    "co_fips": 11
+  },
+  {
+    "value": "Kaysville",
+    "label": "Kaysville",
+    "co_fips": 11
+  },
+  {
+    "value": "Layton",
+    "label": "Layton",
+    "co_fips": 11
+  },
+  {
+    "value": "North Salt Lake",
+    "label": "North Salt Lake",
+    "co_fips": 11
+  },
+  {
+    "value": "South Weber",
+    "label": "South Weber",
+    "co_fips": 11
+  },
+  {
+    "value": "Sunset",
+    "label": "Sunset",
+    "co_fips": 11
+  },
+  {
+    "value": "Syracuse",
+    "label": "Syracuse",
+    "co_fips": 11
+  },
+  {
+    "value": "West Bountiful",
+    "label": "West Bountiful",
+    "co_fips": 11
+  },
+  {
+    "value": "West Point",
+    "label": "West Point",
+    "co_fips": 11
+  },
+  {
+    "value": "Woods Cross",
+    "label": "Woods Cross",
+    "co_fips": 11
+  },
+  {
+    "value": "Altamont",
+    "label": "Altamont",
+    "co_fips": 13
+  },
+  {
+    "value": "Duchesne",
+    "label": "Duchesne",
+    "co_fips": 13
+  },
+  {
+    "value": "Duchesne County Other",
+    "label": "Duchesne County Other",
+    "co_fips": 13
+  },
+  {
+    "value": "Myton",
+    "label": "Myton",
+    "co_fips": 13
+  },
+  {
+    "value": "Roosevelt",
+    "label": "Roosevelt",
+    "co_fips": 13
+  },
+  {
+    "value": "Castle Dale",
+    "label": "Castle Dale",
+    "co_fips": 15
+  },
+  {
+    "value": "Clawson",
+    "label": "Clawson",
+    "co_fips": 15
+  },
+  {
+    "value": "Cleveland",
+    "label": "Cleveland",
+    "co_fips": 15
+  },
+  {
+    "value": "Elmo",
+    "label": "Elmo",
+    "co_fips": 15
+  },
+  {
+    "value": "Emery",
+    "label": "Emery",
+    "co_fips": 15
+  },
+  {
+    "value": "Emery County Other",
+    "label": "Emery County Other",
+    "co_fips": 15
+  },
+  {
+    "value": "Ferron",
+    "label": "Ferron",
+    "co_fips": 15
+  },
+  {
+    "value": "Green River",
+    "label": "Green River",
+    "co_fips": 15
+  },
+  {
+    "value": "Huntington",
+    "label": "Huntington",
+    "co_fips": 15
+  },
+  {
+    "value": "Orangeville",
+    "label": "Orangeville",
+    "co_fips": 15
+  },
+  {
+    "value": "Antimony",
+    "label": "Antimony",
+    "co_fips": 17
+  },
+  {
+    "value": "Boulder",
+    "label": "Boulder",
+    "co_fips": 17
+  },
+  {
+    "value": "Bryce Canyon",
+    "label": "Bryce Canyon",
+    "co_fips": 17
+  },
+  {
+    "value": "Cannonville",
+    "label": "Cannonville",
+    "co_fips": 17
+  },
+  {
+    "value": "Escalante",
+    "label": "Escalante",
+    "co_fips": 17
+  },
+  {
+    "value": "Garfield County Other",
+    "label": "Garfield County Other",
+    "co_fips": 17
+  },
+  {
+    "value": "Hatch",
+    "label": "Hatch",
+    "co_fips": 17
+  },
+  {
+    "value": "Henrieville",
+    "label": "Henrieville",
+    "co_fips": 17
+  },
+  {
+    "value": "Panguitch",
+    "label": "Panguitch",
+    "co_fips": 17
+  },
+  {
+    "value": "Tropic",
+    "label": "Tropic",
+    "co_fips": 17
+  },
+  {
+    "value": "Castle Valley",
+    "label": "Castle Valley",
+    "co_fips": 19
+  },
+  {
+    "value": "Grand County Other",
+    "label": "Grand County Other",
+    "co_fips": 19
+  },
+  {
+    "value": "Moab",
+    "label": "Moab",
+    "co_fips": 19
+  },
+  {
+    "value": "Brian Head",
+    "label": "Brian Head",
+    "co_fips": 21
+  },
+  {
+    "value": "Cedar City",
+    "label": "Cedar City",
+    "co_fips": 21
+  },
+  {
+    "value": "Enoch",
+    "label": "Enoch",
+    "co_fips": 21
+  },
+  {
+    "value": "Iron County Other",
+    "label": "Iron County Other",
+    "co_fips": 21
+  },
+  {
+    "value": "Kanarraville",
+    "label": "Kanarraville",
+    "co_fips": 21
+  },
+  {
+    "value": "Paragonah",
+    "label": "Paragonah",
+    "co_fips": 21
+  },
+  {
+    "value": "Parowan",
+    "label": "Parowan",
+    "co_fips": 21
+  },
+  {
+    "value": "Eureka",
+    "label": "Eureka",
+    "co_fips": 23
+  },
+  {
+    "value": "Juab County Other",
+    "label": "Juab County Other",
+    "co_fips": 23
+  },
+  {
+    "value": "Levan",
+    "label": "Levan",
+    "co_fips": 23
+  },
+  {
+    "value": "Mona",
+    "label": "Mona",
+    "co_fips": 23
+  },
+  {
+    "value": "Nephi",
+    "label": "Nephi",
+    "co_fips": 23
+  },
+  {
+    "value": "Rocky Ridge",
+    "label": "Rocky Ridge",
+    "co_fips": 23
+  },
+  {
+    "value": "Alton",
+    "label": "Alton",
+    "co_fips": 25
+  },
+  {
+    "value": "Big Water",
+    "label": "Big Water",
+    "co_fips": 25
+  },
+  {
+    "value": "Glendale",
+    "label": "Glendale",
+    "co_fips": 25
+  },
+  {
+    "value": "Kanab",
+    "label": "Kanab",
+    "co_fips": 25
+  },
+  {
+    "value": "Kane County Other",
+    "label": "Kane County Other",
+    "co_fips": 25
+  },
+  {
+    "value": "Orderville",
+    "label": "Orderville",
+    "co_fips": 25
+  },
+  {
+    "value": "Delta",
+    "label": "Delta",
+    "co_fips": 27
+  },
+  {
+    "value": "Fillmore",
+    "label": "Fillmore",
+    "co_fips": 27
+  },
+  {
+    "value": "Hinckley",
+    "label": "Hinckley",
+    "co_fips": 27
+  },
+  {
+    "value": "Holden",
+    "label": "Holden",
+    "co_fips": 27
+  },
+  {
+    "value": "Kanosh",
+    "label": "Kanosh",
+    "co_fips": 27
+  },
+  {
+    "value": "Leamington",
+    "label": "Leamington",
+    "co_fips": 27
+  },
+  {
+    "value": "Lynndyl",
+    "label": "Lynndyl",
+    "co_fips": 27
+  },
+  {
+    "value": "Meadow",
+    "label": "Meadow",
+    "co_fips": 27
+  },
+  {
+    "value": "Millard County Other",
+    "label": "Millard County Other",
+    "co_fips": 27
+  },
+  {
+    "value": "Oak City",
+    "label": "Oak City",
+    "co_fips": 27
+  },
+  {
+    "value": "Scipio",
+    "label": "Scipio",
+    "co_fips": 27
+  },
+  {
+    "value": "Morgan",
+    "label": "Morgan",
+    "co_fips": 29
+  },
+  {
+    "value": "Morgan County Other",
+    "label": "Morgan County Other",
+    "co_fips": 29
+  },
+  {
+    "value": "Circleville",
+    "label": "Circleville",
+    "co_fips": 31
+  },
+  {
+    "value": "Junction",
+    "label": "Junction",
+    "co_fips": 31
+  },
+  {
+    "value": "Kingston",
+    "label": "Kingston",
+    "co_fips": 31
+  },
+  {
+    "value": "Marysvale",
+    "label": "Marysvale",
+    "co_fips": 31
+  },
+  {
+    "value": "Piute County Other",
+    "label": "Piute County Other",
+    "co_fips": 31
+  },
+  {
+    "value": "Garden City",
+    "label": "Garden City",
+    "co_fips": 33
+  },
+  {
+    "value": "Laketown",
+    "label": "Laketown",
+    "co_fips": 33
+  },
+  {
+    "value": "Randolph",
+    "label": "Randolph",
+    "co_fips": 33
+  },
+  {
+    "value": "Rich County Other",
+    "label": "Rich County Other",
+    "co_fips": 33
+  },
+  {
+    "value": "Woodruff",
+    "label": "Woodruff",
+    "co_fips": 33
+  },
+  {
+    "value": "Alta",
+    "label": "Alta",
+    "co_fips": 35
+  },
+  {
+    "value": "Bluffdale",
+    "label": "Bluffdale",
+    "co_fips": 35
+  },
+  {
+    "value": "Copperton",
+    "label": "Copperton",
+    "co_fips": 35
+  },
+  {
+    "value": "Cottonwood Heights",
+    "label": "Cottonwood Heights",
+    "co_fips": 35
+  },
+  {
+    "value": "Draper(Slco)",
+    "label": "Draper(Slco)",
+    "co_fips": 35
+  },
+  {
+    "value": "Emigration Canyon",
+    "label": "Emigration Canyon",
+    "co_fips": 35
+  },
+  {
+    "value": "Herriman",
+    "label": "Herriman",
+    "co_fips": 35
+  },
+  {
+    "value": "Holladay",
+    "label": "Holladay",
+    "co_fips": 35
+  },
+  {
+    "value": "Kearns",
+    "label": "Kearns",
+    "co_fips": 35
+  },
+  {
+    "value": "Magna",
+    "label": "Magna",
+    "co_fips": 35
+  },
+  {
+    "value": "Midvale",
+    "label": "Midvale",
+    "co_fips": 35
+  },
+  {
+    "value": "Millcreek",
+    "label": "Millcreek",
+    "co_fips": 35
+  },
+  {
+    "value": "Murray",
+    "label": "Murray",
+    "co_fips": 35
+  },
+  {
+    "value": "Riverton",
+    "label": "Riverton",
+    "co_fips": 35
+  },
+  {
+    "value": "Salt Lake City",
+    "label": "Salt Lake City",
+    "co_fips": 35
+  },
+  {
+    "value": "Salt Lake County Other",
+    "label": "Salt Lake County Other",
+    "co_fips": 35
+  },
+  {
+    "value": "Salt Lake County-Sandy",
+    "label": "Salt Lake County-Sandy",
+    "co_fips": 35
+  },
+  {
+    "value": "Salt Lake County-West",
+    "label": "Salt Lake County-West",
+    "co_fips": 35
+  },
+  {
+    "value": "Sandy",
+    "label": "Sandy",
+    "co_fips": 35
+  },
+  {
+    "value": "South Jordan",
+    "label": "South Jordan",
+    "co_fips": 35
+  },
+  {
+    "value": "South Salt Lake",
+    "label": "South Salt Lake",
+    "co_fips": 35
+  },
+  {
+    "value": "Taylorsville",
+    "label": "Taylorsville",
+    "co_fips": 35
+  },
+  {
+    "value": "West Jordan",
+    "label": "West Jordan",
+    "co_fips": 35
+  },
+  {
+    "value": "West Valley City",
+    "label": "West Valley City",
+    "co_fips": 35
+  },
+  {
+    "value": "White City",
+    "label": "White City",
+    "co_fips": 35
+  },
+  {
+    "value": "Blanding",
+    "label": "Blanding",
+    "co_fips": 37
+  },
+  {
+    "value": "Monticello",
+    "label": "Monticello",
+    "co_fips": 37
+  },
+  {
+    "value": "San Juan County Other",
+    "label": "San Juan County Other",
+    "co_fips": 37
+  },
+  {
+    "value": "Centerfield",
+    "label": "Centerfield",
+    "co_fips": 39
+  },
+  {
+    "value": "Ephraim",
+    "label": "Ephraim",
+    "co_fips": 39
+  },
+  {
+    "value": "Fairview",
+    "label": "Fairview",
+    "co_fips": 39
+  },
+  {
+    "value": "Fayette",
+    "label": "Fayette",
+    "co_fips": 39
+  },
+  {
+    "value": "Fountain Green",
+    "label": "Fountain Green",
+    "co_fips": 39
+  },
+  {
+    "value": "Gunnison",
+    "label": "Gunnison",
+    "co_fips": 39
+  },
+  {
+    "value": "Manti",
+    "label": "Manti",
+    "co_fips": 39
+  },
+  {
+    "value": "Mayfield",
+    "label": "Mayfield",
+    "co_fips": 39
+  },
+  {
+    "value": "Moroni",
+    "label": "Moroni",
+    "co_fips": 39
+  },
+  {
+    "value": "Mount Pleasant",
+    "label": "Mount Pleasant",
+    "co_fips": 39
+  },
+  {
+    "value": "Sanpete County Other",
+    "label": "Sanpete County Other",
+    "co_fips": 39
+  },
+  {
+    "value": "Spring City",
+    "label": "Spring City",
+    "co_fips": 39
+  },
+  {
+    "value": "Sterling",
+    "label": "Sterling",
+    "co_fips": 39
+  },
+  {
+    "value": "Wales",
+    "label": "Wales",
+    "co_fips": 39
+  },
+  {
+    "value": "Annabella",
+    "label": "Annabella",
+    "co_fips": 41
+  },
+  {
+    "value": "Aurora",
+    "label": "Aurora",
+    "co_fips": 41
+  },
+  {
+    "value": "Central Valley",
+    "label": "Central Valley",
+    "co_fips": 41
+  },
+  {
+    "value": "Elsinore",
+    "label": "Elsinore",
+    "co_fips": 41
+  },
+  {
+    "value": "Glenwood",
+    "label": "Glenwood",
+    "co_fips": 41
+  },
+  {
+    "value": "Joseph",
+    "label": "Joseph",
+    "co_fips": 41
+  },
+  {
+    "value": "Koosharem",
+    "label": "Koosharem",
+    "co_fips": 41
+  },
+  {
+    "value": "Monroe",
+    "label": "Monroe",
+    "co_fips": 41
+  },
+  {
+    "value": "Redmond",
+    "label": "Redmond",
+    "co_fips": 41
+  },
+  {
+    "value": "Richfield",
+    "label": "Richfield",
+    "co_fips": 41
+  },
+  {
+    "value": "Salina",
+    "label": "Salina",
+    "co_fips": 41
+  },
+  {
+    "value": "Sevier County Other",
+    "label": "Sevier County Other",
+    "co_fips": 41
+  },
+  {
+    "value": "Sigurd",
+    "label": "Sigurd",
+    "co_fips": 41
+  },
+  {
+    "value": "Coalville",
+    "label": "Coalville",
+    "co_fips": 43
+  },
+  {
+    "value": "Francis",
+    "label": "Francis",
+    "co_fips": 43
+  },
+  {
+    "value": "Henefer",
+    "label": "Henefer",
+    "co_fips": 43
+  },
+  {
+    "value": "Kamas",
+    "label": "Kamas",
+    "co_fips": 43
+  },
+  {
+    "value": "Oakley",
+    "label": "Oakley",
+    "co_fips": 43
+  },
+  {
+    "value": "Park City",
+    "label": "Park City",
+    "co_fips": 43
+  },
+  {
+    "value": "Summit County Other",
+    "label": "Summit County Other",
+    "co_fips": 43
+  },
+  {
+    "value": "Grantsville",
+    "label": "Grantsville",
+    "co_fips": 45
+  },
+  {
+    "value": "Ophir",
+    "label": "Ophir",
+    "co_fips": 45
+  },
+  {
+    "value": "Rush Valley",
+    "label": "Rush Valley",
+    "co_fips": 45
+  },
+  {
+    "value": "Stockton",
+    "label": "Stockton",
+    "co_fips": 45
+  },
+  {
+    "value": "Tooele City",
+    "label": "Tooele City",
+    "co_fips": 45
+  },
+  {
+    "value": "Tooele County Other",
+    "label": "Tooele County Other",
+    "co_fips": 45
+  },
+  {
+    "value": "Vernon",
+    "label": "Vernon",
+    "co_fips": 45
+  },
+  {
+    "value": "Wendover",
+    "label": "Wendover",
+    "co_fips": 45
+  },
+  {
+    "value": "Ballard",
+    "label": "Ballard",
+    "co_fips": 47
+  },
+  {
+    "value": "Naples",
+    "label": "Naples",
+    "co_fips": 47
+  },
+  {
+    "value": "Uintah County Other",
+    "label": "Uintah County Other",
+    "co_fips": 47
+  },
+  {
+    "value": "Vernal",
+    "label": "Vernal",
+    "co_fips": 47
+  },
+  {
+    "value": "Alpine",
+    "label": "Alpine",
+    "co_fips": 49
+  },
+  {
+    "value": "American Fork",
+    "label": "American Fork",
+    "co_fips": 49
+  },
+  {
+    "value": "Benjamin",
+    "label": "Benjamin",
+    "co_fips": 49
+  },
+  {
+    "value": "Cedar Fort",
+    "label": "Cedar Fort",
+    "co_fips": 49
+  },
+  {
+    "value": "Cedar Hills",
+    "label": "Cedar Hills",
+    "co_fips": 49
+  },
+  {
+    "value": "Draper(Utahco)",
+    "label": "Draper(Utahco)",
+    "co_fips": 49
+  },
+  {
+    "value": "Eagle Mountain",
+    "label": "Eagle Mountain",
+    "co_fips": 49
+  },
+  {
+    "value": "Elberta",
+    "label": "Elberta",
+    "co_fips": 49
+  },
+  {
+    "value": "Elk Ridge",
+    "label": "Elk Ridge",
+    "co_fips": 49
+  },
+  {
+    "value": "Fairfield",
+    "label": "Fairfield",
+    "co_fips": 49
+  },
+  {
+    "value": "Genola",
+    "label": "Genola",
+    "co_fips": 49
+  },
+  {
+    "value": "Goshen",
+    "label": "Goshen",
+    "co_fips": 49
+  },
+  {
+    "value": "Highland",
+    "label": "Highland",
+    "co_fips": 49
+  },
+  {
+    "value": "Lake Shore",
+    "label": "Lake Shore",
+    "co_fips": 49
+  },
+  {
+    "value": "Lehi",
+    "label": "Lehi",
+    "co_fips": 49
+  },
+  {
+    "value": "Lindon",
+    "label": "Lindon",
+    "co_fips": 49
+  },
+  {
+    "value": "Mapleton",
+    "label": "Mapleton",
+    "co_fips": 49
+  },
+  {
+    "value": "Mosida",
+    "label": "Mosida",
+    "co_fips": 49
+  },
+  {
+    "value": "Orem",
+    "label": "Orem",
+    "co_fips": 49
+  },
+  {
+    "value": "Palmyra",
+    "label": "Palmyra",
+    "co_fips": 49
+  },
+  {
+    "value": "Payson",
+    "label": "Payson",
+    "co_fips": 49
+  },
+  {
+    "value": "Pleasant Grove",
+    "label": "Pleasant Grove",
+    "co_fips": 49
+  },
+  {
+    "value": "Provo",
+    "label": "Provo",
+    "co_fips": 49
+  },
+  {
+    "value": "Salem",
+    "label": "Salem",
+    "co_fips": 49
+  },
+  {
+    "value": "Santaquin",
+    "label": "Santaquin",
+    "co_fips": 49
+  },
+  {
+    "value": "Saratoga Springs",
+    "label": "Saratoga Springs",
+    "co_fips": 49
+  },
+  {
+    "value": "Spanish Fork",
+    "label": "Spanish Fork",
+    "co_fips": 49
+  },
+  {
+    "value": "Springville",
+    "label": "Springville",
+    "co_fips": 49
+  },
+  {
+    "value": "Utah County",
+    "label": "Utah County",
+    "co_fips": 49
+  },
+  {
+    "value": "Utah County Other",
+    "label": "Utah County Other",
+    "co_fips": 49
+  },
+  {
+    "value": "Utah Lake",
+    "label": "Utah Lake",
+    "co_fips": 49
+  },
+  {
+    "value": "Vineyard",
+    "label": "Vineyard",
+    "co_fips": 49
+  },
+  {
+    "value": "West Mountain",
+    "label": "West Mountain",
+    "co_fips": 49
+  },
+  {
+    "value": "Woodland Hills",
+    "label": "Woodland Hills",
+    "co_fips": 49
+  },
+  {
+    "value": "Charleston",
+    "label": "Charleston",
+    "co_fips": 51
+  },
+  {
+    "value": "Daniel",
+    "label": "Daniel",
+    "co_fips": 51
+  },
+  {
+    "value": "Heber",
+    "label": "Heber",
+    "co_fips": 51
+  },
+  {
+    "value": "Heber City",
+    "label": "Heber City",
+    "co_fips": 51
+  },
+  {
+    "value": "Hideout",
+    "label": "Hideout",
+    "co_fips": 51
+  },
+  {
+    "value": "Independence",
+    "label": "Independence",
+    "co_fips": 51
+  },
+  {
+    "value": "Midway",
+    "label": "Midway",
+    "co_fips": 51
+  },
+  {
+    "value": "Park City",
+    "label": "Park City",
+    "co_fips": 51
+  },
+  {
+    "value": "Wallsburg",
+    "label": "Wallsburg",
+    "co_fips": 51
+  },
+  {
+    "value": "Wasatch County Other",
+    "label": "Wasatch County Other",
+    "co_fips": 51
+  },
+  {
+    "value": "Apple Valley",
+    "label": "Apple Valley",
+    "co_fips": 53
+  },
+  {
+    "value": "Enterprise",
+    "label": "Enterprise",
+    "co_fips": 53
+  },
+  {
+    "value": "Hildale",
+    "label": "Hildale",
+    "co_fips": 53
+  },
+  {
+    "value": "Hurricane",
+    "label": "Hurricane",
+    "co_fips": 53
+  },
+  {
+    "value": "Ivins",
+    "label": "Ivins",
+    "co_fips": 53
+  },
+  {
+    "value": "La Verkin",
+    "label": "La Verkin",
+    "co_fips": 53
+  },
+  {
+    "value": "Leeds",
+    "label": "Leeds",
+    "co_fips": 53
+  },
+  {
+    "value": "New Harmony",
+    "label": "New Harmony",
+    "co_fips": 53
+  },
+  {
+    "value": "Rockville",
+    "label": "Rockville",
+    "co_fips": 53
+  },
+  {
+    "value": "Santa Clara",
+    "label": "Santa Clara",
+    "co_fips": 53
+  },
+  {
+    "value": "Springdale",
+    "label": "Springdale",
+    "co_fips": 53
+  },
+  {
+    "value": "St. George",
+    "label": "St. George",
+    "co_fips": 53
+  },
+  {
+    "value": "Toquerville",
+    "label": "Toquerville",
+    "co_fips": 53
+  },
+  {
+    "value": "Virgin",
+    "label": "Virgin",
+    "co_fips": 53
+  },
+  {
+    "value": "Washington",
+    "label": "Washington",
+    "co_fips": 53
+  },
+  {
+    "value": "Washington Other",
+    "label": "Washington Other",
+    "co_fips": 53
+  },
+  {
+    "value": "Zion National Park",
+    "label": "Zion National Park",
+    "co_fips": 53
+  },
+  {
+    "value": "Bicknell",
+    "label": "Bicknell",
+    "co_fips": 55
+  },
+  {
+    "value": "Hanksville",
+    "label": "Hanksville",
+    "co_fips": 55
+  },
+  {
+    "value": "Loa",
+    "label": "Loa",
+    "co_fips": 55
+  },
+  {
+    "value": "Lyman",
+    "label": "Lyman",
+    "co_fips": 55
+  },
+  {
+    "value": "Torrey",
+    "label": "Torrey",
+    "co_fips": 55
+  },
+  {
+    "value": "Wayne County Other",
+    "label": "Wayne County Other",
+    "co_fips": 55
+  },
+  {
+    "value": "Farr West",
+    "label": "Farr West",
+    "co_fips": 57
+  },
+  {
+    "value": "Harrisville",
+    "label": "Harrisville",
+    "co_fips": 57
+  },
+  {
+    "value": "Hooper",
+    "label": "Hooper",
+    "co_fips": 57
+  },
+  {
+    "value": "Huntsville",
+    "label": "Huntsville",
+    "co_fips": 57
+  },
+  {
+    "value": "Marriott-Slaterville",
+    "label": "Marriott-Slaterville",
+    "co_fips": 57
+  },
+  {
+    "value": "North Ogden",
+    "label": "North Ogden",
+    "co_fips": 57
+  },
+  {
+    "value": "Ogden",
+    "label": "Ogden",
+    "co_fips": 57
+  },
+  {
+    "value": "Plain City",
+    "label": "Plain City",
+    "co_fips": 57
+  },
+  {
+    "value": "Pleasant View",
+    "label": "Pleasant View",
+    "co_fips": 57
+  },
+  {
+    "value": "Riverdale",
+    "label": "Riverdale",
+    "co_fips": 57
+  },
+  {
+    "value": "Roy",
+    "label": "Roy",
+    "co_fips": 57
+  },
+  {
+    "value": "South Ogden",
+    "label": "South Ogden",
+    "co_fips": 57
+  },
+  {
+    "value": "Uintah",
+    "label": "Uintah",
+    "co_fips": 57
+  },
+  {
+    "value": "Washington Terrace",
+    "label": "Washington Terrace",
+    "co_fips": 57
+  },
+  {
+    "value": "Weber County",
+    "label": "Weber County",
+    "co_fips": 57
+  },
+  {
+    "value": "Weber County Other",
+    "label": "Weber County Other",
+    "co_fips": 57
+  },
+  {
+    "value": "Weber County-East",
+    "label": "Weber County-East",
+    "co_fips": 57
+  },
+  {
+    "value": "West Haven",
+    "label": "West Haven",
+    "co_fips": 57
+  }
+]
