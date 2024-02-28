@@ -1,5 +1,5 @@
 {
-    "layerSegmentsUrl"      : "https://services1.arcgis.com/taguadKoI1XFwivx/arcgis/rest/services/Forecasts_gdb/FeatureServer/0",
+    "layerSegmentsUrl"      : "https://services1.arcgis.com/taguadKoI1XFwivx/arcgis/rest/services/ForecastsWFRCFinal_gdb/FeatureServer/0",
     "layerProjectsLinesUrl" : "https://services.arcgis.com/pA2nEVnB6tquxgOW/ArcGIS/rest/services/UP_2023_Service/FeatureServer/0",
     "layerProjectsPointsUrl": "https://services.arcgis.com/pA2nEVnB6tquxgOW/ArcGIS/rest/services/UP_2023_Service/FeatureServer/1",
     "tableLogUrl"           : "https://services1.arcgis.com/taguadKoI1XFwivx/arcgis/rest/services/forecasts_logfile/FeatureServer/0",

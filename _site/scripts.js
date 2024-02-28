@@ -71,7 +71,7 @@ let rendererSePop;
 let rendererSeTypemp;
 
 let curDisplayForecast = 'final-forecast';
-let defaultSource = 'AADTHistory.xlsx';
+let defaultSource = 'WFv901_Segments_20240226_GeoKeys_AADTs_Factors.shp';
 let myChart; // Keep track of the current chart
 let view;
 let adjustments;
