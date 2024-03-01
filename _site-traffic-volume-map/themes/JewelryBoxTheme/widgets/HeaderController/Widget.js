@@ -14,8 +14,8 @@
 // limitations under the License.
 ///////////////////////////////////////////////////////////////////////////
 
-var sViewAdvanced = "<p style=\"color:white\">View Advanced Version</p>";
-var sViewBasic = "<p style=\"color:white\">View Basic Version</p>";
+var sViewAdvanced = "";//"<p style=\"color:white\">View Advanced Version</p>";
+var sViewBasic = "";//"<p style=\"color:white\">View Basic Version</p>";
 
 
 define([
@@ -71,19 +71,19 @@ define([
       //Begin Added by BH 2020-05-28
       _advanced: function() {
         console.log('_advanced');
-        
-        if (dom.byId("advanced").innerHTML==sViewAdvanced) {
-          this.publishData({
-            message: "TurnOnAdvanced"
-          });
-          dom.byId("advanced").innerHTML = sViewBasic;
-        } else if(dom.byId("advanced").innerHTML==sViewBasic) {
-          this.publishData({
-            message: "TurnOnBasic"
-          });
-          dom.byId("advanced").innerHTML = sViewAdvanced;
-        }
-
+//        
+//        if (dom.byId("advanced").innerHTML==sViewAdvanced) {
+//          this.publishData({
+//            message: "TurnOnAdvanced"
+//          });
+//          dom.byId("advanced").innerHTML = sViewBasic;
+//        } else if(dom.byId("advanced").innerHTML==sViewBasic) {
+//          this.publishData({
+//            message: "TurnOnBasic"
+//          });
+//          dom.byId("advanced").innerHTML = sViewAdvanced;
+//        }
+//
       },
       //End Added by BH 2020-05-28
 

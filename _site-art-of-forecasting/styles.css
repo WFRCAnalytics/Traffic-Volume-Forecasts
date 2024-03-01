@@ -1,0 +1,192 @@
+.custom-checkbox-label {
+    font-size: 12px; /* adjust this value to your preference */
+    margin-bottom: 4pt; /* 4pt spacing */
+  }
+
+.h3-no-margin {
+    font-size: 1.20em; /* This size is typically close to the default size for h3 in many browsers. Adjust as needed. */
+    font-weight: bold;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+.grey-text {
+    color: darkgrey;
+}
+
+.light-blue-table {
+    background-color: lightblue;
+}
+
+.light-grey-table {
+    background-color: lightgrey;
+}
+
+.notes-container {
+    display: flex;
+    align-items: center;
+}
+.notes-container textarea {
+    margin-left: 5px;
+}
+
+.btn-dirty {
+    padding: 6px;
+    background-color: var(--calcite-ui-warning);
+    color: black;
+    border: none;
+}
+
+.btn-dirty:hover {
+    background-color: var(--calcite-ui-warning-hover);
+    cursor: pointer;
+}
+
+.btn-clean {
+    padding: 6px;
+    background-color: var(--calcite-ui-success);
+    color: white;
+    border: none;
+}
+
+.btn-clean:hover {
+    cursor: pointer;
+}
+
+.esri-popup .esri-popup__header-title {
+    color: white;
+    border: none;
+}
+
+label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: normal; /* Make the text not bold */
+}
+
+html,
+body {
+  padding: 0;
+  margin: 0;
+  height: 100%;
+  width: 100%;
+  overflow: hidden;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    font-family: Roboto;
+    font-weight: 600;
+}
+
+.tableText {
+    font-size: 14px;
+}
+
+.tableTextSmall {
+    font-size: 12px;
+}
+
+.tableFinal {
+    background-color: rgba(255, 166, 0, 0.493);
+}
+
+.tableModel {
+    color: white;
+    background-color: purple;
+}
+
+header {
+    background: #030840;
+    color: white;
+    padding: 0px;
+    margin-bottom: 0px;
+    text-align: left;
+}
+
+header h1 {
+    margin-block-start: .4em;
+    margin-block-end: .4em;
+    margin-inline-start: 10px;
+    margin-inline-end: 0px;
+}
+
+input[type="text"].manualAdj {
+    width: 60px; /* or set a fixed width like 100px */
+}
+
+.top-align-input {
+    text-align: left; /* Align the text to the left */
+    padding-top: 0; /* Remove padding from the top */
+    padding-bottom: 0; /* Remove padding from the bottom */
+    vertical-align: top; /* Align the text to the top */
+}
+
+.right-align-input {
+    text-align: right;
+}
+
+.container, #sidebar h1, #sidebar a {
+    margin-bottom: 10px; /* add space after divs in container */
+}
+
+.parent {
+    display: flex;
+    flex-direction: row;
+    height: 100vh;
+}
+
+#sidebar { /* #sidebar is id not class!! */
+    display: flex;
+    flex-direction: column;
+    height: calc(100vh - 80px);
+    background: #ddd;
+    width: 225px;
+    padding-left: 15px;
+    padding-right: 15px;
+    overflow: auto; /* or 'scroll' to always show the scroll bar */
+}
+
+#mainContent {
+    display: flex; /* Enables flexbox layout */
+    flex-direction: row; /* Places children in a row */
+    flex-grow: 1; /* Allows the container to take up available space */
+}
+
+#mainContentChart {
+    width: 700px; /* or any other value */
+    padding: 15px;
+    height: calc(100vh - 104px);
+    overflow: auto;
+}
+
+#mainContentMap {
+    display: flex; /* Enables flexbox layout */
+    flex-grow: 1; /* Allows the children to take up equal space */
+    /* Add additional styles as needed, such as padding or borders */
+}
+
+#mapView {
+    flex-grow: 1;
+    height: 100%;
+}
+/*
+#selectNextButton {
+    text-align: right;
+}
+
+#selectNextButton calcite-button {
+    padding-top: 5px;
+    padding-right: 15px;
+}
+*/
+.select-container {
+    display: flex;
+    align-items: center; /* Centers the items vertically */
+}
+  
+.select-container label {
+    margin-right: 15px; /* Adds some space between the label and the select */
+}
