@@ -1,6 +1,6 @@
 let defaultForecastArea = "WFRC";
 let legend;
-let inputIds = ['adj2019Value','adj2023Value','adj2028Value','adj2032Value','adj2042Value','adj2050Value','adjHistValue','notes','notes_furrev','notes_seg'];
+let inputIds = ['adj2019Value','adj2023Value','adj2028Value','adj2032Value','adj2042Value','adj2050Value','adjHistValue','notes','notes_furr','notes_seg'];
 let years = ["2019", "2023", "2028", "2032", "2042", "2050"];
 let prefixes = ["adj", "f", "mf", "m", "diff", "dyvol", "lanes", "ft", "at"];
 let initialValues = [0,0,0,0,0,0,""];
@@ -1401,7 +1401,7 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
           featureToUpdate.attributes.ADJ2050 = getRoundedAdjustment('2050') || 0;
           featureToUpdate.attributes.ADJHIST = parseInt(document.getElementById('adjHistValue').value);
           featureToUpdate.attributes.NOTES = document.getElementById('notes').value.trim();
-          featureToUpdate.attributes.NOTES_FURREV = document.getElementById('notes_furrev').value.trim();
+          featureToUpdate.attributes.NOTES_FURR = document.getElementById('notes_furr').value.trim();
           featureToUpdate.attributes.NOTES_SEG = document.getElementById('notes_seg').value.trim();
 
           dataFlags.forEach(flag => {
@@ -1479,7 +1479,7 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
       newFeature.attributes.ADJ2050      = document.getElementById('adj2050Value').value || 0;
       newFeature.attributes.ADJHIST      = document.getElementById('adjHistValue').value || 0;
       newFeature.attributes.NOTES        = document.getElementById('notes').value.trim();
-      newFeature.attributes.NOTES_FURREV = document.getElementById('notes_furrev').value.trim();
+      newFeature.attributes.NOTES_FURR   = document.getElementById('notes_furr').value.trim();
       newFeature.attributes.NOTES_SEG    = document.getElementById('notes_seg').value.trim();
       newFeature.attributes.TIMESTAMP = mountainTime;  // Directly assign mountainTime
 
@@ -1769,7 +1769,7 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
         document.getElementById("adj2050Value").value = feature.attributes.ADJ2050 || 0;
         document.getElementById("adjHistValue").value = feature.attributes.ADJHIST || 0;
         document.getElementById("notes"       ).value = feature.attributes.NOTES.trim();
-        document.getElementById("notes_furrev").value = feature.attributes.NOTES_FURREV.trim();
+        document.getElementById("notes_furr").value = feature.attributes.NOTES_FURR.trim();
         document.getElementById("notes_seg"   ).value = feature.attributes.NOTES_SEG.trim();
 
         // Define all data arrays in a localized dictionary
@@ -1855,9 +1855,9 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
         }
 
         // Special case for notes
-        const notesFurRevElement = document.getElementById("notes_furrev");
+        const notesFurRevElement = document.getElementById("notes_furr");
         if (notesFurRevElement) {
-          notesFurRevElement.value = feature.attributes.NOTES_FURREV.trim();
+          notesFurRevElement.value = feature.attributes.NOTES_FURR.trim();
         }
        
 
@@ -2011,7 +2011,7 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
 
       return new Promise(function(resolve, reject) {
         var query = layerSegments.createQuery();
-        query.where = "OBJECTID = " + OBJECTID;
+        query.where = "OBJECTID_1 = " + OBJECTID;
         query.outFields = ["SEGID"];
     
         layerSegments.queryFeatures(query).then(function(results) {
@@ -2029,7 +2029,7 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
         });
     
         if (result) {
-          var featureOBJECTID = result.graphic.attributes.OBJECTID;
+          var featureOBJECTID = result.graphic.attributes.OBJECTID_1;
     
           querySEGIDByOBJECTID(featureOBJECTID).then(function(SEGID) {
             if (isValueInCalciteSelect(SEGID, selectSegId)) {
