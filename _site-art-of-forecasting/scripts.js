@@ -250,16 +250,16 @@ require([
     var _expression = "";
     var _prevDisplayYear = "";
     var _phase = "";
-    var _phaseprev = "";
+    var _phaseprevValues = "";
 
     if (selectYear.value == "2050") {
       _prevDisplayYear = 2042;
       _phase = "3";
-      _phaseprev = "2";
+      _phaseprevValues = "'1','2'";
     } else if (selectYear.value == "2042") {
       _prevDisplayYear = 2032;
       _phase = "2";
-      _phaseprev = "1";
+      _phaseprevValues = "'1'";
     } else if (selectYear.value == "2032") {
       _prevDisplayYear = 2028;
       _phase = "1";
@@ -642,27 +642,27 @@ require([
       layerTransitProjectsPoints.visible = false;
     }
 
-    if (_phaseprev != "") {
+    if (_phaseprevValues != "") {
       layerRoadwayProjectsLinesPrevPhase.definitionExpression =
         filterRoadwayProjectsLinesFilterPrevPhase +
-        " AND Phase = '" +
-        _phaseprev +
-        "'";
+        " AND Phase IN (" +
+        _phaseprevValues +
+        ")";
       layerRoadwayProjectsPointsPrevPhase.definitionExpression =
         filterRoadwayProjectsPointsFilterPrevPhase +
-        " AND Phase = '" +
-        _phaseprev +
-        "'";
+        " AND Phase IN (" +
+        _phaseprevValues +
+        ")";
       layerTransitProjectsLinesPrevPhase.definitionExpression =
         filterTransitProjectsLinesFilterPrevPhase +
-        " AND Phase = '" +
-        _phaseprev +
-        "'";
+        " AND Phase IN (" +
+        _phaseprevValues +
+        ")";
       layerTransitProjectsPointsPrevPhase.definitionExpression =
         filterTransitProjectsPointsFilterPrevPhase +
-        " AND Phase = '" +
-        _phaseprev +
-        "'";
+        " AND Phase IN (" +
+        _phaseprevValues +
+        ")";
     } else {
       layerRoadwayProjectsLinesPrevPhase.visible = false;
       layerRoadwayProjectsPointsPrevPhase.visible = false;
