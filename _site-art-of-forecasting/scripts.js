@@ -71,7 +71,6 @@ let rendererSePop;
 let rendererSeTypemp;
 
 let curDisplayForecast = 'final-forecast';
-let defaultSource = 'AADTHistory.xlsx';
 let myChart; // Keep track of the current chart
 let view;
 let adjustments;
@@ -1601,7 +1600,7 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
       const _curSegId = selectSegId.value;
 
       // Filter the data based on SEGID and SOURCE
-      const filteredAadt = dataAadt.filter(item => item.SEGID === _curSegId && item.SOURCE === defaultSource);
+      const filteredAadt = dataAadt.filter(item => item.SEGID === _curSegId);
       const aadt2019Entry = filteredAadt.find(item => item.YEAR === 2019);
 
       let aadt2019Value;
@@ -1615,8 +1614,7 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
       
       const filteredModForecasts = dataModVolAdj.filter(item => item.SEGID === _curSegId);
       const filteredLinForecasts = dataLinForecasts.filter(item =>
-        item.SEGID === _curSegId &&
-        item.SOURCE === defaultSource
+        item.SEGID === _curSegId
       );
       
       const responseProjectionGroups = await fetch('data/projection-groups.json');
@@ -2011,7 +2009,7 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
 
       return new Promise(function(resolve, reject) {
         var query = layerSegments.createQuery();
-        query.where = "OBJECTID_1 = " + OBJECTID;
+        query.where = "OBJECTID = " + OBJECTID;
         query.outFields = ["SEGID"];
     
         layerSegments.queryFeatures(query).then(function(results) {
@@ -2029,7 +2027,7 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
         });
     
         if (result) {
-          var featureOBJECTID = result.graphic.attributes.OBJECTID_1;
+          var featureOBJECTID = result.graphic.attributes.OBJECTID;
     
           querySEGIDByOBJECTID(featureOBJECTID).then(function(SEGID) {
             if (isValueInCalciteSelect(SEGID, selectSegId)) {
