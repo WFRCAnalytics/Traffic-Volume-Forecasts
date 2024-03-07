@@ -50,6 +50,17 @@ let filterRoadwayProjectsPointsFilter;
 let filterTransitProjectsLinesFilter;
 let filterTransitProjectsPointsFilter;
 
+let layerRoadwayProjectsLinesPrevPhase;
+let layerRoadwayProjectsPointsPrevPhase;
+
+let layerTransitProjectsLinesPrevPhase;
+let layerTransitProjectsPointsPrevPhase;
+
+let filterRoadwayProjectsLinesFilterPrevPhase;
+let filterRoadwayProjectsPointsFilterPrevPhase;
+let filterTransitProjectsLinesFilterPrevPhase;
+let filterTransitProjectsPointsFilterPrevPhase;
+
 let layerSeHhUrl;
 let layerSePopUrl;
 let layerSeTypempUrl;
@@ -64,6 +75,10 @@ let rendererRoadwayPoints;
 let rendererRoadwayLines;
 let rendererTransitPoints;
 let rendererTransitLines;
+let rendererRoadwayPointsPrevPhase;
+let rendererRoadwayLinesPrevPhase;
+let rendererTransitPointsPrevPhase;
+let rendererTransitLinesPrevPhase;
 let rendererSegmentsFlags;
 let rendererSeChange;
 let rendererSeHh;
@@ -199,15 +214,18 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
 
     var _expression = "";
     var _prevDisplayYear = "";
-    var _phase = "";
+    var _phase     = "";
+    var _phaseprev = "";
 
     if      (selectYear.value=="2050") {
       _prevDisplayYear = 2042;
       _phase           = "3";
+      _phaseprev       = "2";
     }
     else if (selectYear.value=="2042") {
       _prevDisplayYear = 2032;
       _phase           = "2";
+      _phaseprev       = "1";
     }
     else if (selectYear.value=="2032") {
       _prevDisplayYear = 2028;
@@ -215,7 +233,6 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
     }
     else if (selectYear.value=="2028") {
       _prevDisplayYear = 2023;
-      _phase           = "";
     }
     else if (selectYear.value=="2023") {
       _prevDisplayYear = 2019;
@@ -459,29 +476,37 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
 
     // roadway projects
     if (document.getElementById('checkboxRoadwayProjects').checked==true) {
-      layerRoadwayProjectsLines .visible = true;
-      layerRoadwayProjectsPoints.visible = true;
+      layerRoadwayProjectsLines          .visible = true;
+      layerRoadwayProjectsPoints         .visible = true;
+      layerRoadwayProjectsLinesPrevPhase .visible = true;
+      layerRoadwayProjectsPointsPrevPhase.visible = true;
     } else {
-      layerRoadwayProjectsLines .visible = false;
-      layerRoadwayProjectsPoints.visible = false;
+      layerRoadwayProjectsLines          .visible = false;
+      layerRoadwayProjectsPoints         .visible = false;
+      layerRoadwayProjectsLinesPrevPhase .visible = false;
+      layerRoadwayProjectsPointsPrevPhase.visible = false;
     }
 
     // transit projects
     if (document.getElementById('checkboxTransitProjects').checked==true) {
-      layerTransitProjectsLines .visible = true;
-      layerTransitProjectsPoints.visible = true;
+      layerTransitProjectsLines          .visible = true;
+      layerTransitProjectsPoints         .visible = true;
+      layerTransitProjectsLinesPrevPhase .visible = true;
+      layerTransitProjectsPointsPrevPhase.visible = true;
     } else {
-      layerTransitProjectsLines .visible = false;
-      layerTransitProjectsPoints.visible = false;
+      layerTransitProjectsLines          .visible = false;
+      layerTransitProjectsPoints         .visible = false;
+      layerTransitProjectsLinesPrevPhase .visible = false;
+      layerTransitProjectsPointsPrevPhase.visible = false;
     }
 
-    // transit projects
+    // projects
     if (document.getElementById('checkboxProjectDetails').checked==true) {
-      layerProjectsLines .visible = true;
-      layerProjectsPoints.visible = true;
+      layerProjectsLines          .visible = true;
+      layerProjectsPoints         .visible = true;
     } else {
-      layerProjectsLines .visible = false;
-      layerProjectsPoints.visible = false;
+      layerProjectsLines          .visible = false;
+      layerProjectsPoints         .visible = false;
     }
     
 
@@ -496,12 +521,28 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
       layerTransitProjectsLines            .visible = false;
       layerTransitProjectsPoints           .visible = false;
     }
-    
+
+    if (_phaseprev!="") {
+      layerRoadwayProjectsLinesPrevPhase   .definitionExpression = filterRoadwayProjectsLinesFilterPrevPhase    + " AND Phase = '" + _phaseprev + "'";
+      layerRoadwayProjectsPointsPrevPhase  .definitionExpression = filterRoadwayProjectsPointsFilterPrevPhase   + " AND Phase = '" + _phaseprev + "'";
+      layerTransitProjectsLinesPrevPhase   .definitionExpression = filterTransitProjectsLinesFilterPrevPhase    + " AND Phase = '" + _phaseprev + "'";
+      layerTransitProjectsPointsPrevPhase  .definitionExpression = filterTransitProjectsPointsFilterPrevPhase   + " AND Phase = '" + _phaseprev + "'";
+    } else {
+      layerRoadwayProjectsLinesPrevPhase   .visible = false;
+      layerRoadwayProjectsPointsPrevPhase  .visible = false;
+      layerTransitProjectsLinesPrevPhase   .visible = false;
+      layerTransitProjectsPointsPrevPhase  .visible = false;
+    }
+
     layerSegments                        .refresh();
     layerRoadwayProjectsLines            .refresh();
     layerRoadwayProjectsPoints           .refresh();
     layerTransitProjectsLines            .refresh();
     layerTransitProjectsPoints           .refresh();
+    layerRoadwayProjectsLinesPrevPhase   .refresh();
+    layerRoadwayProjectsPointsPrevPhase  .refresh();
+    layerTransitProjectsLinesPrevPhase   .refresh();
+    layerTransitProjectsPointsPrevPhase  .refresh();
     layerFlags                           .refresh();
 
   };
@@ -625,11 +666,25 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
       definitionExpression: filterRoadwayProjectsLinesFilter
     });
 
+    layerRoadwayProjectsLinesPrevPhase = new FeatureLayer({
+      url: layerProjectsLinesUrl,
+      renderer: rendererRoadwayLinesPrevPhase,
+      visible: false,
+      definitionExpression: filterRoadwayProjectsLinesFilterPrevPhase
+    });
+
     layerRoadwayProjectsPoints = new FeatureLayer({
       url: layerProjectsPointsUrl,
       renderer: rendererRoadwayPoints,
       visible: false,
       definitionExpression: filterRoadwayProjectsPointsFilter
+    });
+
+    layerRoadwayProjectsPointsPrevPhase = new FeatureLayer({
+      url: layerProjectsPointsUrl,
+      renderer: rendererRoadwayPointsPrevPhase,
+      visible: false,
+      definitionExpression: filterRoadwayProjectsPointsFilterPrevPhase
     });
 
     layerTransitProjectsLines = new FeatureLayer({
@@ -639,11 +694,25 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
       definitionExpression: filterTransitProjectsLinesFilter
     });
 
+    layerTransitProjectsLinesPrevPhase = new FeatureLayer({
+      url: layerProjectsLinesUrl,
+      renderer: rendererTransitLinesPrevPhase,
+      visible: false,
+      definitionExpression: filterTransitProjectsLinesFilterPrevPhase
+    });
+
     layerTransitProjectsPoints = new FeatureLayer({
       url: layerProjectsPointsUrl,
       renderer: rendererTransitPoints,
       visible: false,
       definitionExpression: filterTransitProjectsPointsFilter
+    });
+
+    layerTransitProjectsPointsPrevPhase = new FeatureLayer({
+      url: layerProjectsPointsUrl,
+      renderer: rendererTransitPointsPrevPhase,
+      visible: false,
+      definitionExpression: filterTransitProjectsPointsFilterPrevPhase
     });
 
     // for full project details
@@ -722,11 +791,14 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
       popupTemplate: projectPopupTemplate,
       visible: false
     });
-
     
 
     map.add(layerProjectsLines);
     map.add(layerProjectsPoints);
+    map.add(layerTransitProjectsLinesPrevPhase);
+    map.add(layerTransitProjectsPointsPrevPhase);
+    map.add(layerRoadwayProjectsLinesPrevPhase);
+    map.add(layerRoadwayProjectsPointsPrevPhase);
     map.add(layerTransitProjectsLines);
     map.add(layerTransitProjectsPoints);
     map.add(layerRoadwayProjectsLines);
@@ -829,15 +901,17 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
     legend = new Legend({
       view: view,
       layerInfos: [
-                    { layer: layerSegments            , title: 'Segments'               },
-                    { layer: layerRoadwayProjectsLines, title: ''                       },
-                    { layer: layerTransitProjectsLines, title: ''                       },
-                    { layer: layerProjectsPoints      , title: 'Point Projects Detailed'},
-                    { layer: layerProjectsLines       , title: 'Line Projects Detailed' },
-                    { layer: layerFlags               , title: 'Flagged Segments'       },
-                    { layer: layerSeHh                , title: 'Households'             },
-                    { layer: layerSePop               , title: 'Population'             },
-                    { layer: layerSeTypemp            , title: 'Typical Employment'     }
+                    { layer: layerSegments                     , title: 'Segments'               },
+                    { layer: layerRoadwayProjectsLinesPrevPhase, title: ''                       },
+                    { layer: layerTransitProjectsLinesPrevPhase, title: ''                       },
+                    { layer: layerRoadwayProjectsLines         , title: ''                       },
+                    { layer: layerTransitProjectsLines         , title: ''                       },
+                    { layer: layerProjectsPoints               , title: 'Point Projects Detailed'},
+                    { layer: layerProjectsLines                , title: 'Line Projects Detailed' },
+                    { layer: layerFlags                        , title: 'Flagged Segments'       },
+                    { layer: layerSeHh                         , title: 'Households'             },
+                    { layer: layerSePop                        , title: 'Population'             },
+                    { layer: layerSeTypemp                     , title: 'Typical Employment'     }
                   ] // Replace YOUR_LAYER with the layerSegments you want to include in the legend
     });
     view.ui.add(legend, "top-right");
@@ -881,19 +955,27 @@ function(esriConfig, Map, MapView, Basemap, BasemapToggle, GeoJSONLayer, Home, S
       filterTransitProjectsLinesFilter             = config["filterTransitProjectsLinesFilter"            ];
       filterRoadwayProjectsPointsFilter            = config["filterRoadwayProjectsPointsFilter"           ];
       filterTransitProjectsPointsFilter            = config["filterTransitProjectsPointsFilter"           ];
+      filterRoadwayProjectsLinesFilterPrevPhase    = config["filterRoadwayProjectsLinesFilterPrevPhase"   ];
+      filterTransitProjectsLinesFilterPrevPhase    = config["filterTransitProjectsLinesFilterPrevPhase"   ];
+      filterRoadwayProjectsPointsFilterPrevPhase   = config["filterRoadwayProjectsPointsFilterPrevPhase"  ];
+      filterTransitProjectsPointsFilterPrevPhase   = config["filterTransitProjectsPointsFilterPrevPhase"  ];
       layerSeHhUrl                                 = config["layerSeHhUrl"                                ];
       layerSePopUrl                                = config["layerSePopUrl"                               ];
       layerSeTypempUrl                             = config["layerSeTypempUrl"                            ];
 
       // Create a new ClassBreaksRenderer using the fetched configuration     
-      rendererSegmentsVolume        = new ClassBreaksRenderer(config["rendererSegmentsVolume"       ]);
-      rendererSegmentsVolumeCompare = new ClassBreaksRenderer(config["rendererSegmentsVolumeCompare"]);
-      rendererSegmentsVolumeAdjust  = new ClassBreaksRenderer(config["rendererSegmentsVolumeAdjust" ]);
-      rendererRoadwayPoints         = new SimpleRenderer     (config["rendererRoadwayPoints"        ]);
-      rendererRoadwayLines          = new SimpleRenderer     (config["rendererRoadwayLines"         ]);
-      rendererTransitPoints         = new SimpleRenderer     (config["rendererTransitPoints"        ]);
-      rendererTransitLines          = new SimpleRenderer     (config["rendererTransitLines"         ]);
-      rendererSegmentsFlags         = new SimpleRenderer     (config["rendererSegmentsFlags"        ]);
+      rendererSegmentsVolume         = new ClassBreaksRenderer(config["rendererSegmentsVolume"        ]);
+      rendererSegmentsVolumeCompare  = new ClassBreaksRenderer(config["rendererSegmentsVolumeCompare" ]);
+      rendererSegmentsVolumeAdjust   = new ClassBreaksRenderer(config["rendererSegmentsVolumeAdjust"  ]);
+      rendererRoadwayPoints          = new SimpleRenderer     (config["rendererRoadwayPoints"         ]);
+      rendererRoadwayLines           = new SimpleRenderer     (config["rendererRoadwayLines"          ]);
+      rendererTransitPoints          = new SimpleRenderer     (config["rendererTransitPoints"         ]);
+      rendererTransitLines           = new SimpleRenderer     (config["rendererTransitLines"          ]);
+      rendererRoadwayPointsPrevPhase = new SimpleRenderer     (config["rendererRoadwayPointsPrevPhase"]);
+      rendererRoadwayLinesPrevPhase  = new SimpleRenderer     (config["rendererRoadwayLinesPrevPhase" ]);
+      rendererTransitPointsPrevPhase = new SimpleRenderer     (config["rendererTransitPointsPrevPhase"]);
+      rendererTransitLinesPrevPhase  = new SimpleRenderer     (config["rendererTransitLinesPrevPhase" ]);
+      rendererSegmentsFlags          = new SimpleRenderer     (config["rendererSegmentsFlags"         ]);
 
       // create map
       createMapView();

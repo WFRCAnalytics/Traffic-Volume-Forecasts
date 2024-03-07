@@ -7,7 +7,11 @@
     "filterRoadwayProjectsPointsFilter" : "mode = 'Highway' AND improvement_type IN('Upgrade Interchange','New Interchange','Grade-Separated Crossing')",
     "filterTransitProjectsLinesFilter"  : "Mode = 'Transit'",
     "filterTransitProjectsPointsFilter" : "mode = 'Transit'",
-    
+    "filterRoadwayProjectsLinesFilterPrevPhase"  : "Mode = 'Highway' AND improvement_type IN('Widening','New Construction')",
+    "filterRoadwayProjectsPointsFilterPrevPhase" : "mode = 'Highway' AND improvement_type IN('Upgrade Interchange','New Interchange','Grade-Separated Crossing')",
+    "filterTransitProjectsLinesFilterPrevPhase"  : "Mode = 'Transit'",
+    "filterTransitProjectsPointsFilterPrevPhase" : "mode = 'Transit'",
+
     "layerSeHhUrl"     : "https://services1.arcgis.com/taguadKoI1XFwivx/arcgis/rest/services/STATEWIDE_TAZ_gdb/FeatureServer/0",
     "layerSePopUrl"    : "https://services1.arcgis.com/taguadKoI1XFwivx/arcgis/rest/services/STATEWIDE_TAZ_gdb/FeatureServer/1",
     "layerSeTypempUrl" : "https://services1.arcgis.com/taguadKoI1XFwivx/arcgis/rest/services/STATEWIDE_TAZ_gdb/FeatureServer/6",
@@ -58,13 +62,25 @@
     "rendererRoadwayPoints": {
       "symbol": { "type": "simple-marker", "color": [255,  0,255, 0.20], "size": 18, "style": "circle", "outline": { "type": "simple-line", "color": [0, 0, 0, 0], "width": 2.75, "style": "solid" } }, "label": "RTP Roadway Projects"
     },
+    "rendererRoadwayPointsPrevPhase": {
+      "symbol": { "type": "simple-marker", "color": [180,180,180, 0.20], "size": 18, "style": "circle", "outline": { "type": "simple-line", "color": [0, 0, 0, 0], "width": 2.75, "style": "solid" } }, "label": "RTP Roadway Projects"
+    },
     "rendererRoadwayLines": {
-      "symbol": { "type": "simple-line"  , "color": [255,  0,255, 0.20], "width": 15 }, "label": "Unified Plan Roadway Projects - Only Displaying for Year Selected"
+      "symbol": { "type": "simple-line"  , "color": [255,  0,255, 0.20], "width": 15 }, "label": "Unified Plan Roadway Projects - Displaying for Phase of Year Selected"
+    },
+    "rendererRoadwayLinesPrevPhase": {
+      "symbol": { "type": "simple-line"  , "color": [180,180,180, 0.20], "width": 15 }, "label": "Unified Plan Roadway Projects - Displaying for Previous Phase of Year Selected"
     },
     "rendererTransitPoints": {
       "symbol": { "type": "simple-marker", "color": [  0,  0,255, 0.20], "size": 23, "style": "circle", "outline": { "type": "simple-line", "color": [0, 0, 0, 0], "width": 2.75, "style": "solid" } }, "label": "RTP Transit Projects"
     },
+    "rendererTransitPointsPrevPhase": {
+      "symbol": { "type": "simple-marker", "color": [180,180,180, 0.20], "size": 23, "style": "circle", "outline": { "type": "simple-line", "color": [0, 0, 0, 0], "width": 2.75, "style": "solid" } }, "label": "RTP Transit Projects"
+    },
     "rendererTransitLines": {
       "symbol": { "type": "simple-line"  , "color": [  0,  0,255, 0.20], "width": 20 }, "label": "Unified Plan Transit Projects - Only Displaying for Year Selected"
+    },
+    "rendererTransitLinesPrevPhase": {
+      "symbol": { "type": "simple-line"  , "color": [180,180,180, 0.20], "width": 20 }, "label": "Unified Plan Transit Projects - Only Displaying for Year Selected"
     }
 }
