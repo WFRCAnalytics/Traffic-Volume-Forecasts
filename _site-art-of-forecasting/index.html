@@ -109,7 +109,7 @@
                   Historic Adjustment
                 </td>
                 <td align="right">
-                  Final Forecast Change:
+                  Year-to-Year Change:
                 </td>
                 <td>
                   <div id="diff2019Value" class="tableText" align="right"></div>
@@ -132,7 +132,7 @@
               </tr>
               <tr>
                 <td align="right">
-                  Final Forecast:
+                  Forecast:
                 </td>
                 <td>
                   <div id="f2019Value" class="tableText" align="right"></div>
@@ -181,7 +181,7 @@
               </tr>
               <tr>
                 <td colspan="2" align="right">
-                  Model Forecast:
+                  Base-Year Adjusted Model AADT:
                 </td>
                 <td>
                   <div id="mf2019Value" class="tableText" align="right"></div>
@@ -204,7 +204,7 @@
               </tr>
               <tr class="light-grey-table">
                 <td colspan="2" align="right">
-                  <button id="matchModelButton">Match Final Forecast to: </button>&nbsp;&nbsp;&nbsp;Model AADT:
+                  <button id="matchModelButton">Match Forecast to: </button>&nbsp;&nbsp;&nbsp;Model AADT:
                 </td>
                 <td>
                   <div id="m2019Value" class="tableText" align="right"></div>
@@ -379,15 +379,15 @@
           <calcite-radio-button-group name="rbgForecasts" id="rbgForecasts" layout="vertical">
             <calcite-label layout="inline">
               <calcite-radio-button name="rbgForecasts" value="final-forecast" checked></calcite-radio-button>
-              Final Forecast
+              Forecast
             </calcite-label>
             <calcite-label layout="inline">
               <calcite-radio-button name="rbgForecasts" value="final-forecast-change-prev"></calcite-radio-button>
-              Final Forecast Change from Previous Year
+              Forecast Change from Prev Year
             </calcite-label>
             <calcite-label layout="inline">
               <calcite-radio-button name="rbgForecasts" value="final-forecast-change-2019"></calcite-radio-button>
-              Final Forecast Change from 2019
+              Forecast Change from 2019
             </calcite-label>
             <div style="height: 5px;"></div>
             <calcite-label layout="inline">
@@ -400,7 +400,7 @@
             </calcite-label>
             <calcite-label layout="inline">
               <calcite-radio-button name="rbgForecasts" value="model-forecast" class="grey-text"></calcite-radio-button>
-              Model Forecast
+              Base-Year Adj Model AADT
             </calcite-label>
             <calcite-label layout="inline">
               <calcite-radio-button name="rbgForecasts" value="model-nobaseyearadj"></calcite-radio-button>

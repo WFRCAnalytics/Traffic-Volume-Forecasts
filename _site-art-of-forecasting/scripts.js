@@ -423,10 +423,10 @@ require([
           selectYear.value +
           " + $feature.ADJ" +
           selectYear.value +
-          " - ($feature.M2019 + $feature.aadtAdjFactor)"; // don't include ADJHIST since it just cancels out
+          " - ($feature.M2019 + $feature.aadtAdjFac)"; // don't include ADJHIST since it just cancels out
         rendererSegmentsVolumeCompare.valueExpression = _expression;
         rendererSegmentsVolumeCompare.valueExpressionTitle =
-          /*selectYear.value + ' */ "Final Forecast Change from 2019";
+          /*selectYear.value + ' */ "Forecast Change from 2019";
         layerSegments.renderer = rendererSegmentsVolumeCompare;
         labelClass.labelExpressionInfo.expression =
           "Text(" + _expression + ", '#,###')";
@@ -456,7 +456,7 @@ require([
           _prevDisplayYear; // don't include ADJHIST since it just cancels out
         rendererSegmentsVolumeCompare.valueExpression = _expression;
         rendererSegmentsVolumeCompare.valueExpressionTitle =
-          /*selectYear.value + ' */ "Final Forecast Change from Previous Year" /* + _prevDisplayYear*/;
+          /*selectYear.value + ' */ "Forecast Change from Previous Year" /* + _prevDisplayYear*/;
         layerSegments.renderer = rendererSegmentsVolumeCompare;
         labelClass.labelExpressionInfo.expression =
           "Text(" + _expression + ", '#,###')";
@@ -531,7 +531,7 @@ require([
         _expression = "$feature.MF" + selectYear.value + " + $feature.ADJHIST";
         rendererSegmentsVolume.valueExpression = _expression;
         rendererSegmentsVolume.valueExpressionTitle =
-          /*selectYear.value + ' */ "Model Forecast";
+          /*selectYear.value + ' */ "Base-Year Adj Model AADT";
         layerSegments.renderer = rendererSegmentsVolume;
         labelClass.labelExpressionInfo.expression =
           "Text(" + _expression + ", '#,###')";
@@ -549,7 +549,7 @@ require([
         _expression = "$feature.M" + selectYear.value;
         rendererSegmentsVolume.valueExpression = _expression;
         rendererSegmentsVolume.valueExpressionTitle =
-          /*selectYear.value + ' */ "Model No Base Year Adj";
+          /*selectYear.value + ' */ "Model AADT";
         layerSegments.renderer = rendererSegmentsVolume;
         labelClass.labelExpressionInfo.expression =
           "Text(" + _expression + ", '#,###')";
@@ -2340,14 +2340,14 @@ require([
             pointRadius: 4,
           },
           {
-            label: "Final Forecasts",
+            label: "Forecasts",
             data: chartDataForecasts,
             borderColor: "orange",
             backgroundColor: "orange",
             pointRadius: 5,
           },
           {
-            label: "Model Forecast AADT",
+            label: "Base-Year Adj Model AADT",
             data: chartDataModForecasts,
             borderColor: "purple",
             backgroundColor: "purple",
