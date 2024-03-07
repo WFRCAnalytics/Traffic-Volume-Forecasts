@@ -77,12 +77,12 @@
             <canvas id="chartType"></canvas>
           </div>
           <div>
-            <table width="100%">
+            <table width="700px;">
               <tr>
                 <td width="90px;" >
                   &nbsp;
                 </td>
-                <td>
+                <td width="200px;" >
                   &nbsp;
                 </td>
                 <td width="60px;" align="center">
@@ -104,54 +104,38 @@
                   2050
                 </td>
               </tr>
+            </table>
+            <table width="700px;">
               <tr>
-                <td align="center" rowspan="2">
-                  Historic Adjustment
+                <td align="center" width="90px;">
+                  Historic
                 </td>
-                <td align="right">
+                <td align="right" width="200px;">
                   Year-to-Year Change:
                 </td>
-                <td>
-                  <div id="diff2019Value" class="tableText" align="right"></div>
-                </td>
-                <td>
-                  <div id="diff2023Value" class="tableText" align="right"></div>
-                </td>
-                <td>
-                  <div id="diff2028Value" class="tableText" align="right"></div>
-                </td>
-                <td>
-                  <div id="diff2032Value" class="tableText" align="right"></div>
-                </td>
-                <td>
-                  <div id="diff2042Value" class="tableText" align="right"></div>
-                </td>
-                <td>
-                  <div id="diff2050Value" class="tableText" align="right"></div>
-                </td>
+                <td width="30px;"></td>
+                <td width="60px;"><div id="diff2023Value" class="tableText" align="center"></div></td>
+                <td width="60px;"><div id="diff2028Value" class="tableText" align="center"></div></td>
+                <td width="60px;"><div id="diff2032Value" class="tableText" align="center"></div></td>
+                <td width="60px;"><div id="diff2042Value" class="tableText" align="center"></div></td>
+                <td width="60px;"><div id="diff2050Value" class="tableText" align="center"></div></td>
+                <td width="30px;"></td>
               </tr>
+            </table>
+            <table width="700px;">
               <tr>
-                <td align="right">
+                <td align="center" width="90px;" >
+                  Adjustment
+                </td>
+                <td align="right" width="200px;" >
                   Forecast:
                 </td>
-                <td>
-                  <div id="f2019Value" class="tableText" align="right"></div>
-                </td>
-                <td>
-                  <div id="f2023Value" class="tableText tableFinal" align="right"></div>
-                </td>
-                <td>
-                  <div id="f2028Value" class="tableText tableFinal" align="right"></div>
-                </td>
-                <td>
-                  <div id="f2032Value" class="tableText tableFinal" align="right"></div>
-                </td>
-                <td>
-                  <div id="f2042Value" class="tableText tableFinal" align="right"></div>
-                </td>
-                <td>
-                  <div id="f2050Value" class="tableText tableFinal" align="right"></div>
-                </td>
+                <td width="60px;"><div id="f2019Value" class="tableText" align="right"></div></td>
+                <td width="60px;"><div id="f2023Value" class="tableText tableFinal" align="right"></div></td>
+                <td width="60px;"><div id="f2028Value" class="tableText tableFinal" align="right"></div></td>
+                <td width="60px;"><div id="f2032Value" class="tableText tableFinal" align="right"></div></td>
+                <td width="60px;"><div id="f2042Value" class="tableText tableFinal" align="right"></div></td>
+                <td width="60px;"><div id="f2050Value" class="tableText tableFinal" align="right"></div></td>
               </tr>
               <tr>
                 <td align="center">
@@ -160,162 +144,78 @@
                 <td align="right">
                   Manual Adjustments:
                 </td>
-                <td>
-                  <input type="text" id="adj2019Value" class="manualAdj right-align-input" placeholder="" hidden>
-                </td>
-                <td>
-                  <input type="text" id="adj2023Value" class="manualAdj right-align-input" placeholder="">
-                </td>
-                <td>
-                  <input type="text" id="adj2028Value" class="manualAdj right-align-input" placeholder="">
-                </td>
-                <td>
-                  <input type="text" id="adj2032Value" class="manualAdj right-align-input" placeholder="">
-                </td>
-                <td>
-                  <input type="text" id="adj2042Value" class="manualAdj right-align-input" placeholder="">
-                </td>
-                <td>
-                  <input type="text" id="adj2050Value" class="manualAdj right-align-input" placeholder="">
-                </td>
+                <td><input type="text" id="adj2019Value" class="manualAdj right-align-input" placeholder="" hidden></td>
+                <td><input type="text" id="adj2023Value" class="manualAdj right-align-input" placeholder=""></td>
+                <td><input type="text" id="adj2028Value" class="manualAdj right-align-input" placeholder=""></td>
+                <td><input type="text" id="adj2032Value" class="manualAdj right-align-input" placeholder=""></td>
+                <td><input type="text" id="adj2042Value" class="manualAdj right-align-input" placeholder=""></td>
+                <td><input type="text" id="adj2050Value" class="manualAdj right-align-input" placeholder=""></td>
               </tr>
               <tr>
                 <td colspan="2" align="right">
                   Base-Year Adjusted Model AADT:
                 </td>
-                <td>
-                  <div id="mf2019Value" class="tableText" align="right"></div>
-                </td>
-                <td>
-                  <div id="mf2023Value" class="tableText tableModel" align="right"></div>
-                </td>
-                <td>
-                  <div id="mf2028Value" class="tableText tableModel" align="right"></div>
-                </td>
-                <td>
-                  <div id="mf2032Value" class="tableText tableModel" align="right"></div>
-                </td>
-                <td>
-                  <div id="mf2042Value" class="tableText tableModel" align="right"></div>
-                </td>
-                <td>
-                  <div id="mf2050Value" class="tableText tableModel" align="right"></div>
-                </td>
+                <td><div id="mf2019Value" class="tableText" align="right"></div></td>
+                <td><div id="mf2023Value" class="tableText tableModel" align="right"></div></td>
+                <td><div id="mf2028Value" class="tableText tableModel" align="right"></div></td>
+                <td><div id="mf2032Value" class="tableText tableModel" align="right"></div></td>
+                <td><div id="mf2042Value" class="tableText tableModel" align="right"></div></td>
+                <td><div id="mf2050Value" class="tableText tableModel" align="right"></div></td>
               </tr>
               <tr class="light-grey-table">
                 <td colspan="2" align="right">
                   <button id="matchModelButton">Match Forecast to: </button>&nbsp;&nbsp;&nbsp;Model AADT:
                 </td>
-                <td>
-                  <div id="m2019Value" class="tableText" align="right"></div>
-                </td>
-                <td>
-                  <div id="m2023Value" class="tableText" align="right"></div>
-                </td>
-                <td>
-                  <div id="m2028Value" class="tableText" align="right"></div>
-                </td>
-                <td>
-                  <div id="m2032Value" class="tableText" align="right"></div>
-                </td>
-                <td>
-                  <div id="m2042Value" class="tableText" align="right"></div>
-                </td>
-                <td>
-                  <div id="m2050Value" class="tableText" align="right"></div>
-                </td>
+                <td><div id="m2019Value" class="tableText" align="right"></div></td>
+                <td><div id="m2023Value" class="tableText" align="right"></div></td>
+                <td><div id="m2028Value" class="tableText" align="right"></div></td>
+                <td><div id="m2032Value" class="tableText" align="right"></div></td>
+                <td><div id="m2042Value" class="tableText" align="right"></div></td>
+                <td><div id="m2050Value" class="tableText" align="right"></div></td>
               </tr>
               <tr class="light-grey-table">
                 <td colspan="2" align="right">
                   Model AWDT:
                 </td>
-                <td>
-                  <div id="dyvol2019Value" class="tableText" align="right"></div>
-                </td>
-                <td>
-                  <div id="dyvol2023Value" class="tableText" align="right"></div>
-                </td>
-                <td>
-                  <div id="dyvol2028Value" class="tableText" align="right"></div>
-                </td>
-                <td>
-                  <div id="dyvol2032Value" class="tableText" align="right"></div>
-                </td>
-                <td>
-                  <div id="dyvol2042Value" class="tableText" align="right"></div>
-                </td>
-                <td>
-                  <div id="dyvol2050Value" class="tableText" align="right"></div>
-                </td>
+                <td><div id="dyvol2019Value" class="tableText" align="right"></div></td>
+                <td><div id="dyvol2023Value" class="tableText" align="right"></div></td>
+                <td><div id="dyvol2028Value" class="tableText" align="right"></div></td>
+                <td><div id="dyvol2032Value" class="tableText" align="right"></div></td>
+                <td><div id="dyvol2042Value" class="tableText" align="right"></div></td>
+                <td><div id="dyvol2050Value" class="tableText" align="right"></div></td>
               </tr>
               <tr class="light-grey-table">
                 <td colspan="2" align="right">
                   Model Lanes:
                 </td>
-                <td>
-                  <div id="lanes2019Value" class="tableText" align="right"></div>
-                </td>
-                <td>
-                  <div id="lanes2023Value" class="tableText" align="right"></div>
-                </td>
-                <td>
-                  <div id="lanes2028Value" class="tableText" align="right"></div>
-                </td>
-                <td>
-                  <div id="lanes2032Value" class="tableText" align="right"></div>
-                </td>
-                <td>
-                  <div id="lanes2042Value" class="tableText" align="right"></div>
-                </td>
-                <td>
-                  <div id="lanes2050Value" class="tableText" align="right"></div>
-                </td>
+                <td><div id="lanes2019Value" class="tableText" align="right"></div></td>
+                <td><div id="lanes2023Value" class="tableText" align="right"></div></td>
+                <td><div id="lanes2028Value" class="tableText" align="right"></div></td>
+                <td><div id="lanes2032Value" class="tableText" align="right"></div></td>
+                <td><div id="lanes2042Value" class="tableText" align="right"></div></td>
+                <td><div id="lanes2050Value" class="tableText" align="right"></div></td>
               </tr>
               <tr class="light-grey-table">
                 <td colspan="2" align="right">
                   Model Functional Type:
                 </td>
-                <td>
-                  <div id="ft2019Value" class="tableText" align="right"></div>
-                </td>
-                <td>
-                  <div id="ft2023Value" class="tableText" align="right"></div>
-                </td>
-                <td>
-                  <div id="ft2028Value" class="tableText" align="right"></div>
-                </td>
-                <td>
-                  <div id="ft2032Value" class="tableText" align="right"></div>
-                </td>
-                <td>
-                  <div id="ft2042Value" class="tableText" align="right"></div>
-                </td>
-                <td>
-                  <div id="ft2050Value" class="tableText" align="right"></div>
-                </td>
+                <td><div id="ft2019Value" class="tableText" align="right"></div></td>
+                <td><div id="ft2023Value" class="tableText" align="right"></div></td>
+                <td><div id="ft2028Value" class="tableText" align="right"></div></td>
+                <td><div id="ft2032Value" class="tableText" align="right"></div></td>
+                <td><div id="ft2042Value" class="tableText" align="right"></div></td>
+                <td><div id="ft2050Value" class="tableText" align="right"></div></td>
               </tr>
               <tr class="light-grey-table">
                 <td colspan="2" align="right">
                   Model Area Type:
                 </td>
-                <td>
-                  <div id="at2019Value" class="tableTextSmall" align="right"></div>
-                </td>
-                <td>
-                  <div id="at2023Value" class="tableTextSmall" align="right"></div>
-                </td>
-                <td>
-                  <div id="at2028Value" class="tableTextSmall" align="right"></div>
-                </td>
-                <td>
-                  <div id="at2032Value" class="tableTextSmall" align="right"></div>
-                </td>
-                <td>
-                  <div id="at2042Value" class="tableTextSmall" align="right"></div>
-                </td>
-                <td>
-                  <div id="at2050Value" class="tableTextSmall" align="right"></div>
-                </td>
+                <td><div id="at2019Value" class="tableTextSmall" align="right"></div></td>
+                <td><div id="at2023Value" class="tableTextSmall" align="right"></div></td>
+                <td><div id="at2028Value" class="tableTextSmall" align="right"></div></td>
+                <td><div id="at2032Value" class="tableTextSmall" align="right"></div></td>
+                <td><div id="at2042Value" class="tableTextSmall" align="right"></div></td>
+                <td><div id="at2050Value" class="tableTextSmall" align="right"></div></td>
               </tr>
               <tr>
                 <td colspan="2" rowspan="3" valign="top">

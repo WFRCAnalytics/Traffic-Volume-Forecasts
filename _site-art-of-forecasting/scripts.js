@@ -2077,7 +2077,7 @@ require([
       myChart = new Chart(ctx, {
         type: "scatter",
         options: {
-          aspectRatio: 2,
+          aspectRatio: 2.2,
           scales: {
             x: {
               min: 1980,
