@@ -18,6 +18,7 @@
 
     "rendererSegmentsVolume": {
       "classBreakInfos": [
+        { "minValue":-999999, "maxValue":       -1, "symbol": { "type": "simple-line", "color": [255,  0,  0], "width": 4.0 }, "label":"Negative"          },
         { "minValue":      0, "maxValue":     6000, "symbol": { "type": "simple-line", "color": [ 49, 57,138], "width": 0.2 }, "label":"0 to 6,000"        },
         { "minValue":   6001, "maxValue":    18000, "symbol": { "type": "simple-line", "color": [ 27,169,230], "width": 1.2 }, "label":"6,000 to 18,000"   },
         { "minValue":  18001, "maxValue":    36000, "symbol": { "type": "simple-line", "color": [  0,167, 78], "width": 2.2 }, "label":"18,000 to 36,000"  },
