@@ -2229,7 +2229,7 @@ require([
         const chartDataModAadt = filteredModForecasts
           .map((item) => ({
             x: item.YEAR,
-            y: item.modAadt + adjustments_historic,
+            y: item.modAadt,
           }))
           .sort((a, b) => a.x - b.x);
         const chartDataModDyvol = filteredModForecasts
