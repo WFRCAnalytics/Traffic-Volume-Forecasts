@@ -63,13 +63,20 @@
                 Auto pan
               </calcite-label>
             </td>
-            <td width="34%" valign="top">
+            <td>
+              <label for="comboboxTypes">Route Types</label>
+              <calcite-label layout="inline">
+                <calcite-combobox id="comboboxTypes" multiple placeholder="All Routes">
+                  <calcite-combobox-item value="SR" text-label="State Routes"></calcite-combobox-item>
+                  <calcite-combobox-item value="FA" text-label="Federal-Aid Routes"></calcite-combobox-item>
+                  <calcite-combobox-item value="PL" text-label="Planning Routes"></calcite-combobox-item>
+                </calcite-combobox>
+              </calcite-label>
               <label for="comboboxFlags">Flags</label>
               <calcite-label layout="inline">
                 <calcite-combobox id="comboboxFlags" multiple placeholder="Flag filter"></calcite-combobox>
               </calcite-label>
             </td>
-
           </tr>
         </table>
         <div id="segdetail">

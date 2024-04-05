@@ -31,16 +31,17 @@ let editKeys = [
   ["Summit", "p6b6O^z1KcUS^2gq"],
   ["Summit", "4ED&EfumaY2wNTBn"],
   ["Summit", "u@@X7fiPYjwDYNzo"],
-  ["WFRC", "&%$ZqAJy^549^|Em"],
-  ["WFRC", "6R$xH#e^9i#8*fwR"],
-  ["WFRC", "3FHDmW-$w2D4UlJO"],
-  ["WFRC", "&WCbmF7l1$RQdE*t"],
+//  ["WFRC", "&%$ZqAJy^549^|Em"],
+//  ["WFRC", "6R$xH#e^9i#8*fwR"],
+//  ["WFRC", "3FHDmW-$w2D4UlJO"],
+//  ["WFRC", "&WCbmF7l1$RQdE*t"],
   ["UDOT", "m4uMhLPEX_!g$Psq"],
   ["UDOT", "1O#Sq#xt=RtXiQ%X"],
 ];
 let tableLog;
 let tableLogUrl;
 let flagsSegList = [];
+let routeTypeList = [];
 let flagsMap = [];
 let layerSegments;
 let layerFlags;
@@ -332,6 +333,35 @@ require([
       }
     }
 
+
+    // filter route type
+    let whereConditionRouteType = [];
+
+    if (routeTypeList.length) {
+
+      routeTypeList.forEach((routeType) => {
+        switch (routeType.value) {
+          case "SR":
+            var condition = `SEGTYPE='SR'`;
+            break;
+          case "FA":
+            var condition = `SEGTYPE='FA'`;
+            break;
+          case "PL":
+            var condition = `SEGTYPE='PL'`;
+            break;
+          default:
+              // Handle unexpected route.value if necessary
+              break;
+
+        }
+        whereConditionRouteType.push(condition);
+      });
+
+      whereConditionRouteType = whereConditionRouteType.join(" OR ")
+
+    }
+
     // flagsMap
     let _flagsMapExpression = "";
     if (flagsMap.length) {
@@ -353,6 +383,22 @@ require([
 
       // Join the combined conditions using OR
       _flagsMapExpression = _expressions.join(" OR ");
+
+      // Check if whereConditionRouteType is not empty before proceeding
+      if (whereConditionRouteType!='' > 0) {
+        // Join the whereConditionRouteType array elements with " OR "
+        var conditionString = whereConditionRouteType;
+        
+        // If _flagsMapExpression is not empty, prepend " OR " to the conditionString
+        if (_flagsMapExpression !== "") {
+            conditionString = " AND (" + conditionString + ")";
+        }
+        
+        // Append the conditionString to _flagsMapExpression
+        _flagsMapExpression += conditionString;
+      }
+
+
     }
 
     // flagsSegList
@@ -376,7 +422,33 @@ require([
 
       // Join the combined conditions using OR
       _flagsSegListExpression = _expressions.join(" OR ");
+      
+
+      // Check if whereConditionRouteType is not empty before proceeding
+      if (whereConditionRouteType!='') {
+        // Join the whereConditionRouteType array elements with " OR "
+        var conditionString = whereConditionRouteType;
+        
+        // If _flagsMapExpression is not empty, prepend " OR " to the conditionString
+        if (_flagsSegListExpression !== "") {
+            conditionString = " AND (" + conditionString + ")";
+        }
+        
+        // Append the conditionString to _flagsSegListExpression
+        _flagsSegListExpression += conditionString;
+      }
+    } else {
+
+      // Check if whereConditionRouteType is not empty before proceeding
+      if (whereConditionRouteType!='') {
+        // Join the whereConditionRouteType array elements with " OR "
+        var conditionString = whereConditionRouteType;
+        
+        // Append the conditionString to _flagsSegListExpression
+        _flagsSegListExpression += conditionString;
+      }
     }
+
 
     layerSegments.definitionExpression = buildDefinitionExpression(
       layerSegments.definitionExpression,
@@ -1581,9 +1653,14 @@ require([
 
     // FLAGS
 
-    document.addEventListener(
+    document.getElementById("comboboxFlags").addEventListener(
       "calciteComboboxChange",
       handleFlagsSegListSelection
+    );
+
+    document.getElementById("comboboxTypes").addEventListener(
+      "calciteComboboxChange",
+      handleRouteTypeListSelection
     );
 
     function createCalciteCheckboxWithLabel(flagName, flagDescription) {
@@ -1650,6 +1727,21 @@ require([
       console.log(flagsSegList); // Logs the selected flags
     }
 
+    function handleRouteTypeListSelection(event) {
+      routeTypeList.length = 0; // Clear the previous selection
+      event.target.selectedItems.forEach((item) => {
+        routeTypeList.push({
+          value: item.value,
+          label: item.textLabel,
+        });
+      });
+
+      updateMap();
+      updateSegments();
+
+      console.log(routeTypeList); // Logs the selected flags
+    }
+
     populateComboboxFlags();
 
     // To disable the combobox
@@ -1703,6 +1795,33 @@ require([
 
           whereCondition.push(combinedCondition);
         });
+      }
+
+      let whereConditionRouteType = [];
+
+      if (routeTypeList.length) {
+
+        routeTypeList.forEach((routeType) => {
+          switch (routeType.value) {
+            case "SR":
+              var condition = `SEGTYPE='SR'`;
+              break;
+            case "FA":
+              var condition = `SEGTYPE='FA'`;
+              break;
+            case "PL":
+              var condition = `SEGTYPE='PL'`;
+              break;
+            default:
+                // Handle unexpected route.value if necessary
+                break;
+
+          }
+          whereConditionRouteType.push(condition);
+        });
+
+        whereCondition.push(whereConditionRouteType.join(" OR "));
+
       }
 
       query.where = whereCondition.join(" AND ");
