@@ -38,7 +38,7 @@ var storeForecasts;
 var curYears = "All Years";
 var curMonthGroups = "Year";
 var lLegendOneVol;
-var sSegmentsLayer = "AADT Forecasts";
+var sSegmentsLayer = "Traffic Volume Historic and Forecast";
 var sCountiesLayer = "CountyBoundary";
 var lyrSegments;
 var lyrCounties;
@@ -84,20 +84,20 @@ var aCR_BertGrad9  = new Array(sCBertGrad1,sCBertGrad2,sCBertGrad3,sCBertGrad4,s
 var aCR_Change7    = new Array(sCBlue3,sCBlue2,sCDefaultGrey,sCRed1,sCRed2,sCRed3,sCRed4);
 
 //AADT Arrays for Forecast Years (FY)
-var aFieldNamesFY = new Array("F2023","F2032","F2042","F2050");
-var aTextFY = new Array("2023 Forecast","2032 Forecast","2042 Forecast","2050 Forecast");
+var aFieldNamesFY = new Array("AADT2019","F2023","F2028","F2032","F2042","F2050");
+var aTextFY = new Array("2019 Historic","2023 Forecast","2028 Forecast","2032 Forecast","2042 Forecast","2050 Forecast");
 var aLabelClassFY = []; //built programatically
 var aJsonLabelsFY = []; //built programatically
 var aSegRndrFY    = [];
-var aLegendNameFY = new Array("2023 AADT Forecast","2032 AADT Forecast", "2042 AADT Forecast","2050 AADT Forecast");
+var aLegendNameFY = new Array("2019 AADT Historic","2023 Forecast","2028 AADT Forecast","2032 AADT Forecast","2042 AADT Forecast","2050 AADT Forecast");
 
 //Change Arrays (Ch)
-var aFieldNamesCh = new Array("Ch23to50","Ch23to32","Ch32to42","Ch42to50");
-var aTextCh = new Array("2023 to 2050","2023 to 2032","2032 to 2042","2042 to 2050");
+var aFieldNamesCh = new Array("CH19TO50","CH19TO23","CH23TO28","CH28TO32","CH32TO42","CH42TO50");
+var aTextCh = new Array("2019 to 2050","2019 to 2023","2023 to 2028","2028 to 2032","2032 to 2042","2042 to 2050");
 var aLabelClassCh = []; //built programatically
 var aJsonLabelsCh = []; //built programatically
 var aSegRndrCh    = [];
-var aLegendNameCh = new Array("2023 to 2050 AADT Change","2023 to 2032 AADT Change","2032 to 2042 AADT Change","2042 to 2050 AADT Change");
+var aLegendNameCh = new Array("2019 to 2050 AADT Change","2019 to 2023 AADT Change","2023 to 2028 AADT Change","2028 to 2032 AADT Change","2032 to 2042 AADT Change","2042 to 2050 AADT Change");
 
 //Line Widths
 var dLineWidth0 = 0.1;
@@ -139,16 +139,16 @@ var aDisplayValueLegendName = new Array(""," - Density");
 
 var aDisplayValueLabelFormat = new Array("'#,###'","'#,##0.00'");
 
-var aFieldNamesSEFYTotals = new Array("YEAR2023","YEAR2032","YEAR2042","YEAR2050");
-var aFieldNamesSEFYDensity = new Array("YEAR2023D","YEAR2032D","YEAR2042D","YEAR2050D");
-var aFieldNamesSEChTotals = new Array("CH23TO50","CH23TO32","CH32TO42","CH42TO50");
-var aFieldNamesSEChDensity = new Array("CH23TO50D","CH23TO32D","CH32TO42D","CH42TO50D");
+var aFieldNamesSEFYTotals = new Array("YEAR2015","YEAR2019","YEAR2024","YEAR2030","YEAR2040","YEAR2050");
+var aFieldNamesSEFYDensity = new Array("YEAR2015D","YEAR2019D","YEAR2024D","YEAR2030D","YEAR2040D","YEAR2050D");
+var aFieldNamesSEChTotals = new Array("CH15TO50","CH15TO19","CH19TO24","CH24TO30","CH30TO40","CH40TO50");
+var aFieldNamesSEChDensity = new Array("CH15TO50D","CH15TO19D","CH19TO24D","CH24TO30D","CH30TO40D","CH40TO50D");
 
 var aFieldNamesSEFY = new Array(aFieldNamesSEFYTotals,aFieldNamesSEFYDensity)
 var aFieldNamesSECh = new Array(aFieldNamesSEChTotals,aFieldNamesSEChDensity)
 
-var aTextSEFY = new Array("2023 Forecast","2032 Forecast","2042 Forecast","2050 Forecast");
-var aTextSECh = new Array("2023 to 2050","2023 to 2032","2032 to 2042","2042 to 2050");
+var aTextSEFY = new Array("2015 Base Year","2019 Forecast","2024 Forecast","2030 Forecast","2040 Forecast","2050 Forecast");
+var aTextSECh = new Array("2015 to 2050","2015 to 2019","2019 to 2024","2024 to 2030","2030 to 2040","2040 to 2050");
 
 var aLabelClassSEFY = []; //built programatically
 var aJsonLabelsSEFY = []; //built programatically
@@ -297,7 +297,7 @@ function(declare, BaseWidget, LayerInfos, RainbowVis, registry, dom, domStyle, d
       console.log('startup');
       
       this.inherited(arguments);
-      //this.map.setInfoWindowOnClick(false); // turn off info window (popup) when clicking a feature
+      this.map.setInfoWindowOnClick(false); // turn off info window (popup) when clicking a feature
 
       //Widen the widget panel to provide more space for charts
       //var panel = this.getPanel();
@@ -315,9 +315,18 @@ function(declare, BaseWidget, LayerInfos, RainbowVis, registry, dom, domStyle, d
       
       
       //ABOUT WIDGET CONTROL - OPEN ON FIRST USE///////////////////////////////////////////////////////
-      var pm = PanelManager.getInstance();
-
-      pm.showPanel(this.appConfig.widgetPool.widgets[WIDGETPOOLID_ABOUT]);
+              
+        var pm = PanelManager.getInstance();
+        
+        //Close Widget
+        //for (var p=0; p < pm.panels.length; p++) {
+        //  if (pm.panels[p].label == "About") {
+        //    pm.closePanel(pm.panels[p]);
+        //  }
+        //}
+        
+        //Open Widget
+        pm.showPanel(this.appConfig.widgetPool.widgets[WIDGETPOOLID_ABOUT]);
         
       //TAB STARTUP///////////////////////////////////////////////////////////////////////////////////////////
       
@@ -342,7 +351,7 @@ function(declare, BaseWidget, LayerInfos, RainbowVis, registry, dom, domStyle, d
         }
       }
       
-      lyrSegments.hide();
+      //lyrSegments.hide();
       lyrSegments.legendEnabled = false;
       
       // create a text symbol to define the style of labels
@@ -357,15 +366,15 @@ function(declare, BaseWidget, LayerInfos, RainbowVis, registry, dom, domStyle, d
       var defaultLine =  new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID, Color.fromHex(sCDefaultGrey), dLineWidth0) 
 
       //Class Breaks
-      var aBrk_BertGrad9 = new Array({minValue: 10,     maxValue: 5999,     symbol: new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID, Color.fromHex(aCR_BertGrad9[0]), dLineWidth1), label: "Less than 6,000"},
-                                     {minValue: 6000,   maxValue: 17999,    symbol: new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID, Color.fromHex(aCR_BertGrad9[1]), dLineWidth2), label: "6,000 to 18,000"},
-                                     {minValue: 18000,  maxValue: 35999,    symbol: new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID, Color.fromHex(aCR_BertGrad9[2]), dLineWidth3), label: "18,000 to 36,000"},
-                                     {minValue: 36000,  maxValue: 71999,    symbol: new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID, Color.fromHex(aCR_BertGrad9[3]), dLineWidth4), label: "36,000 to 72,000"},
-                                     {minValue: 72000,  maxValue: 119999,   symbol: new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID, Color.fromHex(aCR_BertGrad9[4]), dLineWidth5), label: "72,000 to 120,000"},
-                                     {minValue: 120000, maxValue: 159999,   symbol: new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID, Color.fromHex(aCR_BertGrad9[5]), dLineWidth6), label: "120,000 to 160,000"},
-                                     {minValue: 160000, maxValue: 199999,   symbol: new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID, Color.fromHex(aCR_BertGrad9[6]), dLineWidth7), label: "160,000 to 200,000"},
+      var aBrk_BertGrad9 = new Array({minValue: 240000, maxValue: Infinity, symbol: new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID, Color.fromHex(aCR_BertGrad9[8]), dLineWidth9), label: "More than 240,000" },
                                      {minValue: 200000, maxValue: 239999,   symbol: new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID, Color.fromHex(aCR_BertGrad9[7]), dLineWidth8), label: "200,000 to 240,000"},
-                                     {minValue: 240000, maxValue: Infinity, symbol: new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID, Color.fromHex(aCR_BertGrad9[8]), dLineWidth9), label: "More than 240,000"});
+                                     {minValue: 160000, maxValue: 199999,   symbol: new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID, Color.fromHex(aCR_BertGrad9[6]), dLineWidth7), label: "160,000 to 200,000"},
+                                     {minValue: 120000, maxValue: 159999,   symbol: new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID, Color.fromHex(aCR_BertGrad9[5]), dLineWidth6), label: "120,000 to 160,000"},
+                                     {minValue: 72000,  maxValue: 119999,   symbol: new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID, Color.fromHex(aCR_BertGrad9[4]), dLineWidth5), label: "72,000 to 120,000" },
+                                     {minValue: 36000,  maxValue: 71999,    symbol: new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID, Color.fromHex(aCR_BertGrad9[3]), dLineWidth4), label: "36,000 to 72,000"  },
+                                     {minValue: 18000,  maxValue: 35999,    symbol: new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID, Color.fromHex(aCR_BertGrad9[2]), dLineWidth3), label: "18,000 to 36,000"  },
+                                     {minValue: 6000,   maxValue: 17999,    symbol: new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID, Color.fromHex(aCR_BertGrad9[1]), dLineWidth2), label: "6,000 to 18,000"   },
+                                     {minValue: 10,     maxValue: 5999,     symbol: new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID, Color.fromHex(aCR_BertGrad9[0]), dLineWidth1), label: "Less than 6,000"   });
 
       var aBrk_Change7 = new Array({minValue: -999999, maxValue: -5001,    symbol: new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID, Color.fromHex(aCR_Change7[0]), dLineWidth5), label: "Less than -5,000"},
                                    {minValue: -5000,   maxValue: -1,       symbol: new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID, Color.fromHex(aCR_Change7[1]), dLineWidth4), label: "-5,000 to -10"},
@@ -476,10 +485,10 @@ function(declare, BaseWidget, LayerInfos, RainbowVis, registry, dom, domStyle, d
 
       //Set to default layer to 2017 that is selected in HTML
       
-      lyrSegments.setRenderer(aSegRndrFY[3]);
-      lyrSegments.setLabelingInfo([ aLabelClassFY[3] ]);
+      lyrSegments.setRenderer(aSegRndrFY[5]);
+      lyrSegments.setLabelingInfo([ aLabelClassFY[5] ]);
       lyrSegments.refresh();
-      this.SetLegendBarFY(aCR_BertGrad9,aLegendNameFY[3]);
+      this.SetLegendBarFY(aCR_BertGrad9,aLegendNameFY[5]);
 
       lyrSegments.show();
 
@@ -574,13 +583,45 @@ function(declare, BaseWidget, LayerInfos, RainbowVis, registry, dom, domStyle, d
             options: counties,
             onChange: function() {
               curCountyVol = this.value;
-              lyrTAZSelect.hide();
+//              lyrTAZSelect.hide();
               parent._zoomToCounty();
               parent._updateRoutes();
               parent._updateSegments();
             }
           }, "cmbCounty");
           cmbCounty.startup();
+          
+          function getQueryParam(param) {
+            const urlParams = new URLSearchParams(window.location.search);
+            const value = urlParams.get(param);
+            if (value === null) {
+              console.log(`Parameter '${param}' not found in the URL.`);
+              return undefined;  // or return a default value, or handle the case in another way
+            }
+            return toTitleCase(value);
+          }
+          
+          const countyValue = getQueryParam('county');
+          if (countyValue) {
+            console.log(`County from URL: ${countyValue}`);  // Outputs the value of 'county' if it exists
+            curCountyVol = findCountyValue(countyValue);
+          }
+
+          function toTitleCase(str) {
+            return str.replace(
+              /\w\S*/g,
+              function(txt) {
+                return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+              }
+            );
+          }
+
+          function findCountyValue(label) {
+            const option = cmbCounty.options.find(option => option.label === label);
+            return option ? option.value : undefined;
+          }
+
+
           cmbCounty.set("value",curCountyVol);
           parent._updateRoutes(curCountyVol);
         },
@@ -1194,9 +1235,10 @@ function(declare, BaseWidget, LayerInfos, RainbowVis, registry, dom, domStyle, d
         
         //Update Table
 
-        dom.byId("vol2024value").innerHTML= "--";
-        dom.byId("vol2030value").innerHTML= "--";
-        dom.byId("vol2040value").innerHTML= "--";
+        dom.byId("vol2023value").innerHTML= "--";
+        dom.byId("vol2028value").innerHTML= "--";
+        dom.byId("vol2032value").innerHTML= "--";
+        dom.byId("vol2042value").innerHTML= "--";
         dom.byId("vol2050value").innerHTML= "--";
         
         if (tSSObs.data.length>=20 && tSSObs.data[19].y !== undefined) {
@@ -2571,7 +2613,8 @@ function(declare, BaseWidget, LayerInfos, RainbowVis, registry, dom, domStyle, d
       return {
         //districtfrom: this.textNode.value
       };
-    }
+    },
+    
     
   });
 });
