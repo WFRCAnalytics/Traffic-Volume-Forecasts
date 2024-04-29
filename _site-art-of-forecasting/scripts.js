@@ -17,8 +17,8 @@ let prefixes = ["adj", "f", "mf", "m", "diff", "dyvol", "lanes", "ft", "at"];
 let initialValues = [0, 0, 0, 0, 0, 0, ""];
 let editKeys = [
 //  ["Cache", "%5fRvKPfUkUb7Yat"],
-  ["Dixie", "tptt%r-N-sXjUvP5"],
-  ["Dixie", "KLTH^q1Z|H22DhFz"],
+//  ["Dixie", "tptt%r-N-sXjUvP5"],
+//  ["Dixie", "KLTH^q1Z|H22DhFz"],
   ["Iron", "ZsC2h@sj4bH=Mzdu"],
   ["Iron", "KLTH^q1Z|H22DhFz"],
   ["Iron", "m4uMhLPEX_!g$Psq"],
