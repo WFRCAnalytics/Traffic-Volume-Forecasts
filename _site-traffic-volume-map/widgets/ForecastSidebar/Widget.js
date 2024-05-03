@@ -139,16 +139,16 @@ var aDisplayValueLegendName = new Array(""," - Density");
 
 var aDisplayValueLabelFormat = new Array("'#,###'","'#,##0.00'");
 
-var aFieldNamesSEFYTotals = new Array("YEAR2015","YEAR2019","YEAR2024","YEAR2030","YEAR2040","YEAR2050");
-var aFieldNamesSEFYDensity = new Array("YEAR2015D","YEAR2019D","YEAR2024D","YEAR2030D","YEAR2040D","YEAR2050D");
-var aFieldNamesSEChTotals = new Array("CH15TO50","CH15TO19","CH19TO24","CH24TO30","CH30TO40","CH40TO50");
-var aFieldNamesSEChDensity = new Array("CH15TO50D","CH15TO19D","CH19TO24D","CH24TO30D","CH30TO40D","CH40TO50D");
+var aFieldNamesSEFYTotals = new Array("YEAR2019","YEAR2023","YEAR2028","YEAR2032","YEAR2042","YEAR2050");
+var aFieldNamesSEFYDensity = new Array("YEAR2019D","YEAR2023D","YEAR2028D","YEAR2032D","YEAR2042D","YEAR2050D");
+var aFieldNamesSEChTotals = new Array("CH19TO50","CH19TO23","CH23TO28","CH28TO32","CH32TO42","CH42TO50");
+var aFieldNamesSEChDensity = new Array("CH19TO50D","CH19TO23D","CH23TO28D","CH28TO32D","CH32TO42D","CH42TO50D");
 
 var aFieldNamesSEFY = new Array(aFieldNamesSEFYTotals,aFieldNamesSEFYDensity)
 var aFieldNamesSECh = new Array(aFieldNamesSEChTotals,aFieldNamesSEChDensity)
 
-var aTextSEFY = new Array("2015 Base Year","2019 Forecast","2024 Forecast","2030 Forecast","2040 Forecast","2050 Forecast");
-var aTextSECh = new Array("2015 to 2050","2015 to 2019","2019 to 2024","2024 to 2030","2030 to 2040","2040 to 2050");
+var aTextSEFY = new Array("2019 Base Year","2023 Forecast","2028 Forecast","2032 Forecast","2042 Forecast","2050 Forecast");
+var aTextSECh = new Array("2019 to 2050","2019 to 2023","2023 to 2028","2028 to 2032","2032 to 2042","2042 to 2050");
 
 var aLabelClassSEFY = []; //built programatically
 var aJsonLabelsSEFY = []; //built programatically
@@ -162,7 +162,7 @@ var labelClassOff;
 var aSECatLayerNames = new Array("Population Projections","Household Projections","Typical Employment Projections","Retail Employment Projections","Industrial Employment Projections","Office Employment Projections");
 var aSECatDisplayName = new Array("Population","Households","Typical Employment","Retail Employment","Industrial Employment","Office Employment");
 var aSECatDisplayNameShort = new Array("Population","Households","Typical Emp.","Retail Emp.","Industrial Emp.","Office Emp.");
-var aSECatValues = new Array("HHPOP","TOTHH","TOTEMP","RETEMP","INDEMP","OTHEMP")
+var aSECatValues = new Array("HHPOP","TOTHH","TYPEMP","RETEMP","INDEMP","OTHEMP")
 var aSECatLayers = []; //built programatically
 
 var aSEComboOptions = [];
@@ -186,10 +186,10 @@ var curCityAreaSE = 'select';
 
 var curSelectedTAZs = [];
 
-var aSECatValuesTotal = [[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]];
-var aSECatValuesTotalxDevAcres =  [[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]];
+var aSECatValuesTotal = [[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]];
+var aSECatValuesTotalxDevAcres =  [[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]];
 var aSECatValuesDevAcres = [0,0,0,0,0,0];
-var aSECatValuesDensity =  [[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]];
+var aSECatValuesDensity =  [[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]];
 
 var cChartOneSE;
 
@@ -201,10 +201,10 @@ var curSEChartSelectionMethod = "filter"; //Map or Filter
 
 //UTP VARIABLES////////////////////////////////////////////////////////////////////////////////////////////
 
-sUTPLayersGroup = "Unified Plan 2020 Service";
+sUTPLayersGroup = "Unified Plan 2023 Service";
 
 
-aUTPGroupsPhases = new Array("Phase 1 (2020-2030)","Phase 2 (2031-2040)","Phase 3 (2041-2050)","Unfunded");
+aUTPGroupsPhases = new Array("Phase 1 (2023-2032)","Phase 2 (2033-2042)","Phase 3 (2043-2050)","Unfunded");
 aUTPGroupsPhasesShort = new Array("Phase 1","Phase 2","Phase 3","Unfunded");
 aUTPGroupsMode = new Array("Highway","Transit");
 aUTPGroupsType = new Array("Site","Linear")
@@ -366,23 +366,26 @@ function(declare, BaseWidget, LayerInfos, RainbowVis, registry, dom, domStyle, d
       var defaultLine =  new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID, Color.fromHex(sCDefaultGrey), dLineWidth0) 
 
       //Class Breaks
-      var aBrk_BertGrad9 = new Array({minValue: 240000, maxValue: Infinity, symbol: new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID, Color.fromHex(aCR_BertGrad9[8]), dLineWidth9), label: "More than 240,000" },
-                                     {minValue: 200000, maxValue: 239999,   symbol: new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID, Color.fromHex(aCR_BertGrad9[7]), dLineWidth8), label: "200,000 to 240,000"},
-                                     {minValue: 160000, maxValue: 199999,   symbol: new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID, Color.fromHex(aCR_BertGrad9[6]), dLineWidth7), label: "160,000 to 200,000"},
-                                     {minValue: 120000, maxValue: 159999,   symbol: new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID, Color.fromHex(aCR_BertGrad9[5]), dLineWidth6), label: "120,000 to 160,000"},
-                                     {minValue: 72000,  maxValue: 119999,   symbol: new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID, Color.fromHex(aCR_BertGrad9[4]), dLineWidth5), label: "72,000 to 120,000" },
-                                     {minValue: 36000,  maxValue: 71999,    symbol: new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID, Color.fromHex(aCR_BertGrad9[3]), dLineWidth4), label: "36,000 to 72,000"  },
-                                     {minValue: 18000,  maxValue: 35999,    symbol: new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID, Color.fromHex(aCR_BertGrad9[2]), dLineWidth3), label: "18,000 to 36,000"  },
-                                     {minValue: 6000,   maxValue: 17999,    symbol: new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID, Color.fromHex(aCR_BertGrad9[1]), dLineWidth2), label: "6,000 to 18,000"   },
-                                     {minValue: 10,     maxValue: 5999,     symbol: new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID, Color.fromHex(aCR_BertGrad9[0]), dLineWidth1), label: "Less than 6,000"   });
-
-      var aBrk_Change7 = new Array({minValue: -999999, maxValue: -5001,    symbol: new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID, Color.fromHex(aCR_Change7[0]), dLineWidth5), label: "Less than -5,000"},
-                                   {minValue: -5000,   maxValue: -1,       symbol: new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID, Color.fromHex(aCR_Change7[1]), dLineWidth4), label: "-5,000 to -10"},
-                                   {minValue: 0,       maxValue: 999,      symbol: new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID, Color.fromHex(aCR_Change7[2]), dLineWidth2), label: "0 to 1,000"},
-                                   {minValue: 1000,    maxValue: 4999,     symbol: new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID, Color.fromHex(aCR_Change7[3]), dLineWidth4), label: "1,000 to 5,000"},
-                                   {minValue: 5000,    maxValue: 9999,     symbol: new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID, Color.fromHex(aCR_Change7[4]), dLineWidth5), label: "5,000 to 10,000"},
-                                   {minValue: 10000,   maxValue: 19999,    symbol: new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID, Color.fromHex(aCR_Change7[5]), dLineWidth6), label: "10,000 to 20,000"},
-                                   {minValue: 20000,   maxValue: Infinity, symbol: new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID, Color.fromHex(aCR_Change7[6]), dLineWidth7), label: "More than 20,000"});
+      var aBrk_BertGrad9 = new Array(
+                                      {minValue: 10,     maxValue: 5999,     symbol: new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID, Color.fromHex(aCR_BertGrad9[0]), dLineWidth1), label: "Less than 6,000"},
+                                      {minValue: 6000,   maxValue: 17999,    symbol: new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID, Color.fromHex(aCR_BertGrad9[1]), dLineWidth2), label: "6,000 to 18,000"},
+                                      {minValue: 18000,  maxValue: 35999,    symbol: new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID, Color.fromHex(aCR_BertGrad9[2]), dLineWidth3), label: "18,000 to 36,000"},
+                                      {minValue: 36000,  maxValue: 71999,    symbol: new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID, Color.fromHex(aCR_BertGrad9[3]), dLineWidth4), label: "36,000 to 72,000"},
+                                      {minValue: 72000,  maxValue: 119999,   symbol: new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID, Color.fromHex(aCR_BertGrad9[4]), dLineWidth5), label: "72,000 to 120,000"},
+                                      {minValue: 120000, maxValue: 159999,   symbol: new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID, Color.fromHex(aCR_BertGrad9[5]), dLineWidth6), label: "120,000 to 160,000"},
+                                      {minValue: 160000, maxValue: 199999,   symbol: new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID, Color.fromHex(aCR_BertGrad9[6]), dLineWidth7), label: "160,000 to 200,000"},
+                                      {minValue: 200000, maxValue: 239999,   symbol: new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID, Color.fromHex(aCR_BertGrad9[7]), dLineWidth8), label: "200,000 to 240,000"},
+                                      {minValue: 240000, maxValue: Infinity, symbol: new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID, Color.fromHex(aCR_BertGrad9[8]), dLineWidth9), label: "More than 240,000"}
+                                    );
+          var aBrk_Change7 = new Array(
+                                        {minValue: -999999, maxValue: -5001,    symbol: new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID, Color.fromHex(aCR_Change7[0]), dLineWidth5), label: "Less than -5,000"},
+                                        {minValue: -5000,   maxValue: -1,       symbol: new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID, Color.fromHex(aCR_Change7[1]), dLineWidth4), label: "-5,000 to -10"},
+                                        {minValue: 0,       maxValue: 999,      symbol: new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID, Color.fromHex(aCR_Change7[2]), dLineWidth2), label: "0 to 1,000"},
+                                        {minValue: 1000,    maxValue: 4999,     symbol: new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID, Color.fromHex(aCR_Change7[3]), dLineWidth4), label: "1,000 to 5,000"},
+                                        {minValue: 5000,    maxValue: 9999,     symbol: new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID, Color.fromHex(aCR_Change7[4]), dLineWidth5), label: "5,000 to 10,000"},
+                                        {minValue: 10000,   maxValue: 19999,    symbol: new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID, Color.fromHex(aCR_Change7[5]), dLineWidth6), label: "10,000 to 20,000"},
+                                        {minValue: 20000,   maxValue: Infinity, symbol: new SimpleLineSymbol(SimpleLineSymbol.STYLE_SOLID, Color.fromHex(aCR_Change7[6]), dLineWidth7), label: "More than 20,000"}
+                                      );
 
 
       //Setup empy volume label class for when toggle is off
@@ -1372,9 +1375,9 @@ function(declare, BaseWidget, LayerInfos, RainbowVis, registry, dom, domStyle, d
             
       parent=this;
         
-      aSECatValuesTotal = [[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]];
+      aSECatValuesTotal = [[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]];
       aSECatValuesDevAcres = [0,0,0,0,0,0];
-      aSECatValuesDensity =  [[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]];
+      aSECatValuesDensity =  [[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]];
          
       var query = new Query();  
       query.returnGeometry = true;
@@ -1411,12 +1414,12 @@ function(declare, BaseWidget, LayerInfos, RainbowVis, registry, dom, domStyle, d
             
             aSECatValuesDevAcres[l]+=featureAttributes["DEVACRES"];
             
-            for (var k=2015;k<=2050;k++) {
-              aSECatValuesTotal[l][k-2015]+=featureAttributes["YEAR" + k.toString()];
+            for (var k=2019;k<=2050;k++) {
+              aSECatValuesTotal[l][k-2019]+=featureAttributes["YEAR" + k.toString()];
             }
           }
-          for (var m=2015;m<=2050;m++) {
-            aSECatValuesDensity[l][m-2015] = aSECatValuesTotal[l][m-2015] / aSECatValuesDevAcres[l];
+          for (var m=2019;m<=2050;m++) {
+            aSECatValuesDensity[l][m-2019] = aSECatValuesTotal[l][m-2019] / aSECatValuesDevAcres[l];
           }
           
           if (l==curSECatPos) {
@@ -1475,8 +1478,8 @@ function(declare, BaseWidget, LayerInfos, RainbowVis, registry, dom, domStyle, d
         
         aChartSeriesData =[];
           
-        for (var k=2015;k<=2050;k++) {
-          aChartSeriesData.push({x:k,y:aChartY[k-2015]});
+        for (var k=2019;k<=2050;k++) {
+          aChartSeriesData.push({x:k,y:aChartY[k-2019]});
         }
 
         cChartOneSE.addSeries("ChartData", aChartSeriesData, {stroke: {color: new Color([165, 165, 165, 0.9]), width: 4}});
@@ -1488,7 +1491,7 @@ function(declare, BaseWidget, LayerInfos, RainbowVis, registry, dom, domStyle, d
         cChartOneSE.resize(330, 280);
         cChartOneSE.render();
         
-        if (aChartY[2050-2015]>=100000) {
+        if (aChartY[2050-2019]>=100000) {
           _sPrefix = "<small>";
           _sSuffix = "</small>";
         } else {
@@ -1499,19 +1502,19 @@ function(declare, BaseWidget, LayerInfos, RainbowVis, registry, dom, domStyle, d
         //update table
         
         if (curDisplayValuePos==0) { //TOTAL
-          dom.byId("se2015value").innerHTML= _sPrefix + this._NumberWithCommas(aChartY[2015-2015]) + _sSuffix;
-          dom.byId("se2019value").innerHTML= _sPrefix + this._NumberWithCommas(aChartY[2019-2015]) + _sSuffix;
-          dom.byId("se2024value").innerHTML= _sPrefix + this._NumberWithCommas(aChartY[2024-2015]) + _sSuffix;
-          dom.byId("se2030value").innerHTML= _sPrefix + this._NumberWithCommas(aChartY[2030-2015]) + _sSuffix;
-          dom.byId("se2040value").innerHTML= _sPrefix + this._NumberWithCommas(aChartY[2040-2015]) + _sSuffix;
-          dom.byId("se2050value").innerHTML= _sPrefix + this._NumberWithCommas(aChartY[2050-2015]) + _sSuffix;
+          dom.byId("se2019value").innerHTML= _sPrefix + this._NumberWithCommas(aChartY[2019-2019]) + _sSuffix;
+          dom.byId("se2023value").innerHTML= _sPrefix + this._NumberWithCommas(aChartY[2023-2019]) + _sSuffix;
+          dom.byId("se2028value").innerHTML= _sPrefix + this._NumberWithCommas(aChartY[2028-2019]) + _sSuffix;
+          dom.byId("se2032value").innerHTML= _sPrefix + this._NumberWithCommas(aChartY[2032-2019]) + _sSuffix;
+          dom.byId("se2042value").innerHTML= _sPrefix + this._NumberWithCommas(aChartY[2042-2019]) + _sSuffix;
+          dom.byId("se2050value").innerHTML= _sPrefix + this._NumberWithCommas(aChartY[2050-2019]) + _sSuffix;
         } else if (curDisplayValuePos==1) { //DENSITY
-          dom.byId("se2015value").innerHTML= (aChartY[2015-2015]).toFixed(2);
-          dom.byId("se2019value").innerHTML= (aChartY[2019-2015]).toFixed(2);
-          dom.byId("se2024value").innerHTML= (aChartY[2024-2015]).toFixed(2);
-          dom.byId("se2030value").innerHTML= (aChartY[2030-2015]).toFixed(2);
-          dom.byId("se2040value").innerHTML= (aChartY[2040-2015]).toFixed(2);
-          dom.byId("se2050value").innerHTML= (aChartY[2050-2015]).toFixed(2);
+          dom.byId("se2019value").innerHTML= (aChartY[2019-2019]).toFixed(2);
+          dom.byId("se2023value").innerHTML= (aChartY[2023-2019]).toFixed(2);
+          dom.byId("se2028value").innerHTML= (aChartY[2028-2019]).toFixed(2);
+          dom.byId("se2032value").innerHTML= (aChartY[2032-2019]).toFixed(2);
+          dom.byId("se2042value").innerHTML= (aChartY[2042-2019]).toFixed(2);
+          dom.byId("se2050value").innerHTML= (aChartY[2050-2019]).toFixed(2);
         }
         
         dom.byId("tableOneSE").style.display = '';
@@ -1982,7 +1985,8 @@ function(declare, BaseWidget, LayerInfos, RainbowVis, registry, dom, domStyle, d
     },
     
     _NumberWithCommas: function(x) {
-      return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+      const i = x.toFixed(0);
+      return i.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     },
     
     _RGBToHex: function(color) {
