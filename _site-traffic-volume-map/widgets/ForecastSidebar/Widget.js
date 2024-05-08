@@ -201,7 +201,8 @@ var curSEChartSelectionMethod = "filter"; //Map or Filter
 
 //UTP VARIABLES////////////////////////////////////////////////////////////////////////////////////////////
 
-sUTPLayersGroup = "Unified Plan 2023 Service";
+sUTPLayersLine = "Unified Plan 2023 Line";
+sUTPLayersPoint = "Unified Plan 2023 Point";
 
 
 aUTPGroupsPhases = new Array("Phase 1 (2023-2032)","Phase 2 (2033-2042)","Phase 3 (2043-2050)","Unfunded");
@@ -1008,15 +1009,14 @@ function(declare, BaseWidget, LayerInfos, RainbowVis, registry, dom, domStyle, d
       
       //UTP STARTUP///////////////////////////////////////////////////////////////////////////////////////////
 
-      // LAYER GONE SO DON'T RUN
-      return;
-
       //Initialize layers objects
       var layerInfosObject = LayerInfos.getInstanceSync();
 
       for (var i=0; i<layerInfosObject._layerInfos.length; i++) {
-        if (layerInfosObject._layerInfos[i].title == sUTPLayersGroup) { //must mach layer title
-          lyrUTP = layerInfosObject._layerInfos[i].layerObject;
+        if (layerInfosObject._layerInfos[i].title == sUTPLayersLine) { //must mach layer title
+          lyrUtpLine = layerInfosObject._layerInfos[i].layerObject;
+        } else if (layerInfosObject._layerInfos[i].title == sUTPLayersPoint) { //must mach layer title
+          lyrUtpPoint = layerInfosObject._layerInfos[i].layerObject;
         }
       }
       
@@ -2120,10 +2120,7 @@ function(declare, BaseWidget, LayerInfos, RainbowVis, registry, dom, domStyle, d
     
     _updateExternalLayerDisplayUTP: function() {
       console.log('_updateExternalLayerDisplayUTP');
-      
-      //LAYER GONE SO DON'T RUN
-      return;
-
+  
       if (dom.byId("chkSegLayerOnUTP").checked == true) {
         lyrSegments.show(); 
       } else {
@@ -2139,9 +2136,6 @@ function(declare, BaseWidget, LayerInfos, RainbowVis, registry, dom, domStyle, d
     _updateLayerDisplayUTP: function() {
       console.log('_updateLayerDisplayUTP');
 
-      // LAYER GONE SO DON'T RUN
-      return;
-      
       var _bRds = dom.byId("chkRoads").checked;
       var _bTrn = dom.byId("chkTransit").checked;
       var _bP1 = dom.byId("chkPhase1").checked;
@@ -2151,25 +2145,25 @@ function(declare, BaseWidget, LayerInfos, RainbowVis, registry, dom, domStyle, d
       
       var aVisibleLayers = [];
       
-      if (curTab=="UTP") {
-        for (var i=0; i<aUTPLayerIDs.length;i++) {
-          if (((_bRds && aUTP_Rds[i]) || (_bTrn && aUTP_Trn[i])) && ((_bP1 && aUTP_P1[i]) || (_bP2 && aUTP_P2[i]) || (_bP3 && aUTP_P3[i]) || (_bP4 && aUTP_P4[i]))) {
-            aVisibleLayers.push(aUTPLayerIDs[i]);
-          }
-        }
-        
-        //lyrUTP.visibleLayers = (aVisibleLayers.concat(aUTPLayerIDs_AlwaysOn)).sort(function(a, b){return a - b});
-        if (aVisibleLayers.length) {
-          lyrUTP.visibleLayers = (aVisibleLayers.concat(aUTPLayerIDs_AlwaysOn)).sort(function(a, b){return a - b});
-        } else {
-          lyrUTP.visibleLayers = [];
-        }
-      } else {
-        lyrUTP.visibleLayers = [];
-      }
-      
-      lyrUTP.hide();
-      lyrUTP.show();
+      //if (curTab=="UTP") {
+      //  for (var i=0; i<aUTPLayerIDs.length;i++) {
+      //    if (((_bRds && aUTP_Rds[i]) || (_bTrn && aUTP_Trn[i])) && ((_bP1 && aUTP_P1[i]) || (_bP2 && aUTP_P2[i]) || (_bP3 && aUTP_P3[i]) || (_bP4 && aUTP_P4[i]))) {
+      //      aVisibleLayers.push(aUTPLayerIDs[i]);
+      //    }
+      //  }
+      //  
+      //  //lyrUTP.visibleLayers = (aVisibleLayers.concat(aUTPLayerIDs_AlwaysOn)).sort(function(a, b){return a - b});
+      //  if (aVisibleLayers.length) {
+      //    lyrUTP.visibleLayers = (aVisibleLayers.concat(aUTPLayerIDs_AlwaysOn)).sort(function(a, b){return a - b});
+      //  } else {
+      //    lyrUTP.visibleLayers = [];
+      //  }
+      //} else {
+      //  lyrUTP.visibleLayers = [];
+      //}
+      //
+      //lyrUTP.hide();
+      //lyrUTP.show();
     },
     
     _selectVol: function() {
@@ -2246,9 +2240,6 @@ function(declare, BaseWidget, LayerInfos, RainbowVis, registry, dom, domStyle, d
     
     _selectUTP: function() {
       console.log('_selectUTP');
-      
-      //LAYER GONE SO DON'T RUN
-      return;
       
       if (curTab=="UTP") return;
       
