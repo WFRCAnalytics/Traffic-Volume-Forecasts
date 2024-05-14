@@ -201,25 +201,18 @@ var curSEChartSelectionMethod = "filter"; //Map or Filter
 
 //UTP VARIABLES////////////////////////////////////////////////////////////////////////////////////////////
 
-sUTPLayersLine = "Unified Plan 2023 Line";
-sUTPLayersPoint = "Unified Plan 2023 Point";
+sUtpLayersLine = "Unified Plan 2023 Line";
+sUtpLayersPoint = "Unified Plan 2023 Point";
 
 
-aUTPGroupsPhases = new Array("Phase 1 (2023-2032)","Phase 2 (2033-2042)","Phase 3 (2043-2050)","Unfunded");
-aUTPGroupsPhasesShort = new Array("Phase 1","Phase 2","Phase 3","Unfunded");
-aUTPGroupsMode = new Array("Highway","Transit");
-aUTPGroupsType = new Array("Site","Linear")
+aUtpGroupsPhases = new Array("Phase 1 (2023-2032)","Phase 2 (2033-2042)","Phase 3 (2043-2050)","Unfunded");
+aUtpGroupsPhasesShort = new Array("Phase 1","Phase 2","Phase 3","Unfunded");
+aUtpGroupsMode = new Array("Highway","Transit");
+aUtpGroupsType = new Array("Site","Linear")
 
-var lyrUTP;
+var lyrUtpLine;
+var lyrUtpPoint;
 
-aUTPLayerIDs_AlwaysOn = new Array(1,4,7,8,11,14,15,18,21,22,25)
-aUTPLayerIDs = new Array(2,3,5,6,9,10,12,13,16,17,19,20,23,24,26,27)
-aUTP_Rds = new Array(1,1,0,0,1,1,0,0,1,1,0,0,1,1,0,0); //Roads
-aUTP_Trn = new Array(0,0,1,1,0,0,1,1,0,0,1,1,0,0,1,1); //Transit
-aUTP_P1 = new Array(1,1,1,1,0,0,0,0,0,0,0,0,0,0,0,0);
-aUTP_P2 = new Array(0,0,0,0,1,1,1,1,0,0,0,0,0,0,0,0);
-aUTP_P3 = new Array(0,0,0,0,0,0,0,0,1,1,1,1,0,0,0,0);
-aUTP_P4 = new Array(0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1); //Phase 4 is unfunded
 aPhaseCode = new Array('1','2','3','Unfunded');
 
 
@@ -1013,9 +1006,9 @@ function(declare, BaseWidget, LayerInfos, RainbowVis, registry, dom, domStyle, d
       var layerInfosObject = LayerInfos.getInstanceSync();
 
       for (var i=0; i<layerInfosObject._layerInfos.length; i++) {
-        if (layerInfosObject._layerInfos[i].title == sUTPLayersLine) { //must mach layer title
+        if (layerInfosObject._layerInfos[i].title == sUtpLayersLine) { //must mach layer title
           lyrUtpLine = layerInfosObject._layerInfos[i].layerObject;
-        } else if (layerInfosObject._layerInfos[i].title == sUTPLayersPoint) { //must mach layer title
+        } else if (layerInfosObject._layerInfos[i].title == sUtpLayersPoint) { //must mach layer title
           lyrUtpPoint = layerInfosObject._layerInfos[i].layerObject;
         }
       }
@@ -1061,16 +1054,16 @@ function(declare, BaseWidget, LayerInfos, RainbowVis, registry, dom, domStyle, d
         if (curTab == "SE" && dom.byId("SE_TOGGLEVOL").innerHTML==sHideTrafficLayerText) {
           dom.byId("VOL_LABELS_SE").style.display = '';
         }
-        //if (curTab == "UTP" && dom.byId("UTP_TOGGLEVOL").innerHTML==sHideTrafficLayerText) {
-        //  dom.byId("VOL_LABELS_UTP").style.display = '';
-        //}
+        if (curTab == "UTP" && dom.byId("UTP_TOGGLEVOL").innerHTML==sHideTrafficLayerText) {
+          dom.byId("VOL_LABELS_UTP").style.display = '';
+        }
         
         
       }else{
         //diable the checkbox
         dom.byId("VOL_LABELS_Vol").style.display = 'none';
         dom.byId("VOL_LABELS_SE").style.display = 'none';
-        //dom.byId("VOL_LABELS_UTP").style.display = 'none';
+        dom.byId("VOL_LABELS_UTP").style.display = 'none';
       }
     },
     
@@ -1078,7 +1071,9 @@ function(declare, BaseWidget, LayerInfos, RainbowVis, registry, dom, domStyle, d
     // USER DEFINED FUNCTIONS - SEGMENTS
     
     _updateLayerDisplayVol: function() {
-      if (curTab=="VOL" || (curTab=="SE" && dom.byId("SE_TOGGLEVOL").innerHTML==sHideTrafficLayerText) || (curTab=="UTP") && dom.byId("UTP_TOGGLEVOL").innerHTML==sHideTrafficLayerText) {
+      if (curTab=="VOL" ||
+          (curTab=="SE" && dom.byId("SE_TOGGLEVOL").innerHTML==sHideTrafficLayerText) ||
+          (curTab=="UTP") && dom.byId("UTP_TOGGLEVOL").innerHTML==sHideTrafficLayerText) {
         lyrSegments.show();
       } else {
         lyrSegments.hide();
@@ -2136,34 +2131,78 @@ function(declare, BaseWidget, LayerInfos, RainbowVis, registry, dom, domStyle, d
     _updateLayerDisplayUTP: function() {
       console.log('_updateLayerDisplayUTP');
 
-      var _bRds = dom.byId("chkRoads").checked;
-      var _bTrn = dom.byId("chkTransit").checked;
+      // Get the checkbox statuses for phases
       var _bP1 = dom.byId("chkPhase1").checked;
       var _bP2 = dom.byId("chkPhase2").checked;
       var _bP3 = dom.byId("chkPhase3").checked;
       var _bP4 = dom.byId("chkPhase4").checked;
+
+      // Initialize an empty array to hold the phases
+      var phases = [];
+
+      // Check each condition and add the phase number to the array if checked
+      if (_bP1) {
+          phases.push("'1'");
+      }
+      if (_bP2) {
+          phases.push("'2'");
+      }
+      if (_bP3) {
+          phases.push("'3'");
+      }
+      if (_bP4) {
+          phases.push("'Unfunded'");
+      }
+
+      // Get the checkbox statuses for modes
+      var _bRds = dom.byId("chkRoads").checked;
+      var _bTrn = dom.byId("chkTransit").checked;
+
+      // Initialize an empty array to hold the modes
+      var modes = [];
+
+      // Check each condition and add the corresponding mode to the array if checked
+      if (_bRds) {
+          modes.push("'Highway'");
+      }
+      if (_bTrn) {
+          modes.push("'Transit'");
+      }
+
+      // Create the SQL expressions
+      var sqlPhaseExpression = "";
+      var sqlModeExpression = "";
+
+      if (phases.length > 0) {
+          sqlPhaseExpression = "Phase IN (" + phases.join(", ") + ")";
+      } else {
+          // Optionally handle the case where no phase checkboxes are checked
+          sqlPhaseExpression = "Phase IN (NULL)"; // Selects nothing
+      }
+
+      if (modes.length > 0) {
+          sqlModeExpression = "Mode IN (" + modes.join(", ") + ")";
+      } else {
+          // Optionally handle the case where no mode checkboxes are checked
+          sqlModeExpression = "Mode IN (NULL)"; // Selects nothing
+      }
+
+      // Combine the two conditions
+      var combinedSqlExpression = sqlPhaseExpression + " AND " + sqlModeExpression;
+
+      // Output the final SQL expression
+      console.log(combinedSqlExpression);
+
       
-      var aVisibleLayers = [];
-      
-      //if (curTab=="UTP") {
-      //  for (var i=0; i<aUTPLayerIDs.length;i++) {
-      //    if (((_bRds && aUTP_Rds[i]) || (_bTrn && aUTP_Trn[i])) && ((_bP1 && aUTP_P1[i]) || (_bP2 && aUTP_P2[i]) || (_bP3 && aUTP_P3[i]) || (_bP4 && aUTP_P4[i]))) {
-      //      aVisibleLayers.push(aUTPLayerIDs[i]);
-      //    }
-      //  }
-      //  
-      //  //lyrUTP.visibleLayers = (aVisibleLayers.concat(aUTPLayerIDs_AlwaysOn)).sort(function(a, b){return a - b});
-      //  if (aVisibleLayers.length) {
-      //    lyrUTP.visibleLayers = (aVisibleLayers.concat(aUTPLayerIDs_AlwaysOn)).sort(function(a, b){return a - b});
-      //  } else {
-      //    lyrUTP.visibleLayers = [];
-      //  }
-      //} else {
-      //  lyrUTP.visibleLayers = [];
-      //}
-      //
-      //lyrUTP.hide();
-      //lyrUTP.show();
+      if (curTab=="UTP") {
+        lyrUtpLine.setDefinitionExpression(combinedSqlExpression);
+        lyrUtpPoint.setDefinitionExpression(combinedSqlExpression);
+        lyrUtpLine.show();
+        lyrUtpPoint.show();
+      } else {
+        lyrUtpLine.hide();
+        lyrUtpPoint.hide();
+      }
     },
     
     _selectVol: function() {
@@ -2179,19 +2218,19 @@ function(declare, BaseWidget, LayerInfos, RainbowVis, registry, dom, domStyle, d
       dom.byId("SE_CONTROL").classList.remove('selectedToggle');
       dom.byId("SE_CONTROL").classList.add('unselectedToggle');
       
-      //dom.byId("UTP_CONTROL").classList.remove('selectedToggle');
-      //dom.byId("UTP_CONTROL").classList.add('unselectedToggle');
+      dom.byId("UTP_CONTROL").classList.remove('selectedToggle');
+      dom.byId("UTP_CONTROL").classList.add('unselectedToggle');
       
       dom.byId("VOL_ICON").style.backgroundImage = "url('widgets/ForecastSidebar/images/icon_VOL_blue.png')";
       dom.byId("SE_ICON").style.backgroundImage = "url('widgets/ForecastSidebar/images/icon_SE_white.png')";
-      //dom.byId("UTP_ICON").style.backgroundImage = "url('widgets/ForecastSidebar/images/icon_UTP_white.png')";
+      dom.byId("UTP_ICON").style.backgroundImage = "url('widgets/ForecastSidebar/images/icon_UTP_white.png')";
       
       dom.byId("VOL_SECTION").style.display = '';
       dom.byId("SE_SECTION").style.display = 'none';
-      //dom.byId("UTP_SECTION").style.display = 'none';
+      dom.byId("UTP_SECTION").style.display = 'none';
 
       dom.byId("SE_TOGGLEVOL").style.display = 'none';
-      //dom.byId("UTP_TOGGLEVOL").style.display = 'none';
+      dom.byId("UTP_TOGGLEVOL").style.display = 'none';
       
       this._updateLayerDisplaySE();
       this._updateLayerDisplayUTP();
@@ -2215,16 +2254,16 @@ function(declare, BaseWidget, LayerInfos, RainbowVis, registry, dom, domStyle, d
       dom.byId("SE_CONTROL").classList.remove('unselectedToggle');
       dom.byId("SE_CONTROL").classList.add('selectedToggle');
       
-      //dom.byId("UTP_CONTROL").classList.remove('selectedToggle');
-      //dom.byId("UTP_CONTROL").classList.add('unselectedToggle');
+      dom.byId("UTP_CONTROL").classList.remove('selectedToggle');
+      dom.byId("UTP_CONTROL").classList.add('unselectedToggle');
       
       dom.byId("VOL_ICON").style.backgroundImage = "url('widgets/ForecastSidebar/images/icon_VOL_white.png')";
       dom.byId("SE_ICON").style.backgroundImage = "url('widgets/ForecastSidebar/images/icon_SE_blue.png')";
-      //dom.byId("UTP_ICON").style.backgroundImage = "url('widgets/ForecastSidebar/images/icon_UTP_white.png')";
+      dom.byId("UTP_ICON").style.backgroundImage = "url('widgets/ForecastSidebar/images/icon_UTP_white.png')";
       
       dom.byId("VOL_SECTION").style.display = 'none';
       dom.byId("SE_SECTION").style.display = '';
-      //dom.byId("UTP_SECTION").style.display = 'none';
+      dom.byId("UTP_SECTION").style.display = 'none';
       
       this._updateLayerDisplaySE();
       this._updateLayerDisplayUTP();
@@ -2269,6 +2308,8 @@ function(declare, BaseWidget, LayerInfos, RainbowVis, registry, dom, domStyle, d
       dom.byId("SE_TOGGLEVOL").style.display = 'none';
       dom.byId("UTP_TOGGLEVOL").style.display = '';
       
+      this.map.setInfoWindowOnClick(true); // turn off info window (popup) when clicking a feature
+
       this._updateVolToggles();
       this._changeZoom();
     },
@@ -2282,9 +2323,9 @@ function(declare, BaseWidget, LayerInfos, RainbowVis, registry, dom, domStyle, d
         this._startupSE();
       }
       
-      //if (!bStartUTP) {
-      //  this._startupUTP();
-      //}
+      if (!bStartUTP) {
+        this._startupUTP();
+      }
       
       this._selectVol();
       this._changeZoom();
@@ -2424,7 +2465,7 @@ function(declare, BaseWidget, LayerInfos, RainbowVis, registry, dom, domStyle, d
         if (curTab == "SE") {
           dom.byId("VOL_LABELS_Vol").style.display = 'none';
           dom.byId("VOL_LABELS_SE").style.display = 'none';
-          //dom.byId("VOL_LABELS_UTP").style.display = 'none';
+          dom.byId("VOL_LABELS_UTP").style.display = 'none';
         }
       } else {
         dom.byId("SE_TOGGLEVOL").classList.remove('toggleVolUnselected');
@@ -2432,7 +2473,7 @@ function(declare, BaseWidget, LayerInfos, RainbowVis, registry, dom, domStyle, d
         if (curTab == "SE") {
           dom.byId("VOL_LABELS_Vol").style.display = '';
           dom.byId("VOL_LABELS_SE").style.display = '';
-          //dom.byId("VOL_LABELS_UTP").style.display = '';
+          dom.byId("VOL_LABELS_UTP").style.display = '';
         }
       }
       
@@ -2442,7 +2483,7 @@ function(declare, BaseWidget, LayerInfos, RainbowVis, registry, dom, domStyle, d
         if (curTab == "UTP") {
           dom.byId("VOL_LABELS_Vol").style.display = 'none';
           dom.byId("VOL_LABELS_SE").style.display = 'none';
-          //dom.byId("VOL_LABELS_UTP").style.display = 'none';
+          dom.byId("VOL_LABELS_UTP").style.display = 'none';
         }
       } else {
         dom.byId("UTP_TOGGLEVOL").classList.remove('toggleVolUnselected');
@@ -2450,7 +2491,7 @@ function(declare, BaseWidget, LayerInfos, RainbowVis, registry, dom, domStyle, d
         if (curTab == "UTP") {
           dom.byId("VOL_LABELS_Vol").style.display = '';
           dom.byId("VOL_LABELS_SE").style.display = '';
-          //dom.byId("VOL_LABELS_UTP").style.display = '';
+          dom.byId("VOL_LABELS_UTP").style.display = '';
         }
       }
 
