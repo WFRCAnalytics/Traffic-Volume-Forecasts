@@ -204,18 +204,8 @@ var curSEChartSelectionMethod = "filter"; //Map or Filter
 sUtpLayersLine = "Unified Plan 2023 Line";
 sUtpLayersPoint = "Unified Plan 2023 Point";
 
-
-aUtpGroupsPhases = new Array("Phase 1 (2023-2032)","Phase 2 (2033-2042)","Phase 3 (2043-2050)","Unfunded");
-aUtpGroupsPhasesShort = new Array("Phase 1","Phase 2","Phase 3","Unfunded");
-aUtpGroupsMode = new Array("Highway","Transit");
-aUtpGroupsType = new Array("Site","Linear")
-
 var lyrUtpLine;
 var lyrUtpPoint;
-
-aPhaseCode = new Array('1','2','3','Unfunded');
-
-
 
 define(['dojo/_base/declare',
     'jimu/BaseWidget',
