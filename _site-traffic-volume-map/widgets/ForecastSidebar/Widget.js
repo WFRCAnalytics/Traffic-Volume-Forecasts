@@ -389,7 +389,7 @@ function(declare, BaseWidget, LayerInfos, RainbowVis, registry, dom, domStyle, d
         //Create a JSON object which contains the labeling properties. At the very least, specify which field to label using the labelExpressionInfo property. Other properties can also be specified such as whether to work with coded value domains, fieldinfos (if working with dates or number formatted fields, and even symbology if not specified as above)
         aJsonLabelsFY.push({
           minScale: minScaleForLabels,
-          labelExpressionInfo: {expression: "Text($feature." + aFieldNamesFY[i] +  ", '#,###')"}
+          labelExpressionInfo: {expression: "IIF($feature." + aFieldNamesFY[i] +  "==0, '', Text($feature." + aFieldNamesFY[i] +  ", '#,###'))"}
         });
       
         //create instance of LabelClass (note: multiple LabelClasses can also be passed in as an array)  
