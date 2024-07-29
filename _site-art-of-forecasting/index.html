@@ -252,7 +252,10 @@
                 </td>
               </tr>
               <tr>
-                <td colspan="5" align="right">
+                <td colspan="2" align="right">
+                  <div id="do_not_use"></div>
+                </td>
+                <td colspan="4" align="right">
                   <div class="input-group">
                     <input type="text" id="edit-key" placeholder="Enter edit key" class="input">
                   </div>
@@ -360,8 +363,8 @@
           <div class="select-container">
             <div class="h3-no-margin">SE:&nbsp;</div>
             <calcite-select id="selectSe" name="rbgForecasts" style="width: 150px;">
-              <calcite-option value="none"  >None    </calcite-option>
-              <calcite-option value="hh"  >Households</calcite-option>
+              <calcite-option value="none"  >None      </calcite-option>
+              <calcite-option value="hh"    >Households</calcite-option>
               <calcite-option value="pop"   >Population</calcite-option>
               <calcite-option value="typemp">Employment</calcite-option>
             </calcite-select>
@@ -372,6 +375,10 @@
           <calcite-label layout="inline">
             <calcite-checkbox id="checkboxLegend" value="legend" checked></calcite-checkbox>
             Show Legend
+          </calcite-label>
+          <calcite-label layout="inline">
+            <calcite-checkbox id="checkboxDoNotUse" value="donotuse"></calcite-checkbox>
+            Hide not-to-publish segments
           </calcite-label>
         </div>
         <div id="mapView"></div>

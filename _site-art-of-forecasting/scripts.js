@@ -362,6 +362,17 @@ require([
 
     }
 
+    // filter do not use
+
+    // Determine the base definitionExpression based on selected options
+    if (document.getElementById("checkboxDoNotUse").checked == true) {
+      if (layerSegments.definitionExpression=="") {
+        layerSegments.definitionExpression = 'DONOTUSE = 0'
+      } else {
+        layerSegments.definitionExpression += ' AND DONOTUSE = 0'
+      }
+    }
+
     // flagsMap
     let _flagsMapExpression = "";
     if (flagsMap.length) {
@@ -784,6 +795,8 @@ require([
       addUpdateListener("checkboxTransitProjects");
       addUpdateListener("checkboxLabels");
       addUpdateListener("checkboxProjectDetails");
+      addUpdateListener("checkboxDoNotUse");
+
       //addUpdateListener('checkboxNoNotes');
 
       updateMap();
@@ -2690,6 +2703,34 @@ require([
         }
 
         function generateTable() {
+        
+          donotuseHtml = `
+            Do not publish segment in forecasts:
+            <calcite-switch
+              id="switch_do_not_use"
+              scale="s"
+              ${feature.attributes['DONOTUSE'] === 1 ? "checked" : ""}>
+            </calcite-switch>
+          `
+          document.getElementById("do_not_use").innerHTML = donotuseHtml;
+
+          // listener do not use switch
+          document
+            .getElementById("switch_do_not_use")
+            .addEventListener("calciteSwitchChange", (event) => {
+              const newValue = event.target.checked ? 1 : 0;
+
+              updateFeature(
+                feature.attributes.SEGID,
+                'DONOTUSE',
+                newValue
+              ).then((_updateSuccess) => {
+                if (!_updateSuccess) {
+                  event.target.checked = !newValue;
+                }
+              });
+            });
+
           const renderedFlags = []; // Keep track of rendered flags
           tableHtml = "";
 
