@@ -25,7 +25,7 @@
   "appId": "",
   "authorizedCrossOriginDomains": [],
   "title": "<div class=\"attribute-custom-style\"><font color=\"#DDDDDD\"><strong>  Utah Statewide Annual Average Daily Traffic (AADT) - Historic &amp; Forecast</strong></font></div>",
-  "subtitle": "<div class=\"attribute-custom-style\"><font color=\"#DDDDDD\">Last Updated April 10, 2024</font></div>",
+  "subtitle": "<div class=\"attribute-custom-style\"><font color=\"#DDDDDD\">Last Updated September 5, 2024</font></div>",
   "keepAppState": true,
   "logo": "images/logo.png",
   "geometryService": "https://utility.arcgisonline.com/arcgis/rest/services/Geometry/GeometryServer",
