@@ -1,4 +1,4 @@
 pgName,pgYearFrom,pgYearTo,pgYearsExclude,pgColor,pgHidden,pgBorderDash,pgBorderWidth
-Since 1981,1981,2022,{},#6948F4,False,"[5, 5]",1.5
-Since 2011 w/o 2020,2011,2022,{2020},#FF0000,False,"[5, 5]",0.5
-Since 2001 w/o 2020,2001,2022,{2020},#F28705,False,"[10, 5]",0.5
+Since 1981,1981,2023,{},#6948F4,False,"[5, 5]",1.5
+Since 2011 w/o 2020,2011,2023,{2020},#FF0000,False,"[5, 5]",0.5
+Since 2001 w/o 2020,2001,2023,{2020},#F28705,False,"[10, 5]",0.5
