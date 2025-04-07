@@ -1,6 +1,6 @@
 # TDM-PP-Traffic-Volume-Forecasts
 
-This repo contains both processing jupyter notebooks and two web applications. The notebooks are used to generate data for use in the web applications. The first web application The ART (Adjust & Review Tool) of Forecasting is used for manual review and adjustments. The audience are internal reviewers and forecasters. The final web application is the Traffic Volume Map that is used to display the final forecating and SE results for a more general audience.
+This repo contains processing jupyter notebooks and two web applications. The notebooks are used to generate data for use in the web applications. The first web application The ART (Adjust & Review Tool) of Forecasting is used for manual review and adjustments. The audience are internal reviewers and forecasters. The final web application is the Traffic Volume Map that is used to display the final forecating and SE results for a more general audience.
 
 **1-Get-Historic-Data-and-Factors.ipynb:** Historic Average Annual Daily Traffic (AADT) data is gathered and defined for each segment. This includes AADT from existing segment files, as well as matching to AADT data from Utah Department of Transportation's (UDOT) published AADT files.
 
