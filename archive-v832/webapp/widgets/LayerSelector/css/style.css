@@ -1,0 +1,14 @@
+@import url('../layer-selector/resources/LayerSelector.css');
+
+/* Override so that it doesn't conflict with other widgets in the top, left hand corner */
+.layer-selector.layer-selector-left {
+  top: 25px;
+  left: 36px;
+}
+.layer-selector .layer-selector-items {
+  max-width: 125px;
+}
+
+div#map_Imagery_BW img {
+  filter: grayscale(1);
+}

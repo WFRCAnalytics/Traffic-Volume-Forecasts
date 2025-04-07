@@ -1,0 +1,164 @@
+[
+  {
+    "categoryCode": "HHPOP",
+    "Total":
+      {
+        "units": " people",
+        "beginColor": "lightblue",
+        "endColor": "darkred",
+        "numClasses": 5,
+        "classMin0": -100000,
+        "classMin1": 0,
+        "classMin2": 100,
+        "classMin3": 1000,
+        "classMin4": 2500
+      },
+    "Density":
+      {
+        "units": " people per developable acre",
+        "beginColor": "lightblue",
+        "endColor": "darkred",
+        "numClasses": 5,
+        "classMin0": -100000,
+        "classMin1": 0.0,
+        "classMin2": 2.0,
+        "classMin3": 5.0,
+        "classMin4": 15.0
+      }
+  },
+  {
+    "categoryCode": "TOTHH",
+    "Total": 
+      {
+        "units": " households",
+        "beginColor": "lightblue",
+        "endColor": "darkred",
+        "numClasses": 5,
+        "classMin0": -100000,
+        "classMin1": 0,
+        "classMin2": 100,
+        "classMin3": 300,
+        "classMin4": 900
+      },
+    "Density":
+      {
+        "units": " households per developable acre",
+        "beginColor": "lightblue",
+        "endColor": "darkred",
+        "numClasses": 5,
+        "classMin0": -100000,
+        "classMin1": 0.0,
+        "classMin2": 0.5,
+        "classMin3": 1.0,
+        "classMin4": 2.5
+      }
+  },
+  {
+    "categoryCode": "TOTEMP",
+    "Total": 
+      {
+        "units": " employees",
+        "beginColor": "lightblue",
+        "endColor": "darkred",
+        "numClasses": 5,
+        "classMin0": -100000,
+        "classMin1": 0,
+        "classMin2": 500,
+        "classMin3": 1500,
+        "classMin4": 3000
+      },
+    "Density": 
+      {
+        "units": " employees per developable acre",
+        "beginColor": "lightblue",
+        "endColor": "darkred",
+        "numClasses": 5,
+        "classMin0": -100000,
+        "classMin1": 0.0,
+        "classMin2": 1.0,
+        "classMin3": 5.0,
+        "classMin4": 10.0
+      }
+  },
+  {
+    "categoryCode": "RETEMP",
+    "Total": 
+      {
+        "units": " employees",
+        "beginColor": "lightblue",
+        "endColor": "darkred",
+        "numClasses": 5,
+        "classMin0": -100000,
+        "classMin1": 0,
+        "classMin2": 50,
+        "classMin3": 100,
+        "classMin4": 200
+      },
+    "Density": 
+      {
+        "units": " employees per developable acre",
+        "beginColor": "lightblue",
+        "endColor": "darkred",
+        "numClasses": 5,
+        "classMin0": -100000,
+        "classMin1": 0.0,
+        "classMin2": 0.3,
+        "classMin3": 1.0,
+        "classMin4": 3.0
+      }
+  },
+  {
+    "categoryCode": "INDEMP",
+    "Total":
+      {
+        "units": " employees",
+        "beginColor": "lightblue",
+        "endColor": "darkred",
+        "numClasses": 5,
+        "classMin0": -100000,
+        "classMin1": 0,
+        "classMin2": 60,
+        "classMin3": 250,
+        "classMin4": 800
+      },
+    "Density": 
+      {
+        "units": " employees per developable acre",
+        "beginColor": "lightblue",
+        "endColor": "darkred",
+        "numClasses": 5,
+        "classMin0": -100000,
+        "classMin1": 0.0,
+        "classMin2": 0.1,
+        "classMin3": 0.5,
+        "classMin4": 1.0
+      }
+  },
+  {
+    "categoryCode": "OTHEMP",
+    "Total":
+      {
+        "units": " employees",
+        "beginColor": "lightblue",
+        "endColor": "darkred",
+        "numClasses": 5,
+        "classMin0": -100000,
+        "classMin1": 0,
+        "classMin2": 500,
+        "classMin3": 1000,
+        "classMin4": 3000
+      },
+    "Density":
+      {
+        "units": " employees per developable acre",
+        "beginColor": "lightblue",
+        "endColor": "darkred",
+        "numClasses": 5,
+        "classMin0": -100000,
+        "classMin1": 0.0,
+        "classMin2": 0.6,
+        "classMin3": 3.5,
+        "classMin4": 6.0
+      }
+  }
+]

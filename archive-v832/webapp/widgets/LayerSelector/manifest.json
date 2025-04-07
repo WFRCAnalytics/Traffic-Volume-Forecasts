@@ -1,0 +1,25 @@
+{
+  "name": "LayerSelector",
+  "label": "Layer Selector",
+  "2D": true,
+  "3D": false,
+  "platform": "HTML",
+  "version": "1.5.1",
+  "wabVersion": "2.9",
+  "author": "Scott Davis <stdavis@utah.gov>",
+  "description": "A WAB wrapper around AGRC&#39;s layer-selector widget.",
+  "copyright": "",
+  "license": "MIT",
+  "properties": {
+    "inPanel": false,
+    "hasLocale": true,
+    "hasStyle": true,
+    "hasConfig": true,
+    "hasUIFile": false,
+    "hasSettingPage": false,
+    "hasSettingUIFile": false,
+    "hasSettingLocale": false,
+    "hasSettingStyle": false,
+    "IsController": false
+  }
+}
